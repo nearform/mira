@@ -1,0 +1,43 @@
+{
+  "app": {
+    "prefix": "Company",
+    "name": "Product"
+  },
+  "environments": {
+    "Staging": {
+      "profile": "company-dev",
+      "withDomain": true,
+      "webAppUrl": "staging.company.com",
+      "requireManualApproval": false
+    },
+    "Production": {
+      "profile": "company-prd",
+      "withDomain": true,
+      "webAppUrl": "company.com",
+      "requireManualApproval": true
+    },
+    "Developer": {
+      "profile": "company-dev",
+      "withDomain": true,
+      "baseDomain": "company.com"
+    }
+  },
+  "domain": {
+    "profile": "company-domain",
+    "baseDomain": "company.com",
+    "hostedZoneId": "Z2DHU1GXEKO5Q6"
+  },
+  "cicd": {
+    "profile": "company-dev",
+    "buildspec_file": "infra/buildspec.yaml",
+    "source": "github",
+    "repository_url": "https://github.com/company/product",
+    "branch_name": "master",
+    "github_token_secret_arn": "arn:aws:secretsmanager:eu-west-1:111111111111:secret:GitHubToken-VqjNoC",
+    "codecommit_public_key": "",
+    "steps": [
+      "Staging",
+      "Production"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+__mocks__/
+.github/
+!dist/
+docs_legacy/
+.eslintignore
+.eslintrc.js
+.gitattributes
+.nvmrc
+tsconfig.json
+src/__mocks__
+**/*.test.ts

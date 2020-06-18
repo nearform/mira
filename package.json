@@ -1,0 +1,113 @@
+{
+  "name": "mira",
+  "version": "1.0.0",
+  "description": "NearForm Accelerator for Cloud Native Serverless AWS",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nearform/mira.git"
+  },
+  "bin": {
+    "mira": "bin/cli.js"
+  },
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "tsc --watch",
+    "api": "node bin/start-api",
+    "build": "tsc",
+    "docs": "docsify serve -p 4000 docs",
+    "lint": "eslint --fix --ext .ts ./",
+    "lint-ci": "eslint --ext .ts ./",
+    "test": "cross-env TAP=true SUPPRESS_NO_CONFIG_WARNING=1 jest",
+    "prepublishOnly": "npm run lint-ci && npm run build && npm run test"
+  },
+  "devDependencies": {
+    "@types/config": "0.0.36",
+    "@types/git-url-parse": "^9.0.0",
+    "@types/inquirer": "^6.5.0",
+    "@types/jest": "^24.9.0",
+    "@types/lodash": "^4.14.151",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^10.0.0",
+    "@types/yargs": "^15.0.5",
+    "@typescript-eslint/eslint-plugin": "^2.11.0",
+    "@typescript-eslint/parser": "^2.11.0",
+    "chalk": "^3.0.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.0.6",
+    "jest": "^25.5.4",
+    "lint-staged": "^9.5.0",
+    "mock-fs": "^4.12.0",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.5.1",
+    "typescript": "^3.6.5"
+  },
+  "dependencies": {
+    "@aws-cdk/assert": "1.36.1",
+    "@aws-cdk/aws-cloudformation": "1.36.1",
+    "@aws-cdk/aws-codebuild": "1.36.1",
+    "@aws-cdk/aws-codecommit": "1.36.1",
+    "@aws-cdk/aws-codepipeline": "1.36.1",
+    "@aws-cdk/aws-codepipeline-actions": "1.36.1",
+    "@aws-cdk/aws-iam": "1.36.1",
+    "@aws-cdk/aws-lambda-event-sources": "1.36.1",
+    "@aws-cdk/aws-rds": "1.36.1",
+    "@aws-cdk/aws-ssm": "1.36.1",
+    "@aws-cdk/core": "1.36.1",
+    "@mobileposse/auto-delete-bucket": "^1.28.0",
+    "ajv": "^6.12.0",
+    "aws-cdk": "1.36.1",
+    "aws-sdk": "^2.681.0",
+    "change-case": "^3.1.0",
+    "config": "^3.3.1",
+    "docsify": "^4.11.2",
+    "docsify-cli": "^4.4.0",
+    "fluent-schema": "^0.10.0",
+    "git-url-parse": "^11.1.2",
+    "inquirer": "^7.1.0",
+    "inquirer-autocomplete-prompt": "^1.0.2",
+    "lodash": "^4.17.15",
+    "minimist": "^1.2.5",
+    "parse-domain": "^3.0.2",
+    "source-map-support": "^0.5.19",
+    "yargs": "^15.3.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.ts$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist",
+      "<rootDir>/node_modules"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/dist",
+      "<rootDir>/node_modules"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm test",
+      "post-commit": "git update-index --again"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "eslint"
+  }
+}

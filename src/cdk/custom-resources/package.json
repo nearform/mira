@@ -1,0 +1,13 @@
+{
+  "name": "custom-resources",
+  "version": "1.0.0",
+  "description": "Mira custom resources logic",
+  "private": true,
+  "scripts": {},
+  "devDependencies": {
+    "@types/node": "^10.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.614.0"
+  }
+}
