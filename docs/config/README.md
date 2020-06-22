@@ -48,7 +48,7 @@ The domain section of the config file contains the following:
  - `hostedZoneId`: ID of the Route53 hosted zone to change DNS records.
  - `accounts`: An array of strings. Each string must be `accounts[].name` value. The Certificate Manager and the Route53 Manager are deployed in the account.
 
- # A Sample Config File
+# A Sample Config File
 
 Let's take a look at a sample config file.
 ```
