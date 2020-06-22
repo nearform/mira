@@ -16,10 +16,6 @@ Developer can select one of available sample applications as a starting position
 Available sample application are:
 * [Basic S3 based web hosting app](../samples/README.md?id=s3-web-hosting-app). 
 
-<!--Depending on the selected sample apps, below diagram reflects resources deployed to the cloud.
-![hla]
-Fig. 1 Mira High-Level Architecture-->
-
 ## Serverless Services
 
 Mira sample apps are using serverless services so that your developers can focus on implementing business logic without needing to address underlying infrastructure challenges. These services take care of low-level aspects like hardware and operating systems, and have built-in scalability.
@@ -78,5 +74,3 @@ __Note:__
   - Uses Cognito for authentication
   - Integration (snapshot) tests and unit tests
   
-<!-- Images -->
-[hla]: ../img/hla.png#hla
