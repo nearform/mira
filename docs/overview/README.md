@@ -14,7 +14,7 @@ Every stack is managed by AWS CloudFormation.
 Developer can select one of available sample applications as a starting position for the new application.
 
 Available sample application are:
-* [Basic S3 based web hosting app](/samples/?id=s3-web-hosting-app). 
+* [Basic S3 based web hosting app](../samples/README.md?id=s3-web-hosting-app). 
 
 <!--Depending on the selected sample apps, below diagram reflects resources deployed to the cloud.
 ![hla]

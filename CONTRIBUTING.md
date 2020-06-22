@@ -104,4 +104,4 @@ This lints, builds and tests the package, then publishes it to NPM. You can view
 [Creating and publishing unscoped public packages]: https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages
 [npm version]: https://docs.npmjs.com/cli-commands/version.html
 [Conventional Commits]: https://www.conventionalcommits.org/
-[Mira packages]: https://github.com/nearform/mira/packages
+[Mira packages]: https://www.npmjs.com/package/mira?activeTab=versions
