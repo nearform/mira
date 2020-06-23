@@ -29,8 +29,8 @@ export class MiraCiApp {
       if (!this.cdkApp) {
         this.initializeApp()
       }
-      const account = MiraConfig.getEnvironment()
-      const callerIdentityResponse = await this.getCallerIdentityResponse(account.profile)
+      const account = MiraConfig.getCICDConfig()
+      const callerIdentityResponse = await this.getCallerIdentityResponse(args.profile || account.profile)
       const envVars = this.parsePipelineEnvironmentVariables()
       new Cicd(this.cdkApp, {
         callerIdentityResponse,

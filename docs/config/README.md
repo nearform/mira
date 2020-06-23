@@ -17,6 +17,8 @@ This data is used to generate Cloud Development Kit (CDK) Resource names.
 
 The example above generates `John-SampleApp` as the prefix for stacks, roles, pipelines stages and so on.
 
+__Warning:__ Once app properties are set, any change will trigger stacks replacement!
+
 ## The Accounts Section
 
 The accounts section of the config file is an array of accounts that can be used for deploy apps, cicd and domain management. The accounts also represent environments.
@@ -41,7 +43,7 @@ The CI/CD section of the config file configures the pipeline. It contains the fo
  - `gitHubTokenSecretArn`: If you use `github` as the provider, put your Personal Access Token in a SecretsManager and provide the Amazon Resource Name (ARN).
  - `codeCommitUserPublicKey`: If you use `codecommit` as the provider, provide the public key to pull code in CodeBuild.
  - `accounts`: An array of strings. Each string must be `accounts[].name` value. It represents which account is enabled for the CI/CD Pipeline. Order is preserved.
-
+    __Caution:__ Make sure to not include any whitespace characters in `codeCommitUserPublicKey`
 ## The Domain Section
 
 The domain section of the config file contains the following:
@@ -68,13 +70,13 @@ Let's take a look at a sample config file.
     "account": "1111111111111",
     "buildspecFile": "infra/buildspec.yaml",
     "provider": "codecommit",
+    "profile": "mira-dev",
     "repositoryUrl": "https://github.com/leorossi/mira-sample-s3-webhosting",
     "branchName": "feature/feature-xyz",
-    "gitHubTokenSecretArn": "arn:aws:secretsmanager:eu-west-1:1111111111111:secret:Leorossi-Mira-Github-an3TT7",
     "codeCommitUserPublicKey": "ssh-rsa ...",
     "environmentVariables": [
       {
-        "name": "GH_NPM_READ_TOKEN",
+        "name": "CUSTOM_VARIABLE",
         "value": "123453546647"
       }
     ],
@@ -137,8 +139,6 @@ The `Default` account may represent a developer personal account where they can 
 ## CI/CD
 `Staging` and `Production` accounts are defined in the `cicd.accounts` value. The CodePipeline then has `StagingDeploy` and `ProductionDeploy` stages which deploy your app into the accounts `2222222222222` and `4444444444444` respectively.
 
-During the build process, the variable `GH_NPM_READ_TOKEN` is available and it can be used to access a Private Package Registry.
-
 AWS CodeBuild runs using the `infra/buildspec.yaml` file, where the directory is relative to the project's root path.
 
 The pipeline runs on the branch `feature/feature-xyz`.
@@ -148,3 +148,4 @@ The pipeline runs on the branch `feature/feature-xyz`.
 
 Domain management components (Certificate, Route53 and so on) are deployed on the `Domain` account. It uses `Z1234567890` as the Hosted Zone ID.
 
+NB Example domain usage to follow in upcoming releases.

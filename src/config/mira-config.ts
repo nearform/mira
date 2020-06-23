@@ -2,6 +2,11 @@ import configModule from 'config'
 import { pascalCase } from 'change-case'
 import parseGitUrl from 'git-url-parse'
 
+// eslint-disable-next-line
+const minimist = require('minimist')
+
+const args = minimist(process.argv)
+
 export interface AccountEnvData {
   account: string
   region: string
@@ -25,6 +30,7 @@ export interface Account {
 
 interface CicdConfig {
   readonly account: string
+  readonly profile?: string
   readonly provider: string
   readonly repositoryUrl: string
   readonly branchName: string
@@ -46,8 +52,16 @@ class MiraConfigClass {
   public readonly projectPrefix: string
 
   constructor () {
-    this.projectName = pascalCase(configModule.get('app.name'))
-    this.projectPrefix = pascalCase(configModule.get('app.prefix'))
+    try {
+      this.projectName = pascalCase(configModule.get('app.name'))
+      this.projectPrefix = pascalCase(configModule.get('app.prefix'))
+    } catch (err) {
+      console.warn(`${err.message}, you will not be able to deploy your app yet. `)
+      // In case of docs, config warning can be ignored, if other actions will be similar, consider created whitelist.
+      if (args._[2] !== 'docs') {
+        throw err
+      }
+    }
   }
 
   public defaultEnvironmentName: string

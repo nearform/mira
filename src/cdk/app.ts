@@ -146,7 +146,7 @@ if (args.stack) {
   // executed with 'app.js' file as argument and nod 'ci-app.js' or 'domain.js'
   if (args._.filter((arg: string) => arg.match(/app.js$/)).length > 0) {
     console.info(`>>> ${chalk
-      .yellow('Initializing CDK for App')}:\n    ${chalk.grey(args.stack)}`)
+      .yellow('Initializing CDK for App')}:\n    ${chalk.grey(args.file)}`)
     const app = new MiraApp()
     app.initialize()
   }
