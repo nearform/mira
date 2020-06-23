@@ -44,7 +44,7 @@ Clone your newly created repository and follow the instructions below.
    ```
    
 5. Adjust `config/default.json` with your settings
-    __Note:__ `Default` account is required in the configuration. See [config documentation](config/) for more information.
+    __Note:__ `Default` account is required in the configuration. See [config documentation](../config/README.md) for more information.
 
 6. Deploy
 

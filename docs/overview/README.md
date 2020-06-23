@@ -14,11 +14,7 @@ Every stack is managed by AWS CloudFormation.
 Developer can select one of available sample applications as a starting position for the new application.
 
 Available sample application are:
-* [Basic S3 based web hosting app](/samples/?id=s3-web-hosting-app). 
-
-<!--Depending on the selected sample apps, below diagram reflects resources deployed to the cloud.
-![hla]
-Fig. 1 Mira High-Level Architecture-->
+* [Basic S3 based web hosting app](../samples/README.md?id=s3-web-hosting-app). 
 
 ## Serverless Services
 
@@ -49,30 +45,6 @@ __Note:__
 ## Get Started Using Mira
  If you are a developer and you want to get started using Mira, see the [Quick Start Guide](quick-start/). This Guide assumes you already have an existing Mira repository and a existing AWS accounts. 
 
-If you want to start using Mira, but you do not already have a Mira repository or existing AWS accounts, see [Set up Mira for Your Project](forking-mira/) for details.
-
-<!-- You can also review the [Sample Apps](samples/) provided with Mira and select the one you want to deploy to get started. -->
-
-## Other considerations and limitations
-
- * Security
-    * TBD
- * Costs
-    * Due to serverless nature of the solution costs of the entire ecosystem depends on the usage. 
- * Tagging
-    * TBD
- * Regions support
-    * Due to Amazon Aurora Serverless with PostreSQL dialect only the following regions are supported:
-        * us-east-1
-        * us-east-2
-        * us-west-2
-        * ap-northeast-1
-        * eu-west-1
- * Serverless drawbacks
-    * lambda cold start if no previous provisioning or Provisioned Concurrency not used (https://aws.amazon.com/blogs/aws/new-provisioned-concurrency-for-lambda-functions/)
-    * Aurora serverless cold start if it's being hibernated
-
-
 ## Key Features
 
 ### Mira
@@ -102,9 +74,3 @@ If you want to start using Mira, but you do not already have a Mira repository o
   - Uses Cognito for authentication
   - Integration (snapshot) tests and unit tests
   
-
-## Common Use Cases
-Coming soon...
- -->
-<!-- Images -->
-[hla]: ../img/hla.png#hla
