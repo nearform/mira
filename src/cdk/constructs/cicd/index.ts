@@ -42,7 +42,7 @@ export class Cicd extends Stack {
     const accounts = MiraConfig.getCICDAccounts()
     const id = MiraConfig.getBaseStackName('Cicd')
 
-    super(parent, id)
+    super(parent, id, { env: props.env })
     this.pipelineEnvironment = props.environmentVariables
 
     Tag.add(this, 'StackName', this.stackName)

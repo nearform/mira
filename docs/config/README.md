@@ -17,7 +17,7 @@ This data is used to generate Cloud Development Kit (CDK) Resource names.
 
 The example above generates `John-SampleApp` as the prefix for stacks, roles, pipelines stages and so on.
 
-__Warning:__ Once app properties are set, any change will trigger stacks replacement!
+__Warning:__ Once app properties are set, any change will trigger a replacement of the stacks!
 
 ## The Accounts Section
 
@@ -67,7 +67,10 @@ Let's take a look at a sample config file.
     ]
   },
   "cicd": {
-    "account": "1111111111111",
+    "env": {
+      "account": "333333333333",
+      "region": "eu-west-1"
+    },
     "buildspecFile": "infra/buildspec.yaml",
     "provider": "codecommit",
     "profile": "mira-dev",

@@ -29,7 +29,7 @@ export interface Account {
 }
 
 interface CicdConfig {
-  readonly account: string
+  readonly env: AccountEnvData
   readonly profile?: string
   readonly provider: string
   readonly repositoryUrl: string
@@ -57,7 +57,7 @@ class MiraConfigClass {
       this.projectPrefix = pascalCase(configModule.get('app.prefix'))
     } catch (err) {
       console.warn(`${err.message}, you will not be able to deploy your app yet. `)
-      // In case of docs, config warning can be ignored, if other actions will be similar, consider created whitelist.
+      // In the case of docs, this config warning can be ignored, if other actions will be similar, consider creating a whitelist.
       if (args._[2] !== 'docs') {
         throw err
       }

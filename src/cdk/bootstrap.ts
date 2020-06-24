@@ -283,7 +283,7 @@ export class MiraBootstrap {
     return yargs // eslint-disable-line
       .scriptName('npx mira')
       .usage('Usage: npx mira COMMAND')
-      .option('profile', { type: 'string', alias: 'p', desc: 'AWS profile name used to for AWS CLI' })
+      .option('profile', { type: 'string', alias: 'p', desc: 'AWS profile name used for AWS CLI' })
       .command('deploy', 'Deploys given stack', yargs => yargs
         .option('file', { type: 'string', alias: 'f', desc: 'REQUIRED: Path to your stack file', requiresArg: true }))
       .command('undeploy', 'Un-Deploys given stack', yargs => yargs

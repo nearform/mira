@@ -34,7 +34,8 @@ export class MiraCiApp {
       const envVars = this.parsePipelineEnvironmentVariables()
       new Cicd(this.cdkApp, {
         callerIdentityResponse,
-        environmentVariables: envVars
+        environmentVariables: envVars,
+        env: account.env
       })
       if (!Object.prototype.hasOwnProperty.call(args, 'dry-run')) {
         this.cdkApp.synth()

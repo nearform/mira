@@ -88,13 +88,20 @@ __Note:__ If you decide to not use CI, you can skip this part.
 See [config documentation](../config/README.md) for more information about properties.
 
 
-1. Make sure to adjust your `default.json` file with proper values in the `cicd` section.
+1. Make sure to adjust your `default.json` file with proper values in the `cicd.env` section.
+    __Note:__ If you're not using github and/or you don't want to use github actions for 
+    the code mirroring, you can remove the `codeCommitUserPublicKey` attribute.
+    
+    __Note:__ `codeCommitUserPublicKey` source will be defined in the next steps. 
 
     E.g.:
     
     ```bash
     "cicd": {
-        "account": "CICD_ACCOUNT_NUMBER",
+        "env": {
+          "account": "YOUR_NUMBER",
+          "region": "YOUR_REGION"
+        },
         "buildspecFile": "infra/buildspec.yaml",
         "provider": "codecommit",
         "repositoryUrl": "YOUR_REPOSITORY_URL",
@@ -110,34 +117,34 @@ See [config documentation](../config/README.md) for more information about prope
 Every name in the `cicd.accounts`, must be specified in the `accounts` section.
     E.g.:
     ```bash
-            "accounts": [{
-              "name": "Default",
-              "env": {
-                "account": "YOUR_NUMBER",
-                "region": "YOUR_REGION"
-              },
-              "profile": "YOUR_PROFILE_NAME",
-              "withDomain": false
-            },
-            {
-             "name": "Staging",
-             "env": {
-               "account": "YOUR_NUMBER",
-               "region": "YOUR_REGION"
-             },
-             "profile": "YOUR_PROFILE_NAME",
-             "withDomain": false
-           }]
-           ```
+    "accounts": [{
+      "name": "Default",
+      "env": {
+        "account": "YOUR_NUMBER",
+        "region": "YOUR_REGION"
+      },
+      "profile": "YOUR_PROFILE_NAME",
+      "withDomain": false
+    },
+    {
+     "name": "Staging",
+     "env": {
+       "account": "YOUR_NUMBER",
+       "region": "YOUR_REGION"
+     },
+     "profile": "YOUR_PROFILE_NAME",
+     "withDomain": false
+   }]
+   ```
 
 This list is dynamic, so you can add or remove target environments.
 
 
 ### Permissions for CodeBuild
 
-AWS CodeBuild requires access to target environments in order to deploy the application with the CI.
-To achieve it, Mira expects dedicated service role to be deployed first.
-See [cicd](../cicd/README.md) for more information about the `Deploy Role`.
+AWS CodeBuild requires access to the target environments in order to deploy the application with the CI.
+To achieve it, Mira expects a dedicated service role to be deployed first.
+See [CICD](../cicd/README.md) for more information about the `Deploy Role`.
 
 __Note:__ In the below commands `Staging` and `Production` are arbitrary names that are associated with the 
 environments specified in the config file. Those names can be modified.
@@ -162,6 +169,8 @@ environments specified in the config file. Those names can be modified.
 8. Approve roles creation
 
 9. Mirroring
+    __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See `.github` directory for more information.
+    Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
    
     1. Create a secret with the name `iamusercodecommit`.
     
