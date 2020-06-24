@@ -28,8 +28,10 @@ For more information on available configuration options see [config documentatio
 __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See `.github` directory for more information.
 Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
 
-__Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit.
-Otherwise developer is responsible for mirroring code into dedicated AWS CodeCommit.
+For more information on available configuration options see [config documentation](../config/README.md). 
+
+__Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See `.github` directory for more information.
+Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
 
 ## Deploy Role
 
