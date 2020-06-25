@@ -57,20 +57,9 @@ __Note:__
 ### Mira Sample Apps
 
   - Monorepo using yarn workspaces in sample applications
-  - Secrets are stored in secrets manager — DB master password, OAuth GitHub token
-  - Serverless Postgres
-  - Automatic migration of DB schemas when deployed
   - CICD pipeline with promotion
-  - Route53 integration
-  - API built with API Gateway and Lambdas
-  - Uses SSM to share configuration data between stacks and in the app
-  - Web app generates its own certificate using Certificate Manager and a sub domain using Route53
   - The web app is hosted using S3 and CloudFront
   - Security
     - The web app and API use HTTPS
     - DB data is encrypted at rest and in transit
     - S3 buckets used for CICD pipeline are encrypted
-    - Secrets are never stored in the repository or environment variables
-  - Uses Cognito for authentication
-  - Integration (snapshot) tests and unit tests
-  
