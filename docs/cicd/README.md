@@ -2,7 +2,7 @@
 
 ## CI/CD architecture
 
-Mira utilize cloud native services for delivery pipeline. 
+Mira utilizes cloud-native services for the delivery pipeline.
 
 Key AWS Services used:
 * [AWS CodePipeline](https://aws.amazon.com/codepipeline/getting-started/)
@@ -10,16 +10,16 @@ Key AWS Services used:
 * [AWS CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/getting-started-cc.html)
 
 AWS CodePipeline is used for overall orchestration of the delivery pipeline. It is capable of detecting changes in the
-CodeCommit repository and trigger itself. Single CodePipeline is defined by the pipeline that consists of 1 or more stages.
+CodeCommit repository and triggers when required. A single CodePipeline is defined for delivery, with the pipeline itself built from one or more stages of pre-configured actions.
 
 For code deployment, Mira uses AWS CodeBuild which a dedicated service for artifacts build up and optionally deployment.
 Behind the scenes CodeBuild triggers the same Mira commands as a Developer from local workstation.
 In order to provide permissions for CodeBuild to deploy stacks, Mira provision dedicated Role(s) in predefined accounts.
 
-Mira CI/CD can deploy the code the the same AWS account where it is hosted, but also to different accounts.
+Mira CI/CD can deploy the code into the same AWS account where it is hosted, but also to different accounts as required.
 You define deployment stages by configuring the `cicd.accounts` value in the `config/default.json` file.
 
-Typical pipeline looks in the following way:
+A typical pipeline would look like this:
 
 `Source -> Test -> Manual Approval -> Staging -> Manual Approval -> Production`
 
