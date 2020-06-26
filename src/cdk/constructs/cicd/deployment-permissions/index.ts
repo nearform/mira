@@ -16,7 +16,7 @@ export class DeploymentPermissions extends Stack {
     const account = MiraConfig.getEnvironment()
     const baseProject = MiraApp.getBaseStackName()
     this.role = new Role(this, `DeployProjectRole-${account.name}`, {
-      assumedBy: new AccountPrincipal(MiraConfig.getCICDConfig().account),
+      assumedBy: new AccountPrincipal(MiraConfig.getCICDConfig().env.account),
       roleName: getDeployProjectRoleName(account.name)
     })
     // Policy statements needed for CDK to deploy any template.

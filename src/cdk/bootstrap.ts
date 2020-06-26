@@ -16,6 +16,7 @@ export class MiraBootstrap {
   execFileSync: typeof execFileSync;
   args: ParsedArgs;
   env: string;
+  profile: string;
   cdkCommand: string;
   docsifyCommand: string;
 
@@ -28,6 +29,7 @@ export class MiraBootstrap {
     // this.args = minimist(process.argv.slice(2))
     this.args = this.showHelp()
     this.env = this.args.env || 'Default'
+    this.profile = this.args.profile
     MiraConfig.setDefaultEnvironmentName(this.env)
     if (Object.keys(this.args).includes('env')) {
       delete this.args.env
@@ -201,6 +203,9 @@ export class MiraBootstrap {
     if (process.env.CODEBUILD_CI) {
       return 'client'
     }
+    if (this.profile) {
+      return this.profile
+    }
     const envConfig = MiraConfig.getEnvironment(environment)
     if (envConfig) {
       return envConfig.profile
@@ -240,7 +245,7 @@ export class MiraBootstrap {
         stackName = this.args.stack_name
 
         if ((await this.areStackFilesValid())) {
-          console.info(chalk.cyan('Deploying Stack:'), stackName,
+          console.info(chalk.cyan('Deploying Stack:'),
             `(via ${chalk.grey(stackFile)})`)
           this.deploy(stackName)
         }
@@ -250,7 +255,7 @@ export class MiraBootstrap {
         stackName = this.args.stack_name
 
         if ((await this.areStackFilesValid())) {
-          console.info(chalk.cyan('Deploying Stack:'), stackName,
+          console.info(chalk.cyan('Undeploying Stack:'),
             `(via ${chalk.grey(stackFile)})`)
           this.undeploy(stackName)
         } else {
@@ -278,13 +283,14 @@ export class MiraBootstrap {
     return yargs // eslint-disable-line
       .scriptName('npx mira')
       .usage('Usage: npx mira COMMAND')
-      .option('profile', { type: 'string', alias: 'p', desc: 'REQUIRED: AWS profile name used to for AWS CLI', requiresArg: true })
-      .command('deploy [STACK_NAME..]', 'Deploys given stack', yargs => yargs
+      .option('profile', { type: 'string', alias: 'p', desc: 'AWS profile name used for AWS CLI' })
+      .command('deploy', 'Deploys given stack', yargs => yargs
         .option('file', { type: 'string', alias: 'f', desc: 'REQUIRED: Path to your stack file', requiresArg: true }))
-      .command('undeploy [STACK_NAME..]', 'REQUIRED: Un-Deploys given stack', yargs => yargs
-        .option('file', { type: 'string', alias: 'f', desc: 'Path to your stack file', requiresArg: true }))
-      .command('cicd [STACK_NAME]', 'Un-Deploys given stack', yargs => yargs
+      .command('undeploy', 'Un-Deploys given stack', yargs => yargs
+        .option('file', { type: 'string', alias: 'f', desc: 'REQUIRED: Path to your stack file', requiresArg: true }))
+      .command('cicd', 'Deploys CI/CD pipeline', yargs => yargs
         .option('envVar', { type: 'string', desc: 'Environment variable passed into the code build' }))
+      .command('docs', 'Starts local web server with documentation')
       .help()
       .demandCommand()
       .argv

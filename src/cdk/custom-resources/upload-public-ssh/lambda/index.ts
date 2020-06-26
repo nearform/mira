@@ -4,8 +4,6 @@ import { IAM } from 'aws-sdk'
 const iam = new IAM()
 
 export const handler = async (event: any): Promise<void> => {
-  console.log(JSON.stringify(event, null, 2))
-
   /**
    * See the AWS documentation for more information passed in the request for a custom resource.
    *

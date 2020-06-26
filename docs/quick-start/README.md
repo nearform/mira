@@ -44,8 +44,34 @@ Clone your newly created repository and follow the instructions below.
    ```
    
 5. Adjust `config/default.json` with your settings
+
+    1. Update app section with your desired values e.g.:
+        ```bash
+        "app": {
+           "prefix": "jdoe",
+           "name": "super-app"
+         }
+       ```
+    2. Update `accounts` section to include at least settings for your `Default` deployment e.g.:
+        ```bash
+        "accounts": [{
+          "name": "Default",
+          "env": {
+            "account": "YOUR_NUMBER",
+            "region": "YOUR_REGION"
+          },
+          "profile": "YOUR_PROFILE_NAME",
+          "withDomain": false
+        }]
+       ```
     __Note:__ `Default` account is required in the configuration. See [config documentation](../config/README.md) for more information.
 
+5. Bootstrap AWS CDK on target AWS account and region, e.g.:
+    ```bash
+   cdk bootstrap aws://YOUR_NUMBER/YOUR_REGION --profile YOUR_PROFILE
+   ```
+   __Note:__ If CDK is already bootstrapped, you can skip this step.
+   
 6. Deploy
 
    ```bash
@@ -59,12 +85,66 @@ At this step you should have your development environment deployed and ready to 
 
 __Note:__ If you decide to not use CI, you can skip this part.
 
-The target environment name is taken from config.cicd.accounts. That name has to have corresponding configuration
-object in config.accounts section. This list is dynamic, so you can add or remove target environments.
-Please make sure your `permissions.js` file exists in your application and the path used below is correct.
+See [config documentation](../config/README.md) for more information about properties.
+
+
+1. Make sure to adjust your `default.json` file with proper values in the `cicd.env` section.
+    __Note:__ If you're not using github and/or you don't want to use github actions for 
+    the code mirroring, you can remove the `codeCommitUserPublicKey` attribute.
+    
+    __Note:__ `codeCommitUserPublicKey` source will be defined in the next steps. 
+
+    E.g.:
+    
+    ```bash
+    "cicd": {
+        "env": {
+          "account": "YOUR_NUMBER",
+          "region": "YOUR_REGION"
+        },
+        "buildspecFile": "infra/buildspec.yaml",
+        "provider": "codecommit",
+        "repositoryUrl": "YOUR_REPOSITORY_URL",
+        "branchName": "master",
+        "codeCommitUserPublicKey": "ssh-rsa YOUR_PUBLIC_KEY",
+        "accounts": [
+          "Staging"
+        ]
+      }
+    ```
+    
+2. Modify `accounts` section and modify respective target account configuration.
+Every name in the `cicd.accounts`, must be specified in the `accounts` section.
+    E.g.:
+    ```bash
+    "accounts": [{
+      "name": "Default",
+      "env": {
+        "account": "YOUR_NUMBER",
+        "region": "YOUR_REGION"
+      },
+      "profile": "YOUR_PROFILE_NAME",
+      "withDomain": false
+    },
+    {
+     "name": "Staging",
+     "env": {
+       "account": "YOUR_NUMBER",
+       "region": "YOUR_REGION"
+     },
+     "profile": "YOUR_PROFILE_NAME",
+     "withDomain": false
+   }]
+   ```
+
+This list is dynamic, so you can add or remove target environments.
 
 
 ### Permissions for CodeBuild
+
+AWS CodeBuild requires access to the target environments in order to deploy the application with the CI.
+To achieve it, Mira expects a dedicated service role to be deployed first.
+See [CICD](../cicd/README.md) for more information about the `Deploy Role`.
 
 __Note:__ In the below commands `Staging` and `Production` are arbitrary names that are associated with the 
 environments specified in the config file. Those names can be modified.
@@ -84,14 +164,13 @@ environments specified in the config file. Those names can be modified.
    ```
 6. Adjust `config/default.json` cicd section with codecommit public key.
 
-7. `npx mira cicd --envVar GH_NPM_READ_TOKEN=YOUR_TOKEN`
-    
-    ℹ Token used in the above command will be visible for AWS users with permissions to read code build configuration.
-    Keep in mind this might be your personal token and consider creating technical user for such purpose.
+7. `npx mira cicd`
      
 8. Approve roles creation
 
 9. Mirroring
+    __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See `.github` directory for more information.
+    Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
    
     1. Create a secret with the name `iamusercodecommit`.
     

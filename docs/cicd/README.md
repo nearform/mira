@@ -1,7 +1,32 @@
 # CI/CD
 
-This section describes how Continuous Integration/Continuous Deployment (CI/CD) is implemented in Mira. The CI/CD platform is required to deploy to your chosen environments, which typically are `staging` and `production`.
-You define deployment stages by configuring the `cicd.accounts` value.
+## CI/CD architecture
+
+Mira utilizes cloud-native services for the delivery pipeline.
+
+Key AWS Services used:
+* [AWS CodePipeline](https://aws.amazon.com/codepipeline/getting-started/)
+* [AWS CodeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/getting-started.html)
+* [AWS CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/getting-started-cc.html)
+
+AWS CodePipeline is used for overall orchestration of the delivery pipeline. It is capable of detecting changes in the
+CodeCommit repository and triggers when required. A single CodePipeline is defined for delivery, with the pipeline itself built from one or more stages of pre-configured actions.
+
+For code deployment, Mira uses AWS CodeBuild which a dedicated service for artifacts build up and optionally deployment.
+Behind the scenes CodeBuild triggers the same Mira commands as a Developer from local workstation.
+In order to provide permissions for CodeBuild to deploy stacks, Mira provision dedicated Role(s) in predefined accounts.
+
+Mira CI/CD can deploy the code into the same AWS account where it is hosted, but also to different accounts as required.
+You define deployment stages by configuring the `cicd.accounts` value in the `config/default.json` file.
+
+A typical pipeline would look like this:
+
+`Source -> Test -> Manual Approval -> Staging -> Manual Approval -> Production`
+
+For more information on available configuration options see [config documentation](../config/README.md). 
+
+__Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See `.github` directory for more information.
+Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
 
 ## Deploy Role
 
@@ -83,6 +108,5 @@ build:
       - ./login-to-service.sh --token=${SECRET_TOKEN}
       - npx mira deploy
 ```
-
 
 
