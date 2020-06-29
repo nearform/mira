@@ -60,7 +60,7 @@ Clone your newly created repository and follow the instructions below.
         "accounts": {
           "default": {
             "env": {
-              "account": "101259067028",
+              "account": "11111111111",
               "region": "eu-west-1"
             },
             "profile": "mira-dev"
