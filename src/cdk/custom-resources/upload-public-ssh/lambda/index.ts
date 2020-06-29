@@ -92,14 +92,13 @@ export const handler = async (event: any): Promise<void> => {
     }
   }
 
-  await sendResponse({
+  await sendResponse(event.ResponseURL, {
     status: status,
     requestId: event.RequestId,
     stackId: event.StackId,
     reason: reason,
     logicalResourceId: event.LogicalResourceId,
     physicalResourceId: `${UserName}-${event.LogicalResourceId}`,
-    responseUrl: event.ResponseURL,
     data: { SSHPublicKeyId }
   })
 }

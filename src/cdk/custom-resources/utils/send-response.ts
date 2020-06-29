@@ -11,8 +11,7 @@ interface SendResponseOptions {
   reason: string
   logicalResourceId: string
   physicalResourceId: string
-  responseUrl: string
-  data: { SSHPublicKeyId: string }
+  data: any
 }
 
 /**
@@ -21,7 +20,10 @@ interface SendResponseOptions {
  *
  * https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/crpg-ref-responses.html
  */
-export const sendResponse = async (options: SendResponseOptions): Promise<void> => {
+export const sendResponse = async (
+  responseUrl: string,
+  options: SendResponseOptions
+): Promise<void> => {
   const body = {
     Status: options.status,
     Reason: options.reason,
@@ -37,19 +39,22 @@ export const sendResponse = async (options: SendResponseOptions): Promise<void> 
   return new Promise((resolve, reject) => {
     let error: Error
 
-    const req = https.request(options.responseUrl, {
-      method: 'PUT',
-      headers: {
-        'content-type': '',
-        'content-length': responseBody.byteLength
-      }
-    }, (res) =>
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      res.on('data', () => {})
+    const req = https.request(
+      responseUrl,
+      {
+        method: 'PUT',
+        headers: {
+          'content-type': '',
+          'content-length': responseBody.byteLength
+        }
+      },
+      (res) =>
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        res.on('data', () => {})
     )
 
     req.once('error', (err) => (error = err))
-    req.once('close', () => error ? reject(error) : resolve())
+    req.once('close', () => (error ? reject(error) : resolve()))
 
     req.write(responseBody)
     req.end()
