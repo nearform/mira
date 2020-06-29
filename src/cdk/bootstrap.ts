@@ -74,6 +74,7 @@ export class MiraBootstrap {
         commandOptions, {
           stdio: 'inherit',
           env: {
+            NODE_ENV: 'dev',
             ...process.env
           }
         })
