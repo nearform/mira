@@ -4,10 +4,7 @@ const s3 = new S3()
 
 export const deleteBucket = async (bucketName: string): Promise<void> => {
   const objects = await s3.listObjectVersions({ Bucket: bucketName }).promise()
-
-  if (!objects.Versions?.length && !objects.DeleteMarkers?.length) {
-    return
-  }
+  console.log(objects)
 
   const objectsToDelete: ObjectIdentifierList = [
     ...(objects.Versions || []),

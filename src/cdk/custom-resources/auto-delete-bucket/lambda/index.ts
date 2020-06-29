@@ -1,4 +1,4 @@
-import { deleteBucket } from './empty-bucket'
+import { deleteBucket } from './delete-bucket'
 import { sendResponse } from '../../utils/send-response'
 
 /**
@@ -37,7 +37,7 @@ export const handler = async (
 
   if (BucketName && RequestType === 'Delete') {
     try {
-      deleteBucket(BucketName)
+      await deleteBucket(BucketName)
     } catch (err) {
       status = 'FAILED'
       reason = `Faild to empty bucket. ${err}`

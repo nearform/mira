@@ -14,7 +14,7 @@ export interface AutoDeleteBucketProps extends BucketProps {
 
 export class AutoDeleteBucket extends Bucket {
   constructor (scope: Construct, id: string, props: AutoDeleteBucketProps = {}) {
-    if (props.removalPolicy !== RemovalPolicy.DESTROY) {
+    if (props.removalPolicy && props.removalPolicy !== RemovalPolicy.DESTROY) {
       // TODO: should we do this? better error?
       throw new Error(
         '"removalPolicy" should be DESTROY. Consider using aws-s3 bucket'
@@ -32,7 +32,7 @@ export class AutoDeleteBucket extends Bucket {
       code: Code.fromAsset(path.join(__dirname, '../../custom-resources')),
       handler: 'auto-delete-bucket/lambda/index.handler',
       lambdaPurpose: 'AutoDeleteBucket',
-      timeout: Duration.minutes(30)
+      timeout: Duration.minutes(15)
     })
 
     this.grantRead(lambda)
@@ -43,7 +43,7 @@ export class AutoDeleteBucket extends Bucket {
 
     new CustomResource(this, 'AutoDeleteBucket ', {
       provider,
-      resourceType: 'Custom::Mira::AutoDeleteBucket',
+      resourceType: 'Custom::MiraAutoDeleteBucket',
       properties: {
         BucketName: this.bucketName
       }

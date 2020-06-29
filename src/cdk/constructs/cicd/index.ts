@@ -11,7 +11,6 @@ import { Secret } from '@aws-cdk/aws-secretsmanager'
 import { CfnOutput, Construct, Stack, StackProps, Tag } from '@aws-cdk/core'
 import { Repository } from '@aws-cdk/aws-codecommit'
 import { IAction } from '@aws-cdk/aws-codepipeline/lib/action'
-import { AutoDeleteBucket } from '@mobileposse/auto-delete-bucket'
 import { UploadPublicSsh } from '../upload-public-ssh'
 import { BuildEnvironmentVariableType } from '@aws-cdk/aws-codebuild/lib/project'
 import { Key } from '@aws-cdk/aws-kms'
@@ -19,6 +18,7 @@ import * as aws from 'aws-sdk'
 import { getBaseStackName, getDeployProjectRoleName } from '../config/utils'
 import { MiraConfig } from '../../../config/mira-config'
 import { pascalCase } from 'change-case'
+import { AutoDeleteBucket } from '../auto-delete-bucket'
 
 export interface PipelineEnvironmentVariable {
   key: string
