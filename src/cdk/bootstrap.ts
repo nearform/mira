@@ -28,16 +28,16 @@ export class MiraBootstrap {
     this.execFileSync = execFileSync
     // this.args = minimist(process.argv.slice(2))
     this.args = this.showHelp()
-    this.env = this.args.env || 'Default'
+    this.env = this.args.env
     this.profile = this.args.profile
-    MiraConfig.setDefaultEnvironmentName(this.env)
     if (Object.keys(this.args).includes('env')) {
       delete this.args.env
     }
   }
 
-  async deploy (stack: string, undeploy = false): Promise<void> {
+  async deploy (undeploy = false): Promise<void> {
     const envConfig = MiraConfig.getEnvironment(this.env)
+    this.env = envConfig.name
     if (this.args.role) {
       await assumeRole(this.args.role)
     }
@@ -63,9 +63,9 @@ export class MiraBootstrap {
     const commandOptions = [
       this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
       cmd,
-      '--app', this.getCDKArgs(stack, 'app.js'),
-      `--env=${envConfig.name}`,
-      `--profile=${this.getProfile(this.env)}`,
+      '--app', this.getCDKArgs('app.js'),
+      envConfig.name ? `--env=${envConfig.name}` : '',
+      this.env ? `--profile=${this.getProfile(this.env)}` : '',
       ...additionalArgs
     ]
     try {
@@ -84,8 +84,10 @@ export class MiraBootstrap {
     }
   }
 
-  deployCi (stack: string): void {
+  deployCi (): void {
     const envConfig = MiraConfig.getEnvironment(this.env)
+    this.env = envConfig.name
+
     let cmd = 'deploy'
     if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
       cmd = 'synth'
@@ -94,9 +96,9 @@ export class MiraBootstrap {
     const commandOptions = [
       this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
       cmd,
-      '--app', this.getCDKArgs(stack, 'ci-app.js'),
-      `--env=${envConfig.name}`,
-      `--profile=${this.getProfile(this.env)}`
+      '--app', this.getCDKArgs('ci-app.js'),
+      envConfig.name ? `--env=${envConfig.name}` : '',
+      this.env ? `--profile=${this.getProfile(this.env)}` : ''
     ]
     try {
       this.execFileSync(
@@ -134,7 +136,7 @@ export class MiraBootstrap {
     }
   }
 
-  deployDomain (stack: string): void {
+  deployDomain (): void {
     const envConfig = MiraConfig.getEnvironment(this.env)
     let cmd = 'deploy'
     if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
@@ -144,7 +146,7 @@ export class MiraBootstrap {
     const commandOptions = [
       this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
       cmd,
-      '--app', this.getCDKArgs(stack, 'domain.js'),
+      '--app', this.getCDKArgs('domain.js'),
       `--env=${envConfig.name}`,
       `--profile=${this.getProfile(this.env)}`
     ]
@@ -163,13 +165,13 @@ export class MiraBootstrap {
     }
   }
 
-  getCDKArgs (stack: string, filename: string): string {
+  getCDKArgs (filename: string): string {
     const q = process.platform === 'win32' ? '"' : '\''
     const appPath = path.resolve(__dirname, filename)
-    let appArg = `${q}node "${appPath}" --stack=${stack} `
+    let appArg = `${q}node "${appPath}" `
     // Still inside the quotes, explode the args.
     appArg += this.getArgs().join(' ')
-    appArg += ` --env=${this.env}`
+    appArg += this.env ? ` --env=${this.env}` : ''
     appArg += q // End quote.
     return appArg
   }
@@ -227,11 +229,9 @@ export class MiraBootstrap {
   async initialize (): Promise<void> {
     const cmd = this.args._[0]
     let stackFile: string
-    let stackName: string
     switch (cmd) {
       case 'domain':
-        stackName = this.args._[1]
-        this.deployDomain(stackName)
+        this.deployDomain()
         break
       case 'init':
         configWizard()
@@ -243,22 +243,20 @@ export class MiraBootstrap {
           return
         }
         stackFile = this.args.file
-        stackName = this.args.stack_name
 
         if ((await this.areStackFilesValid())) {
           console.info(chalk.cyan('Deploying Stack:'),
             `(via ${chalk.grey(stackFile)})`)
-          this.deploy(stackName)
+          this.deploy()
         }
         break
       case 'undeploy':
         stackFile = this.args.file
-        stackName = this.args.stack_name
 
         if ((await this.areStackFilesValid())) {
           console.info(chalk.cyan('Undeploying Stack:'),
             `(via ${chalk.grey(stackFile)})`)
-          this.undeploy(stackName)
+          this.undeploy()
         } else {
           console.info('If you want to undeploy a stack not contained' +
             ' in your local filesystem, please use the AWS console' +
@@ -266,8 +264,7 @@ export class MiraBootstrap {
         }
         break
       case 'cicd':
-        stackName = this.args.stack_name
-        this.deployCi(stackName)
+        this.deployCi()
         break
       case 'docs':
         this.runDocs()
@@ -300,9 +297,8 @@ export class MiraBootstrap {
   /**
    * Undeploys a stack.  This calls deploy with the undeploy parameter.  The
    * only reason to do this is that both calls share almost identical code.
-   * @param stack
    */
-  async undeploy (stack: string): Promise<void> {
-    return await this.deploy(stack, true)
+  async undeploy (): Promise<void> {
+    return await this.deploy(true)
   }
 }
