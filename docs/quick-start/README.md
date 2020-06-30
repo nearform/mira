@@ -68,7 +68,7 @@ Clone your newly created repository and follow the instructions below.
        }
        ```
        
-6. If you are working in the team, create `config/dev.json` file and provide your own app settings e.g.:
+6. If you are working as part of a team, create a `config/dev.json` file and provide your own app settings e.g.:
     ```bash
     "app": {
        "prefix": "john",
@@ -178,7 +178,7 @@ environments specified in the config file. Those names can be modified.
 8. Approve roles creation
 
 9. Mirroring
-    __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See `.github` directory for more information.
+    __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See the `.github` directory for more information.
     Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
    
     1. Create a secret with the name `iamusercodecommit`.

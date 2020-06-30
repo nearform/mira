@@ -1,6 +1,6 @@
 # Config File
 This section describes how to configure the configuration file `./config/default.json`.
-Mechanism built-in into Mira is based on [node config](https://www.npmjs.com/package/config) library.
+Mira's configuration system is based on the [node config](https://www.npmjs.com/package/config) library.
 
 ## Location
 
@@ -87,7 +87,7 @@ Let's take a look at a sample config file.
 ```
 
 ## Accounts
-The accounts section of the config file is an array of accounts that can be used for deploy apps and cicd. The accounts also represent environments.
+The accounts section of the config file is an array of account objects that can be used to deploy apps and run cicd. The accounts also represent environments.
 We define three accounts in the sample config file above: `staging`, `production`, `cicd`, each with different account numbers.
 
 The `staging` account may represent a developer personal account where they can test all Mira deployments. It uses the default profile defined in the `~/.aws` directory or the one passed as `--profile` parameter in the CLI command.
@@ -123,11 +123,9 @@ NB Example domain usage to follow in upcoming releases.
 
 ## Developer config
 
-To enable custom config modifications for developers working in the team, Mira expect a `config/dev.json` file to be created.
+To enable custom config modifications for developers working in the same team, Mira expects a `config/dev.json` file to be created.
 
 __Note:__ This file should not by tracked in GIT.
 
-Whenever `config/dev.json` file is created and available in the runtime, contents of the `config/default.json` are going
-to be overridden in a shallow way. It means only top level properties are merged. The method used for this purpose 
-can be compared to [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) for better understanding.
+Whenever a `config/dev.json` file is created and available at runtime, the contents of the `config/default.json` will be overridden in a shallow way. It means only the top-level properties are merged. The method used is comparable to [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign).
 
