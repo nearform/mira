@@ -1,5 +1,5 @@
-import { deleteBucket } from './delete-bucket'
-import { sendResponse } from '../../utils/send-response'
+import { deleteBucket } from '../utils/delete-bucket'
+import { sendResponse } from '../utils/send-response'
 
 /**
  * See the AWS documentation for more information passed in the request for a custom resource.

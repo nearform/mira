@@ -1,0 +1,13 @@
+{
+  "name": "auto-delete-bucket-custom-resource",
+  "version": "1.0.0",
+  "description": "Mira custom resource for auto-delete bucket",
+  "private": true,
+  "scripts": {},
+  "devDependencies": {
+    "@types/node": "^10.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.707.0"
+  }
+}
