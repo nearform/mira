@@ -90,12 +90,12 @@ Let's take a look at a sample config file.
 The accounts section of the config file is an array of account objects that can be used to deploy apps and run cicd. The accounts also represent environments.
 We define three accounts in the sample config file above: `staging`, `production`, `cicd`, each with different account numbers.
 
-The `staging` account may represent a developer personal account where they can test all Mira deployments. It uses the default profile defined in the `~/.aws` directory or the one passed as `--profile` parameter in the CLI command.
+The `staging` account may represent a developer's personal account where they can test all Mira deployments. It uses the default profile defined in the `~/.aws` directory or the one passed in as `--profile` parameter in the CLI command.
 
 
 ## CI/CD
-`cicd` section specifies stages of the deployment pipeline and other properties required for CI pipeline to work.
-* `target` - Name of the account where CI pipeline will be deployed.
+The `cicd` section specifies the various stages of the deployment pipeline and other properties required for the CI pipeline to work.
+* `target` - Name of the account where the CI pipeline will be deployed.
 * `buildspecFile` - Path to the buildspec file used by AWS CodeBuld for application deployment.
 * `repositoryUrl` - Repository URL that is decomposed to extract project name used in the pipeline.
 * `branchName` - Name of the branch used by the pipeline.
@@ -109,11 +109,11 @@ The `staging` account may represent a developer personal account where they can 
         "value": "BAR"
       }
     ```
-* `stages` - the ordered list of stages where Code Pipeline will deploy the application.
+* `stages` - An ordered list of stages where Code Pipeline will deploy the application.
 Stage is described by 3 properties:
-    * `target` - name of the account used as a target account for the application deployment.
-    * `withDomain` - boolean that specifies if application supports custom domain __NB domain usage to follow in upcoming releases.__.
-    * `requireManualApproval` - boolean that specifies if manual approval is needed in the pipeline before continuing deployment.
+    * `target` - Name of the account used as a target account for the application deployment (e.g. staging).
+    * `withDomain` - A boolean that specifies if the application supports a custom domain. __NB domain usage to follow in upcoming releases.__.
+    * `requireManualApproval` - A boolean that specifies if manual approval is needed in the pipeline before continuing deployment.
 
 ## Domain
 
