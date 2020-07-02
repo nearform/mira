@@ -45,27 +45,30 @@ Clone your newly created repository and follow the instructions below.
    
 5. Adjust `config/default.json` with your settings
 
-    1. Update app section with your desired values e.g.:
+    1. Update app and dev sections with your desired values e.g.:
         ```bash
         "app": {
            "prefix": "big-company",
            "name": "super-app"
-         }
+         },
+        "dev": {
+            "target": "default"
+        }
        ```
-    2. Update `accounts` section to include at least settings for your `Default` deployment e.g.:
+    2. Update `accounts` section to include at least settings for your `default` (name specified as a target in `dev` section) deployment e.g.:
         ```bash
-        "accounts": [{
-          "name": "Default",
-          "env": {
-            "account": "YOUR_NUMBER",
-            "region": "YOUR_REGION"
-          },
-          "profile": "YOUR_PROFILE_NAME"
-        }]
+        "accounts": {
+          "default": {
+            "env": {
+              "account": "101259067028",
+              "region": "eu-west-1"
+            },
+            "profile": "mira-dev"
+          }
+       }
        ```
-    __Note:__ `Default` account is required in the configuration as it is used for personal deployments. See [config documentation](../config/README.md) for more information.
-
-6. If you are working in the team, create `config/dev.json` file and provide your own app settings e.g.:
+       
+6. If you are working as part of a team, create a `config/dev.json` file and provide your own app settings e.g.:
     ```bash
     "app": {
        "prefix": "john",
@@ -106,41 +109,41 @@ See [config documentation](../config/README.md) for more information about prope
     
     ```bash
     "cicd": {
-        "env": {
-          "account": "YOUR_NUMBER",
-          "region": "YOUR_REGION"
-        },
+        "target": "cicd",
         "buildspecFile": "infra/buildspec.yaml",
         "provider": "codecommit",
         "repositoryUrl": "YOUR_REPOSITORY_URL",
         "branchName": "master",
         "codeCommitUserPublicKey": "ssh-rsa YOUR_PUBLIC_KEY",
-        "accounts": [
-          "Staging"
+        "stages": [
+          {
+            "target": "staging",
+            "withDomain": false,
+            "requireManualApproval": false
+          }
         ]
       }
     ```
     
 2. Modify `accounts` section and modify respective target account configuration.
-Every name in the `cicd.accounts`, must be specified in the `accounts` section.
+Every target specified in the `cicd.stages`, must be specified in the `accounts` section.
     E.g.:
     ```bash
     "accounts": [{
-      "name": "Default",
+      "name": "default",
       "env": {
         "account": "YOUR_NUMBER",
         "region": "YOUR_REGION"
       },
       "profile": "YOUR_PROFILE_NAME"
     },
-    {
-     "name": "Staging",
-     "env": {
-       "account": "YOUR_NUMBER",
-       "region": "YOUR_REGION"
-     },
-     "profile": "YOUR_PROFILE_NAME"
-   }]
+    "staging": {
+      "env": {
+        "account": "YOUR_NUMBER",
+        "region": "YOUR_REGION"
+      },
+      "profile": "YOUR_PROFILE_NAME"
+    }]
    ```
 
 This list is dynamic, so you can add or remove target environments.
@@ -175,7 +178,7 @@ environments specified in the config file. Those names can be modified.
 8. Approve roles creation
 
 9. Mirroring
-    __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See `.github` directory for more information.
+    __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See the `.github` directory for more information.
     Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
    
     1. Create a secret with the name `iamusercodecommit`.

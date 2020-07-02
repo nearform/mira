@@ -1,6 +1,6 @@
 # Config File
 This section describes how to configure the configuration file `./config/default.json`.
-Mechanism built-in into Mira is based on [node config](https://www.npmjs.com/package/config) library.
+Mira's configuration system is based on the [node config](https://www.npmjs.com/package/config) library.
 
 ## Location
 
@@ -21,31 +21,6 @@ The example above generates `John-SampleApp` as the prefix for stacks, roles, pi
 
 __Warning:__ Once app properties are set, any change will trigger a replacement of the stacks!
 
-## The Accounts Section
-
-The accounts section of the config file is an array of accounts that can be used for deploy apps and cicd. The accounts also represent environments.
-
- - `name`: The name of the account. It is used for resource naming. For instance, a pipeline deploy stage is named `John-SampleApp-StagingDeploy`
- - `env`
-   - `account`: Account Number for this environment.
-   - `region` : Region name for this environment.
- - `profile`: A profile to use when deploying this environment from a local machine.
- - `webAppUrl`: The web URL for your app.
- - `requireManualApproval`: When set to `true` in a pipeline, the previous step of this deploy should be a manual `Promote` stage.
-
-## The CI/CD Section
-
-The CI/CD section of the config file configures the pipeline. It contains the following settings:
- - `account`: The account where the pipeline is deployed.
- - `buildspecFile`: Local reference to the `buildspec.yaml` file that is used by AWS CodeBuild.
- - `provider`: The code provider to use to get the code. It can be either `github` or `codecommit`.
- - `repositoryUrl`: The repository URL for this project.
- - `branchName`: The branch to checkout during CI/CD.
- - `gitHubTokenSecretArn`: If you use `github` as the provider, put your Personal Access Token in a SecretsManager and provide the Amazon Resource Name (ARN).
- - `codeCommitUserPublicKey`: If you use `codecommit` as the provider, provide the public key to pull code in CodeBuild.
- - `accounts`: An array of strings. Each string must be `accounts[].name` value. It represents which account is enabled for the CI/CD Pipeline. Order is preserved.
-    __Caution:__ Make sure to not include any whitespace characters in `codeCommitUserPublicKey`
-
 # A Sample Config File
 
 Let's take a look at a sample config file.
@@ -55,15 +30,15 @@ Let's take a look at a sample config file.
     "prefix": "John",
     "name": "My Great App"
   },
+  "dev": {
+    "target": "staging"
+  },
   "cicd": {
-    "env": {
-      "account": "333333333333",
-      "region": "eu-west-1"
-    },
+    target: "cicd",
     "buildspecFile": "infra/buildspec.yaml",
     "provider": "codecommit",
     "profile": "mira-dev",
-    "repositoryUrl": "https://github.com/leorossi/mira-sample-s3-webhosting",
+    "repositoryUrl": "YORU_REPO_URL",
     "branchName": "feature/feature-xyz",
     "codeCommitUserPublicKey": "ssh-rsa ...",
     "environmentVariables": [
@@ -72,52 +47,73 @@ Let's take a look at a sample config file.
         "value": "123453546647"
       }
     ],
-    "accounts": [ "Staging", "Production" ]
+    "stages": [
+      {
+        "target": "staging",
+        "withDomain": false,
+        "requireManualApproval": false
+      },
+      {
+        "target": "production",
+        "withDomain": false,
+        "requireManualApproval": true
+      }
+    ]
   },
-  "accounts": [
-    {
-      "name": "Staging",
-      "env": {
-        "account": "2222222222222",
-        "region": "eu-west-1"
+  "accounts": {
+      "cicd": {
+        "env": {
+          "account": "ACCOUNT_NUMER",
+          "region": "REGION"
+        },
+        "profile": "mira-dev"
       },
-      "profile": "mira-dev",
-      "requireManualApproval": false
-    },
-    {
-      "name": "Default",
-      "env": {
-        "account": "333333333333",
-        "region": "eu-west-1"
+      "staging": {
+        "env": {
+          "account": "ACCOUNT_NUMER",
+          "region": "REGION"
+        },
+        "profile": "mira-dev"
       },
-      "profile": "my-user"
-    },
-    {
-      "name": "Production",
-      "env": {
-        "account": "4444444444444",
-        "region": "eu-west-1"
-      },
-      "profile": "mira-prod",
-      "requireManualApproval": true
+      "production": {
+        "env": {
+          "account": "ACCOUNT_NUMER",
+          "region": "REGION"
+        },
+        "profile": "mira-prod"
+      }
     }
-  ]
-
 }
 ```
-## Accounts
-We define four accounts in the sample config file above: `Staging`, `Production`, `Default`, each with different account numbers.
-They all work on `eu-west-1` region, even though this is not a requirement.
 
-The `Default` account may represent a developer personal account where they can test all Mira deployments. It uses the profile `my-user` defined in the `~/.aws` directory.
+## Accounts
+The accounts section of the config file is an array of account objects that can be used to deploy apps and run cicd. The accounts also represent environments.
+We define three accounts in the sample config file above: `staging`, `production`, `cicd`, each with different account numbers.
+
+The `staging` account may represent a developer's personal account where they can test all Mira deployments. It uses the default profile defined in the `~/.aws` directory or the one passed in as `--profile` parameter in the CLI command.
+
 
 ## CI/CD
-`Staging` and `Production` accounts are defined in the `cicd.accounts` value. The CodePipeline then has `StagingDeploy` and `ProductionDeploy` stages which deploy your app into the accounts `2222222222222` and `4444444444444` respectively.
-
-AWS CodeBuild runs using the `infra/buildspec.yaml` file, where the directory is relative to the project's root path.
-
-The pipeline runs on the branch `feature/feature-xyz`.
-
+The `cicd` section specifies the various stages of the deployment pipeline and other properties required for the CI pipeline to work.
+* `target` - Name of the account where the CI pipeline will be deployed.
+* `buildspecFile` - Path to the buildspec file used by AWS CodeBuld for application deployment.
+* `repositoryUrl` - Repository URL that is decomposed to extract project name used in the pipeline.
+* `branchName` - Name of the branch used by the pipeline.
+* `codeCommitUserPublicKey` - RSA public key used for the Mira service user to get permissions to mirror the repository.
+    __Caution:__ Make sure to not include any whitespace characters in `codeCommitUserPublicKey`
+* `environmentVariables` - An array of environment variables passed into AWS CodeBuild.
+    e.g.:
+    ```json
+      {
+        "name": "FOO",
+        "value": "BAR"
+      }
+    ```
+* `stages` - An ordered list of stages where Code Pipeline will deploy the application.
+Stage is described by 3 properties:
+    * `target` - Name of the account used as a target account for the application deployment (e.g. staging).
+    * `withDomain` - A boolean that specifies if the application supports a custom domain. __NB domain usage to follow in upcoming releases.__.
+    * `requireManualApproval` - A boolean that specifies if manual approval is needed in the pipeline before continuing deployment.
 
 ## Domain
 
@@ -127,11 +123,9 @@ NB Example domain usage to follow in upcoming releases.
 
 ## Developer config
 
-To enable custom config modifications for developers working in the team, Mira expect a `config/dev.json` file to be created.
+To enable custom config modifications for developers working in the same team, Mira expects a `config/dev.json` file to be created.
 
 __Note:__ This file should not by tracked in GIT.
 
-Whenever `config/dev.json` file is created and available in the runtime, contents of the `config/default.json` are going
-to be overridden in a shallow way. It means only top level properties are merged. The method used for this purpose 
-can be compared to [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) for better understanding.
+Whenever a `config/dev.json` file is created and available at runtime, the contents of the `config/default.json` will be overridden in a shallow way. It means only the top-level properties are merged. The method used is comparable to [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign).
 

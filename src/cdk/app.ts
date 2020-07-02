@@ -138,16 +138,14 @@ export class MiraApp {
   }
 }
 
-if (args.stack) {
-  // Ensure we're within a CDK deploy context.
-  // TODO: This check is here to avoid that the deploy starts even
-  // when we want to deploy CICD or Domain Manager, since this file
-  // is imported this code below will run. I check that the command is
-  // executed with 'app.js' file as argument and nod 'ci-app.js' or 'domain.js'
-  if (args._.filter((arg: string) => arg.match(/app.js$/)).length > 0) {
-    console.info(`>>> ${chalk
+// Ensure we're within a CDK deploy context.
+// TODO: This check is here to avoid that the deploy starts even
+// when we want to deploy CICD or Domain Manager, since this file
+// is imported this code below will run. I check that the command is
+// executed with 'app.js' file as argument and nod 'ci-app.js' or 'domain.js'
+if (args._.filter((arg: string) => arg.match(/app.js$/)).length > 0) {
+  console.info(`>>> ${chalk
       .yellow('Initializing CDK for App')}:\n    ${chalk.grey(args.file)}`)
-    const app = new MiraApp()
-    app.initialize()
-  }
+  const app = new MiraApp()
+  app.initialize()
 }

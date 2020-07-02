@@ -175,11 +175,13 @@ export class Cicd extends Stack {
   }
 
   private addDeployStage (name: string, input: Artifact): void {
-    const conf = MiraConfig.getEnvironment(name)
+    const conf = MiraConfig.getEnvironmentWithCiProps(name)
     const {
-      env: {
-        account,
-        region
+      account: {
+        env: {
+          account,
+          region
+        }
       }
     } = conf
     const prefix = `${getBaseStackName()}-${pascalCase(name)}`

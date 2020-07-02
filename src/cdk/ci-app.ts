@@ -29,13 +29,13 @@ export class MiraCiApp {
       if (!this.cdkApp) {
         this.initializeApp()
       }
-      const account = MiraConfig.getCICDConfig()
-      const callerIdentityResponse = await this.getCallerIdentityResponse(args.profile || account.profile)
+      const config = MiraConfig.getCICDConfig()
+      const callerIdentityResponse = await this.getCallerIdentityResponse(args.profile || config.account.profile)
       const envVars = this.parsePipelineEnvironmentVariables()
       new Cicd(this.cdkApp, {
         callerIdentityResponse,
         environmentVariables: envVars,
-        env: account.env
+        env: config.account.env
       })
       if (!Object.prototype.hasOwnProperty.call(args, 'dry-run')) {
         this.cdkApp.synth()
@@ -69,8 +69,8 @@ export class MiraCiApp {
       return output
     }
 }
-
-if (args.stack) {
+console.log(args)
+if (args._[1].match(/ci-app.js$/).length > 0) {
   // Ensure we're within a CDK deploy context.
   console.info(`>>> ${chalk
         .yellow('Initializing CDK for CI')}:\n    ${chalk.grey(args.stack)}`)

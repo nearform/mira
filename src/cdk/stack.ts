@@ -4,7 +4,7 @@ import { NestedStack } from '@aws-cdk/aws-cloudformation'
 import { CfnOutput, Construct, Stack } from '@aws-cdk/core'
 import { IStringParameter, StringParameter } from '@aws-cdk/aws-ssm'
 import { Policies } from './aspects/security/policies'
-import { MiraConfig } from '../config/mira-config'
+import { MiraConfig, Account } from '../config/mira-config'
 interface ParsedName {
   readonly id: string
   readonly parameterName: string
@@ -20,7 +20,7 @@ export class MiraServiceStack extends cdk.Stack {
     initialized: Promise<unknown>;
 
     constructor (app: MiraApp, environment: string, suffix?: string) {
-      const account = MiraConfig.getEnvironment(environment)
+      const account: Account = MiraConfig.getEnvironment(environment)
       let stackName = `${MiraApp.getBaseStackName('Service')}-${account.name}`
       if (suffix) {
         stackName += `-${suffix}`
