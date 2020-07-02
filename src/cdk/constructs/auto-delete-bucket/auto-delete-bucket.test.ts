@@ -26,6 +26,8 @@ describe('Auto-delete bucket', () => {
       Timeout: 900
     })
 
+    // TODO: more fine grained test for policies
+    // (needs @aws-cdk/assert support for arrayLike and objectLike)
     expect(stack).toHaveResource('AWS::IAM::Policy')
     //   expect(stack).toHaveResourceLike('AWS::IAM::Policy', {
     //     PolicyDocument: {
