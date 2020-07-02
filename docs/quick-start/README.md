@@ -48,7 +48,7 @@ Clone your newly created repository and follow the instructions below.
     1. Update app section with your desired values e.g.:
         ```bash
         "app": {
-           "prefix": "jdoe",
+           "prefix": "big-company",
            "name": "super-app"
          }
        ```
@@ -60,19 +60,27 @@ Clone your newly created repository and follow the instructions below.
             "account": "YOUR_NUMBER",
             "region": "YOUR_REGION"
           },
-          "profile": "YOUR_PROFILE_NAME",
-          "withDomain": false
+          "profile": "YOUR_PROFILE_NAME"
         }]
        ```
-    __Note:__ `Default` account is required in the configuration. See [config documentation](../config/README.md) for more information.
+    __Note:__ `Default` account is required in the configuration as it is used for personal deployments. See [config documentation](../config/README.md) for more information.
 
-5. Bootstrap AWS CDK on target AWS account and region, e.g.:
+6. If you are working in the team, create `config/dev.json` file and provide your own app settings e.g.:
+    ```bash
+    "app": {
+       "prefix": "john",
+       "name": "super-app"
+     }
+   ```
+   __Note:__ `config/dev.json` file is specific to your personal setup and should not be tracked in GIT.
+
+7. Bootstrap AWS CDK on target AWS account and region, e.g.:
     ```bash
    cdk bootstrap aws://YOUR_NUMBER/YOUR_REGION --profile YOUR_PROFILE
    ```
    __Note:__ If CDK is already bootstrapped, you can skip this step.
    
-6. Deploy
+8. Deploy
 
    ```bash
    npm run deploy
@@ -123,8 +131,7 @@ Every name in the `cicd.accounts`, must be specified in the `accounts` section.
         "account": "YOUR_NUMBER",
         "region": "YOUR_REGION"
       },
-      "profile": "YOUR_PROFILE_NAME",
-      "withDomain": false
+      "profile": "YOUR_PROFILE_NAME"
     },
     {
      "name": "Staging",
@@ -132,8 +139,7 @@ Every name in the `cicd.accounts`, must be specified in the `accounts` section.
        "account": "YOUR_NUMBER",
        "region": "YOUR_REGION"
      },
-     "profile": "YOUR_PROFILE_NAME",
-     "withDomain": false
+     "profile": "YOUR_PROFILE_NAME"
    }]
    ```
 

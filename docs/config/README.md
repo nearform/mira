@@ -1,5 +1,7 @@
 # Config File
 This section describes how to configure the configuration file `./config/default.json`.
+Mechanism built-in into Mira is based on [node config](https://www.npmjs.com/package/config) library.
+
 ## Location
 
 In your app, the config file must be located in `./config/default.json`
@@ -21,14 +23,13 @@ __Warning:__ Once app properties are set, any change will trigger a replacement 
 
 ## The Accounts Section
 
-The accounts section of the config file is an array of accounts that can be used for deploy apps, cicd and domain management. The accounts also represent environments.
+The accounts section of the config file is an array of accounts that can be used for deploy apps and cicd. The accounts also represent environments.
 
  - `name`: The name of the account. It is used for resource naming. For instance, a pipeline deploy stage is named `John-SampleApp-StagingDeploy`
  - `env`
    - `account`: Account Number for this environment.
    - `region` : Region name for this environment.
  - `profile`: A profile to use when deploying this environment from a local machine.
- - `withDomain`: Set to `true` to associate a domain with the account.
  - `webAppUrl`: The web URL for your app.
  - `requireManualApproval`: When set to `true` in a pipeline, the previous step of this deploy should be a manual `Promote` stage.
 
@@ -44,11 +45,6 @@ The CI/CD section of the config file configures the pipeline. It contains the fo
  - `codeCommitUserPublicKey`: If you use `codecommit` as the provider, provide the public key to pull code in CodeBuild.
  - `accounts`: An array of strings. Each string must be `accounts[].name` value. It represents which account is enabled for the CI/CD Pipeline. Order is preserved.
     __Caution:__ Make sure to not include any whitespace characters in `codeCommitUserPublicKey`
-## The Domain Section
-
-The domain section of the config file contains the following:
- - `hostedZoneId`: ID of the Route53 hosted zone to change DNS records.
- - `accounts`: An array of strings. Each string must be `accounts[].name` value. The Certificate Manager and the Route53 Manager are deployed in the account.
 
 # A Sample Config File
 
@@ -58,13 +54,6 @@ Let's take a look at a sample config file.
   "app": {
     "prefix": "John",
     "name": "My Great App"
-  },
-  "baseDomain": "mira-example.com",
-  "domain": {
-    "hostedZoneId": "Z1234567890",
-    "accounts": [
-      "Domain"
-    ]
   },
   "cicd": {
     "env": {
@@ -93,8 +82,6 @@ Let's take a look at a sample config file.
         "region": "eu-west-1"
       },
       "profile": "mira-dev",
-      "withDomain": true,
-      "webAppUrl": "staging.mira-nf.com",
       "requireManualApproval": false
     },
     {
@@ -103,9 +90,7 @@ Let's take a look at a sample config file.
         "account": "333333333333",
         "region": "eu-west-1"
       },
-      "profile": "my-user",
-      "withDomain": true,
-      "webAppUrl": "user.mira-nf.com"
+      "profile": "my-user"
     },
     {
       "name": "Production",
@@ -114,19 +99,6 @@ Let's take a look at a sample config file.
         "region": "eu-west-1"
       },
       "profile": "mira-prod",
-      "withDomain": true,
-      "webAppUrl": "prod.mira-nf.com",
-      "requireManualApproval": true
-    },
-    {
-      "name": "Domain",
-      "env": {
-        "account": "5555555555555",
-        "region": "eu-west-1"
-      },
-      "profile": "mira-prod",
-      "withDomain": true,
-      "webAppUrl": "domain.mira-nf.com",
       "requireManualApproval": true
     }
   ]
@@ -134,7 +106,7 @@ Let's take a look at a sample config file.
 }
 ```
 ## Accounts
-We define four accounts in the sample config file above: `Staging`, `Production`, `Default`, `Domain`, each with different account numbers.
+We define four accounts in the sample config file above: `Staging`, `Production`, `Default`, each with different account numbers.
 They all work on `eu-west-1` region, even though this is not a requirement.
 
 The `Default` account may represent a developer personal account where they can test all Mira deployments. It uses the profile `my-user` defined in the `~/.aws` directory.
@@ -152,3 +124,14 @@ The pipeline runs on the branch `feature/feature-xyz`.
 Domain management components (Certificate, Route53 and so on) are deployed on the `Domain` account. It uses `Z1234567890` as the Hosted Zone ID.
 
 NB Example domain usage to follow in upcoming releases.
+
+## Developer config
+
+To enable custom config modifications for developers working in the team, Mira expect a `config/dev.json` file to be created.
+
+__Note:__ This file should not by tracked in GIT.
+
+Whenever `config/dev.json` file is created and available in the runtime, contents of the `config/default.json` are going
+to be overridden in a shallow way. It means only top level properties are merged. The method used for this purpose 
+can be compared to [Object.assign](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign) for better understanding.
+
