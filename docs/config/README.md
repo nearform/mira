@@ -36,6 +36,7 @@ Let's take a look at a sample config file.
   "cicd": {
     target: "cicd",
     "buildspecFile": "infra/buildspec.yaml",
+    "permissionsFile": "infra/src/permissions.js",
     "provider": "codecommit",
     "profile": "mira-dev",
     "repositoryUrl": "YORU_REPO_URL",
@@ -98,6 +99,7 @@ The `cicd` section specifies the various stages of the deployment pipeline and o
 * `target` - Name of the account where the CI pipeline will be deployed.
 * `buildspecFile` - Path to the buildspec file used by AWS CodeBuld for application deployment.
 * `repositoryUrl` - Repository URL that is decomposed to extract project name used in the pipeline.
+* `permissionsFile` - Path to the file with DeploymentPermissions stack. This stack defines a role that is required to assign permissions for the CI, so it can deploy application on a different AWS accounts.
 * `branchName` - Name of the branch used by the pipeline.
 * `codeCommitUserPublicKey` - RSA public key used for the Mira service user to get permissions to mirror the repository.
     __Caution:__ Make sure to not include any whitespace characters in `codeCommitUserPublicKey`

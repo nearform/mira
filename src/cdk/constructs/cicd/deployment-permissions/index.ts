@@ -9,11 +9,10 @@ export class DeploymentPermissions extends Stack {
   // private config: CicdConfig
   public role: Role
 
-  constructor (parent: Construct) {
-    // const prefix = configs.app.prefix
+  constructor (parent: Construct, props?: any) {
     const name = getBaseStackName('CICDPermissions')
-    super(parent, name)
-    const account = MiraConfig.getEnvironment()
+    const account = MiraConfig.getEnvironment(props.env)
+    super(parent, name, { env: account.env })
     const baseProject = MiraApp.getBaseStackName()
     this.role = new Role(this, `DeployProjectRole-${account.name}`, {
       assumedBy: new AccountPrincipal(MiraConfig.getCICDConfig().account.env.account),

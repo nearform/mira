@@ -69,7 +69,6 @@ export class MiraCiApp {
       return output
     }
 }
-console.log(args)
 if (args._[1].match(/ci-app.js$/).length > 0) {
   // Ensure we're within a CDK deploy context.
   console.info(`>>> ${chalk

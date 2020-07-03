@@ -207,7 +207,7 @@ export class Cicd extends Stack {
       ROLE_ARN: { type: BuildEnvironmentVariableType.PLAINTEXT, value: this.getDeployRoleArn(name, account) },
       ACCOUNT_NUMBER: { type: BuildEnvironmentVariableType.PLAINTEXT, value: account },
       REGION: { type: BuildEnvironmentVariableType.PLAINTEXT, value: region },
-      ENVIRONMENT: { type: BuildEnvironmentVariableType.PLAINTEXT, value: pascalCase(name) }
+      ENVIRONMENT: { type: BuildEnvironmentVariableType.PLAINTEXT, value: name }
     }
     this.pipelineEnvironment.forEach((keyValue) => {
       projectEnvVariables[keyValue.key] = {
