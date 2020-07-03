@@ -38,6 +38,7 @@ export interface CiProps {
 
 interface CicdConfig {
   readonly account: Account
+  readonly permissionsFile: string
   readonly provider: string
   readonly repositoryUrl: string
   readonly branchName: string
@@ -134,6 +135,10 @@ class MiraConfigClass {
         .map((stage: Stage) => this.getEnvironment(stage.target))
     }
     return output
+  }
+
+  public getPermissionsFilePath (): string {
+    return args.file || args.f || this.getCICDConfig().permissionsFile
   }
 
   public getCICDConfig (): CicdConfig {

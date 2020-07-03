@@ -1,0 +1,40 @@
+{
+  "app": {
+    "prefix": "nf",
+    "name": "webapp"
+  },
+  "dev": {
+    "target": "default"
+  },
+  "cicd": {
+    "target": "cicd",
+    "buildspecFile": "infra/buildspec.yaml",
+    "permissionsFile": "infra/src/permissions.js",
+    "provider": "codecommit",
+    "repositoryUrl": "YOUR_REPOSITORY_URL",
+    "branchName": "master",
+    "codeCommitUserPublicKey": "ssh-rsa xxx",
+    "environmentVariables": [
+      {
+        "name": "FOO",
+        "value": "BAR"
+      }
+    ],
+    "stages": [
+      {
+        "target": "default",
+        "withDomain": false,
+        "requireManualApproval": false
+      }
+    ]
+  },
+  "accounts": {
+    "default": {
+      "env": {
+        "account": "111111111111",
+        "region": "eu-west-1"
+      },
+      "profile": "mira-dev"
+    }
+  }
+}

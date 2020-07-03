@@ -60,7 +60,7 @@ Clone your newly created repository and follow the instructions below.
         "accounts": {
           "default": {
             "env": {
-              "account": "101259067028",
+              "account": "11111111111",
               "region": "eu-west-1"
             },
             "profile": "mira-dev"
@@ -111,6 +111,7 @@ See [config documentation](../config/README.md) for more information about prope
     "cicd": {
         "target": "cicd",
         "buildspecFile": "infra/buildspec.yaml",
+        "permissionsFile": "infra/src/permissions.js",
         "provider": "codecommit",
         "repositoryUrl": "YOUR_REPOSITORY_URL",
         "branchName": "master",
@@ -148,36 +149,18 @@ Every target specified in the `cicd.stages`, must be specified in the `accounts`
 
 This list is dynamic, so you can add or remove target environments.
 
-
-### Permissions for CodeBuild
-
-AWS CodeBuild requires access to the target environments in order to deploy the application with the CI.
-To achieve it, Mira expects a dedicated service role to be deployed first.
-See [CICD](../cicd/README.md) for more information about the `Deploy Role`.
-
-__Note:__ In the below commands `Staging` and `Production` are arbitrary names that are associated with the 
-environments specified in the config file. Those names can be modified.
-
-1. `npx mira deploy --file ./infra/src/permissions.js --env Staging`
-
-2. Approve role creation
-
-3. `npx mira deploy --file ./infra/src/permissions.js --env Production`
-
-4. Approve role creation
-
 ### Code mirroring and Code Pipeline setup
-5. Generate if needed RSA key with 
+3. Generate if needed RSA key with 
     ```bash
        ssh-keygen -t rsa -P '' -f ~/.ssh/codecommit_rsa
    ```
-6. Adjust `config/default.json` cicd section with codecommit public key.
+4. Adjust `config/default.json` cicd section with codecommit public key.
 
-7. `npx mira cicd`
+5. `npx mira cicd`
      
-8. Approve roles creation
+6. Approve roles creation
 
-9. Mirroring
+7. Mirroring
     __Note:__ CI/CD assumes [github actions](https://github.com/features/actions) are used for code mirroring into AWS CodeCommit. See the `.github` directory for more information.
     Otherwise, the developer is responsible for mirroring the code into the dedicated AWS CodeCommit or use AWS CodeCommit directly.
    
@@ -204,7 +187,7 @@ environments specified in the config file. Those names can be modified.
        Set the value of `targetrepository` to the SSH clone URL of the CodeCommit repository which was created for the CI/CD stack. Get this value from the AWS CodeCommit dashboard by clicking the SSH clone link next to the
        repository.
        
-10. Push your changes to your branch specified in the `config/default.json` in `branchName` property to start CI process.
+8. Push your changes to your branch specified in the `config/default.json` in `branchName` property to start CI process.
 
 At this point, created Code Pipeline should start its execution and defined target environments should get it's own application deployment.
 

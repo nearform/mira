@@ -1,9 +1,9 @@
 import path from 'path'
 import chalk from 'chalk'
 import { ParsedArgs } from 'minimist'
-import { execFileSync } from 'child_process'
+import { spawn } from 'child_process'
 import { MiraApp } from './app'
-import { MiraConfig } from '../config/mira-config'
+import { Account, MiraConfig } from '../config/mira-config'
 import configWizard from './constructs/config/make-default-config'
 import { assumeRole } from '../assume-role'
 import yargs from 'yargs'
@@ -13,7 +13,7 @@ import yargs from 'yargs'
  */
 export class MiraBootstrap {
   app: MiraApp;
-  execFileSync: typeof execFileSync;
+  spawn: typeof spawn;
   args: ParsedArgs;
   env: string;
   profile: string;
@@ -25,16 +25,16 @@ export class MiraBootstrap {
     this.docsifyCommand = path.join(require.resolve('docsify-cli'), '..', '..', 'bin', 'docsify')
 
     this.app = new MiraApp()
-    this.execFileSync = execFileSync
-    // this.args = minimist(process.argv.slice(2))
-    this.args = this.showHelp()
-    this.env = this.args.env
-    this.profile = this.args.profile
-    if (Object.keys(this.args).includes('env')) {
-      delete this.args.env
-    }
+    this.spawn = spawn
   }
 
+  /**
+   * Orchestration used for deployment of the given application. This is used whenever developer or CI will try to
+   * deploy application. It is important to keep this function as a single place for application deployment so, development environment
+   * will have the same deployment process as CI owned environments.
+   *
+   * @param undeploy
+   */
   async deploy (undeploy = false): Promise<void> {
     const envConfig = MiraConfig.getEnvironment(this.env)
     this.env = envConfig.name
@@ -69,7 +69,7 @@ export class MiraBootstrap {
       ...additionalArgs
     ]
     try {
-      this.execFileSync(
+      this.spawn(
         'node',
         commandOptions, {
           stdio: 'inherit',
@@ -84,24 +84,32 @@ export class MiraBootstrap {
     }
   }
 
-  deployCi (): void {
-    const envConfig = MiraConfig.getEnvironment(this.env)
-    this.env = envConfig.name
+  /**
+   * Orchestration for `npx mira cicd` command. As an effect, CodePipeline and related services will be deployed together
+   * with permission stacks deployed to the target accounts.
+   */
+  async deployCi () {
+    const permissionFilePath = MiraConfig.getPermissionsFilePath()
+    if (!permissionFilePath) {
+      console.error('Permissions file path must be specified either in cicd config or as --file parameter.')
+      throw new Error('Permissions file path must be specified either in cicd config or as --file parameter.')
+    }
+
+    const ciTargetAccounts: Account[] = MiraConfig.getCICDAccounts()
 
     let cmd = 'deploy'
     if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
       cmd = 'synth'
     }
-
-    const commandOptions = [
-      this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
-      cmd,
-      '--app', this.getCDKArgs('ci-app.js'),
-      envConfig.name ? `--env=${envConfig.name}` : '',
-      this.env ? `--profile=${this.getProfile(this.env)}` : ''
-    ]
-    try {
-      this.execFileSync(
+    for (const account of ciTargetAccounts) {
+      const commandOptions = [
+        this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
+        cmd,
+        '--app', this.getCDKArgs('app.js', true, account.name),
+        account.name ? `--profile=${this.getProfile(account.name)}` : ''
+      ]
+      console.log(chalk.cyan(`Starting deployment of CI ${account.name} permissions to Account: ${account.env.account} in ${account.env.region} with profile ${account.profile}.`))
+      const proc = this.spawn(
         'node',
         commandOptions, {
           stdio: 'inherit',
@@ -109,12 +117,41 @@ export class MiraBootstrap {
             ...process.env
           }
         })
-    } catch (error) {
-      console.error(error.message)
-      process.exit(error.status)
+      await new Promise((resolve) => {
+        proc.on('exit', () => {
+          resolve()
+        })
+      })
+      console.log(chalk.green(`Done deploying CI ${account.name} permissions.`))
     }
+
+    console.log(chalk.cyan(`Starting deployment of CI pipeline to Account: ${MiraConfig.getCICDConfig().account.env.account} in ${MiraConfig.getCICDConfig().account.env.region} with profile ${MiraConfig.getCICDConfig().account.profile}.`))
+
+    const commandOptions = [
+      this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
+      cmd,
+      '--app', this.getCDKArgs('ci-app.js'),
+      `--profile=${this.getProfile('cicd')}`
+    ]
+    const proc = this.spawn(
+      'node',
+      commandOptions, {
+        stdio: 'inherit',
+        env: {
+          ...process.env
+        }
+      })
+    await new Promise((resolve) => {
+      proc.on('exit', () => {
+        resolve()
+      })
+    })
+    console.log(chalk.green('Done deploying CI pipeline.'))
   }
 
+  /**
+   * Runs docsify web server with the mira docs.
+   */
   runDocs (): void {
     const commandOptions = [
       this.docsifyCommand + (process.platform === 'win32' ? '.cmd' : ''),
@@ -122,7 +159,7 @@ export class MiraBootstrap {
       path.join(__dirname, '..', '..', '..', 'docs')
     ]
     try {
-      this.execFileSync(
+      this.spawn(
         'node',
         commandOptions, {
           stdio: 'inherit',
@@ -136,6 +173,9 @@ export class MiraBootstrap {
     }
   }
 
+  /**
+   * TODO: check this functionality together with sample app that supports custom domain.
+   */
   deployDomain (): void {
     const envConfig = MiraConfig.getEnvironment(this.env)
     let cmd = 'deploy'
@@ -151,7 +191,7 @@ export class MiraBootstrap {
       `--profile=${this.getProfile(this.env)}`
     ]
     try {
-      this.execFileSync(
+      this.spawn(
         'node',
         commandOptions, {
           stdio: 'inherit',
@@ -165,19 +205,27 @@ export class MiraBootstrap {
     }
   }
 
-  getCDKArgs (filename: string): string {
+  /**
+   * Gets the arguments parsed by the app file provided for the CDK CLI.
+   * @param filename - main application file.
+   * @param isCi - when "npx mira cicd" command is executed permissions file path is taken from the config.file, NOT from the CLI param.
+   * @param env - name of current target environment where the stack with role is going to be deployed.
+   */
+  getCDKArgs (filename: string, isCi = false, env?: string): string {
+    const resultedEnv = this.env || env
     const q = process.platform === 'win32' ? '"' : '\''
     const appPath = path.resolve(__dirname, filename)
     let appArg = `${q}node "${appPath}" `
     // Still inside the quotes, explode the args.
     appArg += this.getArgs().join(' ')
-    appArg += this.env ? ` --env=${this.env}` : ''
+    appArg += resultedEnv ? ` --env=${resultedEnv}` : ''
+    appArg += isCi ? ` --file=${MiraConfig.getPermissionsFilePath()}` : ''
     appArg += q // End quote.
     return appArg
   }
 
   /**
-   * Gets the arguments for this stack.
+   * Gets the arguments for this stack. It has built-in support for osx/win support.
    */
   getArgs (): string[] {
     // eslint-disable-next-line no-useless-rename, @typescript-eslint/no-unused-vars
@@ -206,15 +254,18 @@ export class MiraBootstrap {
     if (process.env.CODEBUILD_CI) {
       return 'client'
     }
-    if (this.profile) {
-      return this.profile
-    }
     const envConfig = MiraConfig.getEnvironment(environment)
     if (envConfig) {
       return envConfig.profile
     }
+    if (this.profile) {
+      return this.profile
+    }
   }
 
+  /**
+   * Verifies wether files provided in the CLI exists.
+   */
   async areStackFilesValid (): Promise<boolean> {
     let isValid = true
     for (const stackName of MiraApp.getStackFiles()) {
@@ -226,7 +277,18 @@ export class MiraBootstrap {
     return isValid
   }
 
+  /**
+   * Function being called when CLI is invoked.
+   */
   async initialize (): Promise<void> {
+    this.args = this.showHelp()
+
+    this.env = this.args.env
+    this.profile = this.args.profile
+    if (Object.keys(this.args).includes('env')) {
+      delete this.args.env
+    }
+
     const cmd = this.args._[0]
     let stackFile: string
     switch (cmd) {
@@ -287,6 +349,7 @@ export class MiraBootstrap {
       .command('undeploy', 'Un-Deploys given stack', yargs => yargs
         .option('file', { type: 'string', alias: 'f', desc: 'REQUIRED: Path to your stack file', requiresArg: true }))
       .command('cicd', 'Deploys CI/CD pipeline', yargs => yargs
+        .option('file', { type: 'string', aliast: 'f', desc: 'Path to permissions stack file.' })
         .option('envVar', { type: 'string', desc: 'Environment variable passed into the code build' }))
       .command('docs', 'Starts local web server with documentation')
       .help()

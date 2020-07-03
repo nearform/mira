@@ -115,7 +115,7 @@ export class MiraApp {
           initializationList.push(stack.initialized)
         }
       } else {
-        new Stacks[0](this.cdkApp)
+        new Stacks[0](this.cdkApp, { env: args.env })
       }
 
       await Promise.all(initializationList)
