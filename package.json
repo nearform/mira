@@ -64,7 +64,6 @@
     "@aws-cdk/aws-rds": "1.44.0",
     "@aws-cdk/aws-ssm": "1.44.0",
     "@aws-cdk/core": "1.44.0",
-    "@mobileposse/auto-delete-bucket": "^1.44.0",
     "ajv": "^6.12.0",
     "aws-cdk": "1.44.0",
     "aws-sdk": "^2.681.0",

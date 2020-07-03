@@ -59,9 +59,4 @@ export const sendResponse = async (
     req.write(responseBody)
     req.end()
   })
-
-  // await fetch.put(options.responseUrl, responseBody, {
-  //   data: responseBody,
-  //   headers: { 'content-type': '', 'content-length': responseBody.length }
-  // })
 }
