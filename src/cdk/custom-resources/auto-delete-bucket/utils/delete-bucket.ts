@@ -10,9 +10,11 @@ export const deleteBucket = async (bucketName: string): Promise<void> => {
     ...(objects.DeleteMarkers || [])
   ].map((o) => ({ Key: o.Key || '', VersionId: o.VersionId }))
 
-  await s3
-    .deleteObjects({ Bucket: bucketName, Delete: { Objects: objectsToDelete } })
-    .promise()
+  if (objectsToDelete.length) {
+    await s3
+      .deleteObjects({ Bucket: bucketName, Delete: { Objects: objectsToDelete } })
+      .promise()
+  }
 
   if (objects.IsTruncated) {
     await deleteBucket(bucketName)
