@@ -131,7 +131,7 @@ export class MiraBootstrap {
       this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
       cmd,
       '--app', this.getCDKArgs('ci-app.js'),
-      this.env || this.profile ? `--profile=${this.getProfile(this.env)}` : ''
+      `--profile=${this.getProfile('cicd')}`
     ]
     const proc = this.spawn(
       'node',
