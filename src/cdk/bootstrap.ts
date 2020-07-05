@@ -88,7 +88,7 @@ export class MiraBootstrap {
    * Orchestration for `npx mira cicd` command. As an effect, CodePipeline and related services will be deployed together
    * with permission stacks deployed to the target accounts.
    */
-  async deployCi () {
+  async deployCi (): Promise<void> {
     const permissionFilePath = MiraConfig.getPermissionsFilePath()
     if (!permissionFilePath) {
       console.error('Permissions file path must be specified either in cicd config or as --file parameter.')
