@@ -1,17 +1,37 @@
 import { IConfig } from 'config'
 
 const config: Record<string, unknown> = {
-  'app.prefix': 'nearFORM',
-  'app.name': 'mira',
-  cicd: true,
-  'cicd.source': 'github',
-  'cicd.repository_url': '[config.cicd.repository_url]',
-  'cicd.github_token_secret_arn': '[cicd.github_token_secret_arn]',
+  'app.prefix': 'John',
+  'app.name': 'My Great App',
   profile: true,
-  'cicd.accounts': [{
-    name: 'Staging',
-    requireManualApproval: false
-  }]
+  cicd: {
+    repositoryUrl: 'https://github.com/nearform/mira',
+    codeCommitUserPublicKey: 'ssh-rsa ...',
+    provider: 'codecommit'
+  },
+  'cicd.target': 'cicd',
+  'cicd.stages': [
+    {
+      target: 'staging',
+      withDomain: false,
+      requireManualApproval: false
+    }
+  ],
+  accounts: true,
+  'accounts.cicd': {
+    env: {
+      account: 'ACCOUNT_NUMER',
+      region: 'REGION'
+    },
+    profile: 'mira-dev'
+  },
+  'accounts.staging': {
+    env: {
+      account: 'ACCOUNT_NUMER',
+      region: 'REGION'
+    },
+    profile: 'mira-dev'
+  }
 }
 
 const configMock: IConfig = {

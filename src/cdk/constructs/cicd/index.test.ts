@@ -7,7 +7,7 @@ jest.mock('config')
 interface Context {
   [name: string]: string | any[] | any
 }
-describe.skip('CICD', () => {
+describe('CICD', () => {
   it('Creates a CICD stack with role as Caller Identity', async () => {
     const app = new App()
     app.node.tryGetContext = (): Context => ({
