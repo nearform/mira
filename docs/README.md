@@ -19,7 +19,7 @@ Mira consists of the following built-ins:
  
 __Note: Currently supported version of the AWS CDK is: *[1.49.1](https://github.com/aws/aws-cdk/releases/tag/v1.49.1)*.__
  
-Please make sure you application will depend on that exact version.
+Please make sure your application depends on that exact version of the CDK.
   
 > <sup>1</sup> AWS Serverless infrastructure is a set of services with abstracted servers that are fully managed by AWS.
 > The benefits of a serverless infrastructure are:

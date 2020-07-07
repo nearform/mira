@@ -28,7 +28,7 @@ Clone your newly created repository and follow the instructions below.
 
 2. Install the required dependencies, as instructed by the specific sample you cloned.
     
-    Make sure you use supported version of the CDK (__1.49.1__) and all the required dependencies are included in your package.json file.
+    Make sure you use a supported version of the CDK (__1.49.1__) and all the required dependencies are included in your package.json file.
     For the full list go to [Mira Dependencies](#mira-dependencies)
 
    ℹ️ You may have to use `yarn` instead of `npm`. Check your sample project readme for instructions.
