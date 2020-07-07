@@ -14,9 +14,12 @@ Mira consists of the following built-ins:
 
  * A Command Line Interface, that helps to initialise and deploy applications, and also to deploy a CI pipeline.
  * Foundational constructs that simplify configuration of multiple application environments.
- * Bundled AWS CDK.
  * An opinionated set of AWS CDK aspects, e.g. IAM Policy validator. 
  * Complementary sample applications e.g. a simple S3-based web hosting app.
+ 
+__Note: Currently supported version of the AWS CDK is: *[1.49.1](https://github.com/aws/aws-cdk/releases/tag/v1.49.1)*.__
+ 
+Please make sure you application will depend on that exact version.
   
 > <sup>1</sup> AWS Serverless infrastructure is a set of services with abstracted servers that are fully managed by AWS.
 > The benefits of a serverless infrastructure are:
