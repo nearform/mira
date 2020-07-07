@@ -27,6 +27,9 @@ Clone your newly created repository and follow the instructions below.
    ```
 
 2. Install the required dependencies, as instructed by the specific sample you cloned.
+    
+    Make sure you use a supported version of the CDK (__1.49.1__) and all the required dependencies are included in your package.json file.
+    For the full list go to [Mira Dependencies](#mira-dependencies)
 
    ℹ️ You may have to use `yarn` instead of `npm`. Check your sample project readme for instructions.
 
@@ -190,6 +193,36 @@ This list is dynamic, so you can add or remove target environments.
 8. Push your changes to your branch specified in the `config/default.json` in `branchName` property to start CI process.
 
 At this point, created Code Pipeline should start its execution and defined target environments should get it's own application deployment.
+
+
+## Mira Dependencies
+
+Keep in mind, AWS CDK requires all the modules to be the same version.
+```json
+{
+    "aws-cdk": "1.49.1",
+    "@aws-cdk/aws-cloudformation": "1.49.1",
+    "@aws-cdk/aws-codebuild": "1.49.1",
+    "@aws-cdk/aws-codecommit": "1.49.1",
+    "@aws-cdk/aws-codepipeline": "1.49.1",
+    "@aws-cdk/aws-codepipeline-actions": "1.49.1",
+    "@aws-cdk/aws-iam": "1.49.1",
+    "@aws-cdk/aws-lambda-event-sources": "1.49.1",
+    "@aws-cdk/aws-lambda": "1.49.1",
+    "@aws-cdk/aws-s3-assets": "1.49.1",
+    "@aws-cdk/aws-secretsmanager": "1.49.1",
+    "@aws-cdk/custom-resources": "1.49.1",
+    "@aws-cdk/aws-sns": "1.49.1",
+    "@aws-cdk/aws-s3": "1.49.1",
+    "@aws-cdk/aws-sqs": "1.49.1",
+    "@aws-cdk/assets": "1.49.1",
+    "@aws-cdk/aws-kms": "1.49.1",
+    "@aws-cdk/aws-ec2": "1.49.1",
+    "@aws-cdk/aws-rds": "1.49.1",
+    "@aws-cdk/aws-ssm": "1.49.1",
+    "@aws-cdk/core": "1.49.1"
+}
+```
 
 <!---- External links ---->
 [docs]: https://nf-mira.netlify.com/?#/
