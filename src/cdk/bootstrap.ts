@@ -12,6 +12,7 @@ import * as JsonValidation from '../jsonvalidator'
 import configModule from 'config'
 import aws from 'aws-sdk'
 import { StackEvent } from 'aws-sdk/clients/cloudformation'
+import ChangeDetector from '../change-detector'
 
 /**
  * @class Responsible for beaming up bits to AWS.  Teleportation device not
@@ -301,6 +302,8 @@ export class MiraBootstrap {
     }
     const rawConfig = configModule.util.toObject()
     const cmd = this.args._[0]
+    const cd = new ChangeDetector(process.cwd())
+    const filesChanged = await cd.run()
     switch (cmd) {
       case 'domain':
         this.deployDomain()
@@ -314,22 +317,34 @@ export class MiraBootstrap {
             ' a --file=<stackFile> argument.')
           return
         }
-        this.stackFile = this.args.file
-        if (this.stackFile.match(/.ts$/)) {
-          const T = new Transpiler(this.stackFile)
-          const newFile = await T.run()
-          this.stackFile = newFile
-        }
-
         if (!JsonValidation.validateConfig(rawConfig)) {
           console.warn(chalk.red('Error Initializing'), 'Invalid config file.')
           return
         }
 
-        if ((await this.areStackFilesValid())) {
-          console.info(chalk.cyan('Deploying Stack:'),
-            `(via ${chalk.grey(this.stackFile)})`)
-          this.deploy()
+        this.stackFile = this.args.file
+        // Check for file changes
+        if (filesChanged || this.args.force) {
+          if (!this.args.file) {
+            console.warn(chalk.red('Error Initializing'), 'Must supply' +
+              ' a --file=<stackFile> argument.')
+            return
+          }
+          if (this.stackFile.match(/.ts$/)) {
+            const T = new Transpiler(this.stackFile)
+            const newFile = await T.run()
+            this.stackFile = newFile
+
+            // take a new snapshot because file changed.
+            await cd.takeSnapshot(cd.defaultSnapshotFilePath)
+          }
+          if ((await this.areStackFilesValid())) {
+            console.info(chalk.cyan('Deploying Stack:'),
+              `(via ${chalk.grey(this.stackFile)})`)
+            this.deploy()
+          }
+        } else {
+          console.info(chalk.yellow('No file changed after last deploy. Skipping.'))
         }
         break
       case 'undeploy':
