@@ -63,6 +63,8 @@ enum CONFIG_KEYS {
   TARGET = 'target'
 }
 
+const whitelistedArgs: string[] = ['docs', 'init']
+
 class MiraConfigClass {
   public readonly projectName: string
   public readonly projectPrefix: string
@@ -72,9 +74,8 @@ class MiraConfigClass {
       this.projectName = pascalCase(configModule.get('app.name'))
       this.projectPrefix = pascalCase(configModule.get('app.prefix'))
     } catch (err) {
-      console.warn(`${err.message}, you will not be able to deploy your app yet. `)
-      // In the case of docs, this config warning can be ignored, if other actions will be similar, consider creating a whitelist.
-      if (args._[2] !== 'docs') {
+      if (!whitelistedArgs.includes(args._[2])) {
+        console.warn(`${err.message}, you will not be able to deploy your app yet. `)
         throw err
       }
     }
