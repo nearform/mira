@@ -63,3 +63,4 @@ __Note:__
     - The web app and API use HTTPS
     - DB data is encrypted at rest and in transit
     - S3 buckets used for CICD pipeline are encrypted
+

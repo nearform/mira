@@ -4,7 +4,7 @@ import { MiraServiceStack, MiraStack } from './stack'
 import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
 import * as path from 'path'
-import { getBaseStackName } from './constructs/config/utils'
+import { getBaseStackName, getBaseStackNameFromParams } from './constructs/config/utils'
 import { MiraConfig } from '../config/mira-config'
 // eslint-disable-next-line
 const minimist = require('minimist')
@@ -79,6 +79,10 @@ export class MiraApp {
 
   static getBaseStackName (suffix?: string): string {
     return getBaseStackName(suffix)
+  }
+
+  static getBaseStackNameFromParams (prefix: string, name: string, suffix?: string): string {
+    return getBaseStackNameFromParams(prefix, name, suffix)
   }
 
   /**

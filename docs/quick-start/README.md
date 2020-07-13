@@ -224,6 +224,20 @@ Keep in mind, AWS CDK requires all the modules to be the same version.
 }
 ```
 
+
+
+## Troubleshooting
+
+In case your application fails to deployed, make sure that your config it properly structured and your stack definition is correct.
+Mira extracts the errors from the failed nested stacks to your terminal window, so it should help you to quickly find the root cause.
+
+Typical issues includes:
+* Version mismatch for the AWS CDK, between Mira and your local package.json.
+* A `profile` property is not defined for all environments in the config file.
+* The code you're trying to deploy was not complied with TypeScript after recent changes.
+
+
+
 <!---- External links ---->
 [docs]: https://nf-mira.netlify.com/?#/
 [nvm]: https://github.com/nvm-sh/nvm
