@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core'
 import { MiraApp } from './app'
 import { NestedStack } from '@aws-cdk/aws-cloudformation'
-import { CfnOutput, Construct, Stack } from '@aws-cdk/core'
+import { CfnOutput, Construct, Stack, Tag } from '@aws-cdk/core'
 import { IStringParameter, StringParameter } from '@aws-cdk/aws-ssm'
 import { Policies } from './aspects/security/policies'
 import { MiraConfig, Account } from '../config/mira-config'
@@ -31,6 +31,11 @@ export class MiraServiceStack extends cdk.Stack {
           account: account.env.account
         }
       })
+
+      Tag.add(this, 'StackName', this.stackName)
+      Tag.add(this, 'CostCenter', account.costCenter)
+      Tag.add(this, 'CreatedBy', account.env.account)
+
       this.initialized = new Promise((resolve) => {
         setTimeout(async () => {
           await this.initialize()

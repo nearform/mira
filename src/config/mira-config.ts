@@ -21,6 +21,7 @@ export interface Account {
   readonly name: string
   readonly profile?: string
   readonly env: AccountEnvData
+  readonly costCenter: string
 }
 
 export interface Stage {
