@@ -16,20 +16,6 @@ export function getDefaultConfigSchema (): object {
     )
     .required()
     .prop(
-      'cicd',
-      S.object()
-        .prop('target', S.string())
-        .prop('buildspecFile', S.string())
-        .prop('permissionsFile', S.string())
-        .prop('provider', S.string())
-        .prop('profile', S.string())
-        .prop('repositoryUrl', S.string())
-        .prop('branchName', S.string())
-        .prop('codeCommitUserPublicKey', S.string())
-        .prop('environmentVariables', S.array())
-        .prop('stages', S.array())
-    )
-    .prop(
       'accounts',
       S.object()
         .prop(
@@ -77,9 +63,52 @@ export function getDefaultConfigSchema (): object {
             .prop('profile', S.string())
         )
     )
-    .required()
-    .prop('dev', S.object().prop('target', S.string().required()))
-    .required()
+    .prop(
+      'cicd',
+      S.object()
+        .prop('target', S.string())
+        .prop('buildspecFile', S.string())
+        .prop('permissionsFile', S.string())
+        .prop('provider', S.string())
+        .prop('profile', S.string())
+        .prop('repositoryUrl', S.string())
+        .prop('branchName', S.string())
+        .prop('codeCommitUserPublicKey', S.string())
+        .prop('environmentVariables', S.array())
+        .prop(
+          'stages',
+          S.array().items(
+            S.object()
+              .prop('target', S.string())
+              .prop('withDomain', S.boolean())
+              .prop('requireManualApproval', S.boolean())
+          )
+        )
+    )
+    .allOf([
+      S.ifThen(
+        S.object().prop(
+          'cicd',
+          S.object().prop('target', S.string().required())
+        ),
+        S.required(['accounts'])
+      ),
+      S.ifThen(
+        S.object().prop(
+          'cicd',
+          S.object().prop('stages', S.array().items(
+            S.object()
+              .prop('target', S.string()).required()
+          ))
+        ),
+        S.required(['accounts'])
+      )
+    ])
+    .prop('dev', S.object().prop('target', S.string()))
+    .ifThen(
+      S.object().prop('dev', S.object().prop('target', S.string().required())),
+      S.required(['accounts'])
+    )
     .valueOf()
 }
 

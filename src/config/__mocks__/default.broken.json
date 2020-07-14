@@ -1,5 +1,9 @@
 {
-  "cicd": {
-    "target": "cicd"
+  "app": {
+    "prefix": "nf",
+    "name": "webapp"
+  },
+  "dev": {
+    "target": "default"
   }
 }
