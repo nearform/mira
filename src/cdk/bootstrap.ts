@@ -7,6 +7,7 @@ import { Account, MiraConfig } from '../config/mira-config'
 import configWizard from './constructs/config/make-default-config'
 import { assumeRole } from '../assume-role'
 import yargs from 'yargs'
+import Transpiler from '../transpiler'
 /**
  * @class Responsible for beaming up bits to AWS.  Teleportation device not
  * included.
@@ -18,7 +19,8 @@ export class MiraBootstrap {
   env: string;
   profile: string;
   cdkCommand: string;
-  docsifyCommand: string;
+  docsifyCommand: string
+  stackFile: string
 
   constructor () {
     this.cdkCommand = path.join(require.resolve('aws-cdk'), '..', '..', 'bin', 'cdk')
@@ -217,7 +219,8 @@ export class MiraBootstrap {
     const appPath = path.resolve(__dirname, filename)
     let appArg = `${q}node "${appPath}" `
     // Still inside the quotes, explode the args.
-    appArg += this.getArgs().join(' ')
+    // appArg += this.getArgs().join(' ')
+    appArg += ` --file=${this.stackFile}`
     appArg += resultedEnv ? ` --env=${resultedEnv}` : ''
     appArg += isCi ? ` --file=${MiraConfig.getPermissionsFilePath()}` : ''
     appArg += q // End quote.
@@ -268,7 +271,7 @@ export class MiraBootstrap {
    */
   async areStackFilesValid (): Promise<boolean> {
     let isValid = true
-    for (const stackName of MiraApp.getStackFiles()) {
+    for (const stackName of [this.stackFile]) {
       if (!(await this.app.getStack(stackName))) {
         console.warn(chalk.yellow('Stack Not Found:'), stackName)
         isValid = false
@@ -290,7 +293,6 @@ export class MiraBootstrap {
     }
 
     const cmd = this.args._[0]
-    let stackFile: string
     switch (cmd) {
       case 'domain':
         this.deployDomain()
@@ -304,20 +306,24 @@ export class MiraBootstrap {
             ' a --file=<stackFile> argument.')
           return
         }
-        stackFile = this.args.file
-
+        this.stackFile = this.args.file
+        if (this.stackFile.match(/.ts$/)) {
+          const T = new Transpiler(this.stackFile)
+          const newFile = await T.run()
+          this.stackFile = newFile
+        }
         if ((await this.areStackFilesValid())) {
           console.info(chalk.cyan('Deploying Stack:'),
-            `(via ${chalk.grey(stackFile)})`)
+            `(via ${chalk.grey(this.stackFile)})`)
           this.deploy()
         }
         break
       case 'undeploy':
-        stackFile = this.args.file
+        this.stackFile = this.args.file
 
         if ((await this.areStackFilesValid())) {
           console.info(chalk.cyan('Undeploying Stack:'),
-            `(via ${chalk.grey(stackFile)})`)
+            `(via ${chalk.grey(this.stackFile)})`)
           this.undeploy()
         } else {
           console.info('If you want to undeploy a stack not contained' +

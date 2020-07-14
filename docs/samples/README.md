@@ -15,10 +15,10 @@ This application is a simple hello world app. This sample app is recommended for
 
 The `infra/src/index.ts` file contains the the full application infrastructure definition.
 
-If the `config/default.json` file is already prepared, simply run `npx mira deploy s3 --file=infra/src/index.js`
+If the `config/default.json` file is already prepared, simply run `npx mira deploy s3 --file=infra/src/index.ts`
 to deploy the application,.
 
-__Note:__ Mira accepts `.js` files as the entry file. Make sure your typescript code is compiled after every change.
+__Note:__ Mira accepts both `.js` and `.ts` files as the entry file. Mira will look for the first `tsconfig.json` file found with `glob` 
 
 Follow the `README.md` file provided in the sample app for full instructions.
 
