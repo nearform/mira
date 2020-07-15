@@ -33,8 +33,13 @@ export class MiraServiceStack extends cdk.Stack {
       })
 
       Tag.add(this, 'StackName', this.stackName)
-      Tag.add(this, 'CostCenter', account.costCenter)
       Tag.add(this, 'CreatedBy', account.env.account)
+
+      const costCenter = MiraConfig.getCostCenter()
+
+      if (costCenter) {
+        Tag.add(this, 'CostCenter', costCenter)
+      }
 
       this.initialized = new Promise((resolve) => {
         setTimeout(async () => {
