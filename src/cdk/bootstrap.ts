@@ -409,7 +409,7 @@ export class MiraBootstrap {
   async getFirstFailedNestedStackName (account: Account, stackName: string): Promise<string> {
     const cloudformation = this.getAwsSdkConstruct('CloudFormation', account)
     const events = await cloudformation.describeStackEvents({ StackName: stackName }).promise()
-    return events.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')[0]?.PhysicalResourceId?.split('/')[1]
+    return events.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')[0]?.PhysicalResourceId
   }
 
   async extractNestedStackError () {
@@ -436,15 +436,7 @@ export class MiraBootstrap {
     const failedResources = await this.extractNestedStackError()
     console.log(chalk.red('\n\nYour app failed deploying, one of your nested stacks have failed to create or update resources. See the list of failed resources below:'))
     failedResources.forEach((item: any) => {
-      console.log(chalk.red(JSON.stringify({
-        StackName: item.StackName,
-        LogicalResourceId: item.LogicalResourceId,
-        PhysicalResourceId: item.PhysicalResourceId,
-        ResourceStatus: item.ResourceStatus,
-        ResourceStatusReason: item.ResourceStatusReason,
-        Timestamp: item.Timestamp,
-        ResourceProperties: item.ResourceProperties
-      }, null, 4)))
+      console.log(chalk.red(`\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`))
     })
     console.log(chalk.red(`\n\n${printCarets(100)}\nAnalyze the list above, to find why your stack failed deployment.`))
   }

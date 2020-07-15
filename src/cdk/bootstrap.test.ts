@@ -104,7 +104,7 @@ describe('MiraBootstrap getFirstFailedNestedStackName', () => {
       }
     })
     const rsp = await miraBootstrapInstance.getFirstFailedNestedStackName()
-    expect(rsp).toEqual('Nf-S3Webhosting-Service-default-S3Webhosting0NestedStackS3Webhosting0NestedStackR-OSY009YIBDSG')
+    expect(rsp).toEqual('arn:aws:cloudformation:eu-west-1:101259067028:stack/Nf-S3Webhosting-Service-default-S3Webhosting0NestedStackS3Webhosting0NestedStackR-OSY009YIBDSG/b2e7f2d0-bd20-11ea-86e0-0a2c3f6a2a32')
   })
   it('gets first UPDATE_FAILED NestedStack', async () => {
     miraBootstrapInstance.getAwsSdkConstruct = jest.fn().mockReturnValue({
@@ -123,7 +123,7 @@ describe('MiraBootstrap getFirstFailedNestedStackName', () => {
       }
     })
     const rsp = await miraBootstrapInstance.getFirstFailedNestedStackName()
-    expect(rsp).toEqual('Nf-S3Webhosting-Service-default-S3Webhosting0NestedStackS3Webhosting0NestedStackR-OSY009YIBDSG')
+    expect(rsp).toEqual('arn:aws:cloudformation:eu-west-1:101259067028:stack/Nf-S3Webhosting-Service-default-S3Webhosting0NestedStackS3Webhosting0NestedStackR-OSY009YIBDSG/b2e7f2d0-bd20-11ea-86e0-0a2c3f6a2a32')
   })
 
   it('gets no NestedStack if ResourceStatus positive', async () => {
