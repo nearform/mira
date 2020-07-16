@@ -16,19 +16,13 @@ describe('jsonvalidator', () => {
 
   test('Json validator: Sample file passes', () => {
     expect(() => {
-      JsonValidation.validateFileJson(
-        JsonValidation.getDefaultConfigSchema(),
-        JsonValidation.readJsonFile('/config/__mocks__/default.json')
-      )
+      JsonValidation.validateConfig({ app: { prefix: 'prefix', name: 'name' }, accounts: [] })
     }).not.toThrowError()
   })
 
   test('Json validator: Broken sample file throws error', () => {
     expect(() => {
-      JsonValidation.validateFileJson(
-        JsonValidation.getDefaultConfigSchema(),
-        JsonValidation.readJsonFile('/config/__mocks__/default.broken.json')
-      )
+      JsonValidation.validateConfig({ app: { prefix: 'prefix' } })
     }).toThrowError()
   })
 })

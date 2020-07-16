@@ -9,6 +9,9 @@ import { assumeRole } from '../assume-role'
 import yargs from 'yargs'
 import Transpiler from '../transpiler'
 import * as JsonValidation from '../jsonvalidator'
+import configModule from 'config'
+import aws from 'aws-sdk'
+import { StackEvent } from 'aws-sdk/clients/cloudformation'
 
 /**
  * @class Responsible for beaming up bits to AWS.  Teleportation device not
@@ -72,20 +75,23 @@ export class MiraBootstrap {
       this.env ? `--profile=${this.getProfile(this.env)}` : '',
       ...additionalArgs
     ]
-    try {
-      this.spawn(
-        'node',
-        commandOptions, {
-          stdio: 'inherit',
-          env: {
-            NODE_ENV: 'dev',
-            ...process.env
-          }
-        })
-    } catch (error) {
-      console.error(error.message)
-      process.exit(1)
-    }
+    const proc = this.spawn(
+      'node',
+      commandOptions, {
+        stdio: 'inherit',
+        env: {
+          NODE_ENV: 'dev',
+          ...process.env
+        }
+      })
+    await new Promise((resolve) => {
+      proc.on('exit', async (code) => {
+        if (code !== 0) {
+          await this.printExtractedNestedStackErrors()
+        }
+        resolve()
+      })
+    })
   }
 
   /**
@@ -293,7 +299,7 @@ export class MiraBootstrap {
     if (Object.keys(this.args).includes('env')) {
       delete this.args.env
     }
-
+    const rawConfig = configModule.util.toObject()
     const cmd = this.args._[0]
     switch (cmd) {
       case 'domain':
@@ -315,14 +321,9 @@ export class MiraBootstrap {
           this.stackFile = newFile
         }
 
-        try {
-          JsonValidation.validateFileJson(
-            JsonValidation.getDefaultConfigSchema(),
-            JsonValidation.readJsonFile(this.args.file)
-          )
-        } catch (err) {
-          console.log(chalk.red(err.message))
-          throw new Error('Error Validating Json File')
+        if (!JsonValidation.validateConfig(rawConfig)) {
+          console.warn(chalk.red('Error Initializing'), 'Invalid config file.')
+          return
         }
 
         if ((await this.areStackFilesValid())) {
@@ -351,14 +352,9 @@ export class MiraBootstrap {
           return
         }
 
-        try {
-          JsonValidation.validateFileJson(
-            JsonValidation.getDefaultConfigSchema(),
-            JsonValidation.readJsonFile(this.args.file)
-          )
-        } catch (err) {
-          console.log(chalk.red(err.message))
-          throw new Error('Error Validating Json File')
+        if (!JsonValidation.validateConfig(rawConfig)) {
+          console.warn(chalk.red('Error Initializing'), 'Invalid config file.')
+          return
         }
 
         this.deployCi()
@@ -398,5 +394,68 @@ export class MiraBootstrap {
    */
   async undeploy (): Promise<void> {
     return await this.deploy(true)
+  }
+
+  /**
+   * Changes context to use dev config if available, and runs passed function.
+   * Typical usecase for this function is to set Dev environment in the context of Mira executable.
+   * In case of CDK executions 'dev' is set as NODE_ENV during spawn.
+   * @param fn
+   * @param params
+   */
+  useDevConfig (fn: Function, params: any): any {
+    const tmpEnv = process.env.NODE_ENV || 'default'
+    process.env.NODE_ENV = 'dev'
+    const rsp = fn.apply(this, params)
+    process.env.NODE_ENV = tmpEnv
+    return rsp
+  }
+
+  getServiceStackName (account: Account): string {
+    const tmpConfig = configModule.util.loadFileConfigs(path.join(process.cwd(), 'config'))
+    return `${MiraApp.getBaseStackNameFromParams(tmpConfig.app.prefix, tmpConfig.app.name, 'Service')}-${account.name}`
+  }
+
+  getAwsSdkConstruct (construct: any, account: Account): any {
+    const credentials = new aws.SharedIniFileCredentials({ profile: this.getProfile(this.env) || '' })
+    aws.config.credentials = credentials
+    // eslint-disable-next-line
+    // @ts-ignore
+    return new aws[construct]({ region: account.env.region })
+  }
+
+  async getFirstFailedNestedStackName (account: Account, stackName: string): Promise<string> {
+    const cloudformation = this.getAwsSdkConstruct('CloudFormation', account)
+    const events = await cloudformation.describeStackEvents({ StackName: stackName }).promise()
+    return events.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')[0]?.PhysicalResourceId
+  }
+
+  async extractNestedStackError () {
+    const account: Account = MiraConfig.getEnvironment(this.env)
+    const stackName = this.useDevConfig(this.getServiceStackName, [account])
+    // Environment variable required to parse ~/.aws/config file with profiles.
+    process.env.AWS_SDK_LOAD_CONFIG = '1'
+
+    let events
+    try {
+      const nestedStackName = await this.getFirstFailedNestedStackName(account, stackName)
+      const cloudformation = this.getAwsSdkConstruct('CloudFormation', account)
+      events = await cloudformation.describeStackEvents({ StackName: nestedStackName }).promise()
+    } catch (e) {
+      console.log(chalk.red('Error, while getting error message from cloudformation. Seems something is wrong with your configuration.'))
+    }
+    return events?.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')
+  }
+
+  async printExtractedNestedStackErrors (): Promise<any> {
+    const printCarets = (nb: number) => {
+      return '^'.repeat(nb)
+    }
+    const failedResources = await this.extractNestedStackError()
+    console.log(chalk.red('\n\nYour app failed deploying, one of your nested stacks have failed to create or update resources. See the list of failed resources below:'))
+    failedResources.forEach((item: any) => {
+      console.log(chalk.red(`\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`))
+    })
+    console.log(chalk.red(`\n\n${printCarets(100)}\nAnalyze the list above, to find why your stack failed deployment.`))
   }
 }

@@ -3,7 +3,7 @@ import Ajv from 'ajv'
 import * as fs from 'fs'
 import * as path from 'path'
 /* This function programmatically defines the default.json file */
-export function getDefaultConfigSchema (): object {
+export function getConfigSchema (): object {
   return S.object()
     .id('default-config')
     .title('Default Config File Schema')
@@ -17,51 +17,7 @@ export function getDefaultConfigSchema (): object {
     .required()
     .prop(
       'accounts',
-      S.object()
-        .prop(
-          'cicd',
-          S.object()
-            .prop(
-              'env',
-              S.object()
-                .prop('account', S.string())
-                .prop('region', S.string())
-            )
-            .prop('profile', S.string())
-        )
-        .prop(
-          'default',
-          S.object()
-            .prop(
-              'env',
-              S.object()
-                .prop('account', S.string())
-                .prop('region', S.string())
-            )
-            .prop('profile', S.string())
-        )
-        .prop(
-          'staging',
-          S.object()
-            .prop(
-              'env',
-              S.object()
-                .prop('account', S.string())
-                .prop('region', S.string())
-            )
-            .prop('profile', S.string())
-        )
-        .prop(
-          'production',
-          S.object()
-            .prop(
-              'env',
-              S.object()
-                .prop('account', S.string())
-                .prop('region', S.string())
-            )
-            .prop('profile', S.string())
-        )
+      S.array()
     )
     .prop(
       'cicd',
@@ -126,12 +82,9 @@ export function readJsonFile (filePath: string): string {
 }
 
 /* Uses a programmatically defined schema and validates a data input. */
-export function validateFileJson (
-  jsonschema: object,
-  json: string
-): boolean {
+export function validateConfig (config: object): boolean {
   const ajv = new Ajv({ allErrors: true, coerceTypes: true })
-  const valid = ajv.validate(jsonschema, json)
+  const valid = ajv.validate(getConfigSchema(), config)
 
   if (!valid) {
     throw Error('Validation failed: ' + JSON.stringify(ajv.errors))
