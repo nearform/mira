@@ -2,6 +2,7 @@ import { MiraApp } from './app'
 import config from 'config'
 import _ from 'lodash'
 import mockConfig from './../config/__mocks__/default.json'
+import mockConfigBroken from './../config/__mocks__/default.broken.json'
 import yargs from 'yargs'
 const assumeRoleMock = jest.fn()
 
@@ -64,5 +65,35 @@ describe('MiraBootstrap deploy', () => {
     expect(miraBootstrapInstance.spawn.mock.calls[0][1][2]).toBe('--app')
     expect(miraBootstrapInstance.spawn.mock.calls[0][1][4]).toBe('--env=default')
     expect(miraBootstrapInstance.spawn.mock.calls[0][1][5]).toBe('--profile=mira-dev')
+  })
+})
+
+describe('MiraBootstrap initialize', () => {
+  const miraBootstrapInstance = new MiraBootstrap()
+  miraBootstrapInstance.spawn = jest.fn()
+  it('', async () => {
+    mockConfigHandler(mockConfig)
+    miraBootstrapInstance.args = yargs(['deploy', '--file=/config/__mocks__/default.json']).argv
+    await miraBootstrapInstance.initialize()
+    // TODO: what does it expect
+  })
+
+  it('throw error on cicd json validation', async () => {
+    mockConfigHandler(mockConfigBroken)
+    miraBootstrapInstance.args = yargs(['deploy', '--file=/config/__mocks__/default.broken.json']).argv
+    await expect(miraBootstrapInstance.initialize()).rejects.toThrow('Error Validating Json File')
+  })
+
+  it('', async () => {
+    mockConfigHandler(mockConfig)
+    miraBootstrapInstance.args = yargs(['cicd', '--file=/config/__mocks__/default.json']).argv
+    await miraBootstrapInstance.initialize()
+    // TODO: what does it expect
+  })
+
+  it('throw error on cicd json validation', async () => {
+    mockConfigHandler(mockConfigBroken)
+    miraBootstrapInstance.args = yargs(['cicd', '--file=/config/__mocks__/default.broken.json']).argv
+    await expect(miraBootstrapInstance.initialize()).rejects.toThrow('Error Validating Json File')
   })
 })

@@ -4,7 +4,6 @@ import fs from 'fs'
 import path from 'path'
 import { buildSearchRegions } from './autocomplete'
 import * as validators from './validators'
-import * as JsonValidation from '../../../jsonvalidator'
 const configDirPath = 'config'
 
 function createDefaultJSON (config: object): void {
@@ -13,8 +12,6 @@ function createDefaultJSON (config: object): void {
       fs.mkdirSync(configDirPath)
     }
     const json: string = JSON.stringify(config, null, 2)
-
-    JsonValidation.validateFileJson(JsonValidation.getDefaultConfigSchema(), json)
 
     const defaultFilePath = `${configDirPath}${path.sep}default.json`
     fs.writeFileSync(`${configDirPath}${path.sep}default.json`, json)

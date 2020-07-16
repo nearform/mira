@@ -8,6 +8,8 @@ import configWizard from './constructs/config/make-default-config'
 import { assumeRole } from '../assume-role'
 import yargs from 'yargs'
 import Transpiler from '../transpiler'
+import * as JsonValidation from '../jsonvalidator'
+
 /**
  * @class Responsible for beaming up bits to AWS.  Teleportation device not
  * included.
@@ -312,6 +314,17 @@ export class MiraBootstrap {
           const newFile = await T.run()
           this.stackFile = newFile
         }
+
+        try {
+          JsonValidation.validateFileJson(
+            JsonValidation.getDefaultConfigSchema(),
+            JsonValidation.readJsonFile(this.args.file)
+          )
+        } catch (err) {
+          console.log(chalk.red(err.message))
+          throw new Error('Error Validating Json File')
+        }
+
         if ((await this.areStackFilesValid())) {
           console.info(chalk.cyan('Deploying Stack:'),
             `(via ${chalk.grey(this.stackFile)})`)
@@ -332,6 +345,22 @@ export class MiraBootstrap {
         }
         break
       case 'cicd':
+        if (!this.args.file) {
+          console.warn(chalk.red('Error Initializing'), 'Must supply' +
+            ' a --file=<stackFile> argument.')
+          return
+        }
+
+        try {
+          JsonValidation.validateFileJson(
+            JsonValidation.getDefaultConfigSchema(),
+            JsonValidation.readJsonFile(this.args.file)
+          )
+        } catch (err) {
+          console.log(chalk.red(err.message))
+          throw new Error('Error Validating Json File')
+        }
+
         this.deployCi()
         break
       case 'docs':
