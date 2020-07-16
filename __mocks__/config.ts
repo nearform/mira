@@ -41,7 +41,28 @@ const configMock: IConfig = {
   has (setting: string): boolean {
     return setting in config
   },
-  util: null as any
+  util: {
+    loadFileConfigs (): any {
+      return {
+        app: {
+          name: 'S3Webhosting',
+          prefix: 'Nf'
+        },
+        dev: {
+          target: 'default'
+        },
+        accounts: {
+          default: {
+            env: {
+              account: '101259067028',
+              region: 'eu-west-1'
+            },
+            profile: 'mira-dev'
+          }
+        }
+      }
+    }
+  } as any
 }
 
 export default configMock
