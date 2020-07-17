@@ -346,11 +346,6 @@ export class MiraBootstrap {
         }
         break
       case 'cicd':
-        if (!this.args.file) {
-          console.warn(chalk.red('Error Initializing'), 'Must supply' +
-            ' a --file=<stackFile> argument.')
-          return
-        }
 
         if (!JsonValidation.validateConfig(rawConfig)) {
           console.warn(chalk.red('Error Initializing'), 'Invalid config file.')
