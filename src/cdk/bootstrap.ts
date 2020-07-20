@@ -8,6 +8,7 @@ import configWizard from './constructs/config/make-default-config'
 import { assumeRole } from '../assume-role'
 import yargs from 'yargs'
 import Transpiler from '../transpiler'
+import * as JsonValidation from '../jsonvalidator'
 import configModule from 'config'
 import aws from 'aws-sdk'
 import { StackEvent } from 'aws-sdk/clients/cloudformation'
@@ -298,7 +299,7 @@ export class MiraBootstrap {
     if (Object.keys(this.args).includes('env')) {
       delete this.args.env
     }
-
+    const rawConfig = configModule.util.toObject()
     const cmd = this.args._[0]
     switch (cmd) {
       case 'domain':
@@ -319,6 +320,12 @@ export class MiraBootstrap {
           const newFile = await T.run()
           this.stackFile = newFile
         }
+
+        if (!JsonValidation.validateConfig(rawConfig)) {
+          console.warn(chalk.red('Error Initializing'), 'Invalid config file.')
+          return
+        }
+
         if ((await this.areStackFilesValid())) {
           console.info(chalk.cyan('Deploying Stack:'),
             `(via ${chalk.grey(this.stackFile)})`)
@@ -339,6 +346,12 @@ export class MiraBootstrap {
         }
         break
       case 'cicd':
+
+        if (!JsonValidation.validateConfig(rawConfig)) {
+          console.warn(chalk.red('Error Initializing'), 'Invalid config file.')
+          return
+        }
+
         this.deployCi()
         break
       case 'docs':

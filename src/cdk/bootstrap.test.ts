@@ -2,6 +2,7 @@ import { MiraApp } from './app'
 import config from 'config'
 import _ from 'lodash'
 import mockConfig from './../config/__mocks__/default.json'
+import mockConfigBroken from './../config/__mocks__/default.broken.json'
 import yargs from 'yargs'
 import { MiraConfig } from '../config/mira-config'
 const assumeRoleMock = jest.fn()
@@ -18,6 +19,7 @@ MiraConfig.getEnvironment = jest.fn()
 const mockConfigHandler = (mockConfig: any): void => {
   config.get = (key: string): any => _.get(mockConfig, key)
   config.has = (key: string): any => _.has(mockConfig, key)
+  config.util.toObject = () => mockConfig
 }
 
 describe('MiraBootstrap', () => {
@@ -50,6 +52,11 @@ describe('MiraBootstrap deploy', () => {
 
     await miraBootstrapInstance.deploy()
     expect(assumeRoleMock).toBeCalledTimes(0)
+  })
+  it('throw error on json validation', async () => {
+    mockConfigHandler(mockConfigBroken)
+    miraBootstrapInstance.args = yargs(['cicd', '--file=/index.ts']).argv
+    await expect(miraBootstrapInstance.initialize()).rejects.toThrow()
   })
   it('calls assume role when role provided in the cli', async () => {
     mockConfigHandler(mockConfig)

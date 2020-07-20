@@ -28,13 +28,14 @@
       }
     ]
   },
-  "accounts": {
-    "default": {
+  "accounts": [
+    {
+      "name": "default",
       "env": {
         "account": "111111111111",
         "region": "eu-west-1"
       },
       "profile": "mira-dev"
     }
-  }
+  ]
 }
