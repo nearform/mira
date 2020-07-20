@@ -20,3 +20,28 @@ test('should change extension to file', () => {
   const res = t.changeExtension('foo')
   expect(res).toBe('sampleFile.foo')
 })
+
+test('should return null when passing the wrong path', async () => {
+  const t = new Transpiler('sampleFile.ts')
+  const root = __dirname
+  const res = await t.findTSConfigFile(root)
+  expect(res).toBe(null)
+})
+
+test('should return null when passing the wrong path', async () => {
+  const t = new Transpiler('sampleFile.ts')
+  const root = __dirname
+  const res = await t.findTSConfigFile(root)
+  expect(res).toBe(null)
+})
+
+test('should throw access error when passing empty path', async () => {
+  console.error = jest.fn()
+  const t = new Transpiler('sampleFile.ts')
+  try {
+    await t.findTSConfigFile(' ')
+  } catch (err) {
+    expect(err.errno).toBe(-13)
+    expect(err.code).toBe('EACCES')
+  }
+})

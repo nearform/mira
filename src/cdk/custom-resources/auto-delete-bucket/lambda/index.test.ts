@@ -25,6 +25,26 @@ describe('auto-delete bucket lambda', () => {
     mockSendResponse.mockClear()
   })
 
+  it('fails if ResourceProperties is not provided no matter the request type', async () => {
+    await handler({
+      ...eventBase,
+      RequestType: 'Create',
+      ResourceProperties: undefined
+    })
+
+    expect(mockDeleteBucket).not.toHaveBeenCalled()
+    expect(mockSendResponse).toHaveBeenCalledTimes(1)
+    expect(mockSendResponse).toHaveBeenCalledWith('ResponseURL', {
+      status: 'FAILED',
+      reason: 'BucketName is required',
+      physicalResourceId: 'LogicalResourceId',
+      stackId: 'StackId',
+      requestId: 'RequestId',
+      logicalResourceId: 'LogicalResourceId',
+      data: undefined
+    })
+  })
+
   it('fails if bucket name is not provided no matter the request type', async () => {
     await handler({
       ...eventBase,
