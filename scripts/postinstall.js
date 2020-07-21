@@ -6,8 +6,12 @@ const fs = require('fs')
 const supportedCdkVersion = '1.49.1'
 const supportedCdkVersionString = `"${supportedCdkVersion}"`
 
+/**
+ * This string represents ready to copy dependencies needed for Mira to work.
+ * @type {string}
+ */
 const mandatoryDepsMessage = `
-Please make sure to to include the following dependencies to you project:
+Please make sure to include the following dependencies for you project:
     "aws-cdk": ${supportedCdkVersionString},
     "@aws-cdk/aws-cloudformation": ${supportedCdkVersionString},
     "@aws-cdk/aws-codebuild": ${supportedCdkVersionString},
