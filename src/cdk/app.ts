@@ -4,7 +4,7 @@ import { MiraServiceStack, MiraStack } from './stack'
 import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
 import * as path from 'path'
-import { getBaseStackName } from './constructs/config/utils'
+import { getBaseStackName, getBaseStackNameFromParams } from './constructs/config/utils'
 import { MiraConfig } from '../config/mira-config'
 // eslint-disable-next-line
 const minimist = require('minimist')
@@ -81,6 +81,10 @@ export class MiraApp {
     return getBaseStackName(suffix)
   }
 
+  static getBaseStackNameFromParams (prefix: string, name: string, suffix?: string): string {
+    return getBaseStackNameFromParams(prefix, name, suffix)
+  }
+
   /**
    * Initializes the app and stack.
    */
@@ -145,7 +149,7 @@ export class MiraApp {
 // executed with 'app.js' file as argument and nod 'ci-app.js' or 'domain.js'
 if (args._.filter((arg: string) => arg.match(/app.js$/)).length > 0) {
   console.info(`>>> ${chalk
-      .yellow('Initializing CDK for App')}:\n    ${chalk.grey(args.file)}`)
+      .yellow('Initializing CDK for App')}: ${chalk.grey(args.file)}`)
   const app = new MiraApp()
   app.initialize()
 }
