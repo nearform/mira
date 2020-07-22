@@ -304,6 +304,7 @@ export class MiraBootstrap {
     const cmd = this.args._[0]
     const cd = new ChangeDetector(process.cwd())
     const filesChanged = await cd.run()
+    let transpiledStackFile
     switch (cmd) {
       case 'domain':
         this.deployDomain()
@@ -330,11 +331,9 @@ export class MiraBootstrap {
               ' a --file=<stackFile> argument.')
             return
           }
-          if (this.stackFile.match(/.ts$/)) {
-            const T = new Transpiler(this.stackFile)
-            const newFile = await T.run()
-            this.stackFile = newFile
-
+          transpiledStackFile = await this.transpile()
+          if (transpiledStackFile) {
+            this.stackFile = transpiledStackFile
             // take a new snapshot because file changed.
             await cd.takeSnapshot(cd.defaultSnapshotFilePath)
           }
@@ -349,6 +348,10 @@ export class MiraBootstrap {
         break
       case 'undeploy':
         this.stackFile = this.args.file
+        transpiledStackFile = await this.transpile()
+        if (transpiledStackFile) {
+          this.stackFile = transpiledStackFile
+        }
 
         if ((await this.areStackFilesValid())) {
           console.info(chalk.cyan('Undeploying Stack:'),
@@ -467,5 +470,13 @@ export class MiraBootstrap {
       console.log(chalk.red(`\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`))
     })
     console.log(chalk.red(`\n\n${printCarets(100)}\nAnalyze the list above, to find why your stack failed deployment.`))
+  }
+
+  async transpile (): Promise<string|undefined> {
+    if (this.stackFile.match(/.ts$/)) {
+      const T = new Transpiler(this.stackFile)
+      const newFile = await T.run()
+      return newFile
+    }
   }
 }
