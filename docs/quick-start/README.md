@@ -91,7 +91,7 @@ Clone your newly created repository and follow the instructions below.
    ```bash
    npm run deploy
    ```
-   
+   __Note:__ The default tags will be associated to that stack: StackName,  CreatedBy (Owner) and CostCenter (If defined).
 At this step you should have your development environment deployed and ready to use.
 
 

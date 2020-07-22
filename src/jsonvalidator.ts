@@ -17,7 +17,11 @@ export function getConfigSchema (): object {
     .required()
     .prop(
       'accounts',
-      S.array()
+      S.object()
+    )
+    .prop(
+      'costCenter',
+      S.string()
     )
     .prop(
       'cicd',
