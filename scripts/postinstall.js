@@ -3,38 +3,43 @@ const colors = require('colors')
 // eslint-disable-next-line
 const fs = require('fs')
 
-const supportedCdkVersion = '"1.49.1"'
+const supportedCdkVersion = '1.49.1'
+const supportedCdkVersionString = `"${supportedCdkVersion}"`
 
+/**
+ * This string represents ready to copy dependencies needed for Mira to work.
+ * @type {string}
+ */
 const mandatoryDepsMessage = `
-Please make sure to to include the following dependencies to you project:
-    "aws-cdk": ${supportedCdkVersion},
-    "@aws-cdk/aws-cloudformation": ${supportedCdkVersion},
-    "@aws-cdk/aws-codebuild": ${supportedCdkVersion},
-    "@aws-cdk/aws-codecommit": ${supportedCdkVersion},
-    "@aws-cdk/aws-codepipeline": ${supportedCdkVersion},
-    "@aws-cdk/aws-codepipeline-actions": ${supportedCdkVersion},
-    "@aws-cdk/aws-iam": ${supportedCdkVersion},
-    "@aws-cdk/aws-lambda-event-sources": ${supportedCdkVersion},
-    "@aws-cdk/aws-lambda": ${supportedCdkVersion},
-    "@aws-cdk/aws-s3-assets": ${supportedCdkVersion},
-    "@aws-cdk/aws-secretsmanager": ${supportedCdkVersion},
-    "@aws-cdk/custom-resources": ${supportedCdkVersion},
-    "@aws-cdk/aws-sns": ${supportedCdkVersion},
-    "@aws-cdk/aws-s3": ${supportedCdkVersion},
-    "@aws-cdk/aws-sqs": ${supportedCdkVersion},
-    "@aws-cdk/assets": ${supportedCdkVersion},
-    "@aws-cdk/aws-kms": ${supportedCdkVersion},
-    "@aws-cdk/aws-ec2": ${supportedCdkVersion},
-    "@aws-cdk/aws-rds": ${supportedCdkVersion},
-    "@aws-cdk/aws-ssm": ${supportedCdkVersion},
-    "@aws-cdk/core": ${supportedCdkVersion}`
+Please make sure to include the following dependencies for your project:
+    "aws-cdk": ${supportedCdkVersionString},
+    "@aws-cdk/aws-cloudformation": ${supportedCdkVersionString},
+    "@aws-cdk/aws-codebuild": ${supportedCdkVersionString},
+    "@aws-cdk/aws-codecommit": ${supportedCdkVersionString},
+    "@aws-cdk/aws-codepipeline": ${supportedCdkVersionString},
+    "@aws-cdk/aws-codepipeline-actions": ${supportedCdkVersionString},
+    "@aws-cdk/aws-iam": ${supportedCdkVersionString},
+    "@aws-cdk/aws-lambda-event-sources": ${supportedCdkVersionString},
+    "@aws-cdk/aws-lambda": ${supportedCdkVersionString},
+    "@aws-cdk/aws-s3-assets": ${supportedCdkVersionString},
+    "@aws-cdk/aws-secretsmanager": ${supportedCdkVersionString},
+    "@aws-cdk/custom-resources": ${supportedCdkVersionString},
+    "@aws-cdk/aws-sns": ${supportedCdkVersionString},
+    "@aws-cdk/aws-s3": ${supportedCdkVersionString},
+    "@aws-cdk/aws-sqs": ${supportedCdkVersionString},
+    "@aws-cdk/assets": ${supportedCdkVersionString},
+    "@aws-cdk/aws-kms": ${supportedCdkVersionString},
+    "@aws-cdk/aws-ec2": ${supportedCdkVersionString},
+    "@aws-cdk/aws-rds": ${supportedCdkVersionString},
+    "@aws-cdk/aws-ssm": ${supportedCdkVersionString},
+    "@aws-cdk/core": ${supportedCdkVersionString}`
 
 try {
   const installedCdkVersion = JSON.parse(fs.readFileSync(`${require.resolve('aws-cdk').replace('index.js', '')}/../package.json`).toString()).version
   if (supportedCdkVersion !== installedCdkVersion) {
     console.log(`
   ${colors.bold.green('Thanks for using Mira!')}
-  It looks you have ${installedCdkVersion} version of aws-cdk installed, but ${supportedCdkVersion} is required.
+  It looks like you have ${installedCdkVersion} version of aws-cdk installed, but ${supportedCdkVersion} is required.
   ${mandatoryDepsMessage} 
   `)
   } else {
