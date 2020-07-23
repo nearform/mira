@@ -11,7 +11,7 @@ const supportedCdkVersionString = `"${supportedCdkVersion}"`
  * @type {string}
  */
 const mandatoryDepsMessage = `
-Please make sure to include the following dependencies for you project:
+Please make sure to include the following dependencies for your project:
     "aws-cdk": ${supportedCdkVersionString},
     "@aws-cdk/aws-cloudformation": ${supportedCdkVersionString},
     "@aws-cdk/aws-codebuild": ${supportedCdkVersionString},
@@ -39,7 +39,7 @@ try {
   if (supportedCdkVersion !== installedCdkVersion) {
     console.log(`
   ${colors.bold.green('Thanks for using Mira!')}
-  It looks you have ${installedCdkVersion} version of aws-cdk installed, but ${supportedCdkVersion} is required.
+  It looks like you have ${installedCdkVersion} version of aws-cdk installed, but ${supportedCdkVersion} is required.
   ${mandatoryDepsMessage} 
   `)
   } else {
