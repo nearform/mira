@@ -16,7 +16,7 @@ describe('jsonvalidator', () => {
 
   test('Json validator: Sample file passes', () => {
     expect(() => {
-      JsonValidation.validateConfig({ app: { prefix: 'prefix', name: 'name' }, accounts: [] })
+      JsonValidation.validateConfig({ app: { prefix: 'prefix', name: 'name' }, accounts: {} })
     }).not.toThrowError()
   })
 

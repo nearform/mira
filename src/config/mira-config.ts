@@ -60,7 +60,8 @@ enum CONFIG_KEYS {
   ACCOUNTS = 'accounts',
   DEV = 'dev',
   STAGES = 'stages',
-  TARGET = 'target'
+  TARGET = 'target',
+  COST_CENTER = 'costCenter'
 }
 
 const whitelistedArgs: string[] = ['docs', 'init']
@@ -204,6 +205,14 @@ class MiraConfigClass {
       name = configModule.get(devTargetPath) || ''
     }
     return name
+  }
+
+  public getCostCenter (): string {
+    if (configModule.has(CONFIG_KEYS.COST_CENTER)) {
+      return configModule.get(CONFIG_KEYS.COST_CENTER)
+    }
+
+    return ''
   }
 }
 

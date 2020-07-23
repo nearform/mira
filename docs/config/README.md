@@ -33,6 +33,7 @@ Let's take a look at a sample config file.
   "dev": {
     "target": "staging"
   },
+  "costCenter": "cost-center-tag",
   "cicd": {
     target: "cicd",
     "buildspecFile": "infra/buildspec.yaml",
@@ -122,6 +123,13 @@ Stage is described by 3 properties:
 Domain management components (Certificate, Route53 and so on) are deployed on the `Domain` account. It uses `Z1234567890` as the Hosted Zone ID.
 
 NB Example domain usage to follow in upcoming releases.
+
+
+## Cost Center
+
+To enable the creation of the cost center tag you need to specify a costCenter property.
+
+See [Using Cost Allocation Tags](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html) for more information.
 
 ## Developer config
 
