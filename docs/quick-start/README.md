@@ -232,11 +232,62 @@ In case your application fails to deployed, make sure that your config it proper
 Mira extracts the errors from the failed nested stacks to your terminal window, so it should help you to quickly find the root cause.
 
 Typical issues includes:
+
 * Version mismatch for the AWS CDK, between Mira and your local package.json.
 * A `profile` property is not defined for all environments in the config file.
 * The code you're trying to deploy was not complied with TypeScript after recent changes.
 
+### CDK Version Mismatch
 
+A version mismatch usually presents itself as a TypeScript Error when attempting to run a build. Below is an example error from the S3 web hosting sample:
+
+```sh
+➜ npm run build
+
+> s3-website@1.0.0 build /Users/nigelhanlon/Source/cdk-fun/s3-website
+> tsc -p infra/
+
+infra/src/index.ts:37:26 - error TS2345: Argument of type 'this' is not assignable to parameter of type 'Construct'.
+  Type 'S3Website' is not assignable to type 'Construct'.
+    Property 'onValidate' is protected but type 'Construct' is not a class derived from 'Construct'.
+
+37     new BucketDeployment(this, 'Deployment', {
+                            ~~~~
+
+
+Found 1 error.
+
+```
+
+To resolve this, make sure each cdk related item and the cdk package itself all match the version number supported by Mira in your package.json file.
+
+### Configuration Issues
+
+If there is a problem with the configuration file, or the file itself is missing, you will be presented with an error similar to this:
+
+```sh
+WARNING: No configurations found in configuration directory:/Users/nigelhanlon/Source/cdk-fun/s3-website/config
+
+Configuration property "app.name" is not defined, you will not be able to deploy your app yet.
+
+/usr/local/lib/node_modules/mira/node_modules/config/lib/config.js:182
+    throw new Error('Configuration property "' + property + '" is not defined');
+          ^
+Error: Configuration property "app.name" is not defined
+    at Config.get (/usr/local/lib/node_modules/mira/node_modules/config/lib/config.js:182:11)
+    at new MiraConfigClass (/usr/local/lib/node_modules/mira/src/config/mira-config.ts:72:50)
+    at Object.<anonymous> (/usr/local/lib/node_modules/mira/src/config/mira-config.ts:209:27)
+    at Module._compile (internal/modules/cjs/loader.js:688:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:699:10)
+    at Module.load (internal/modules/cjs/loader.js:598:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:537:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:529:3)
+    at Module.require (internal/modules/cjs/loader.js:636:17)
+    at require (internal/modules/cjs/helpers.js:20:18)
+
+```
+
+You can resolve this by running `npx mira init` or checking your configuration file matches the expected fields. 
 
 <!---- External links ---->
 [docs]: https://nf-mira.netlify.com/?#/

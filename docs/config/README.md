@@ -89,7 +89,7 @@ Let's take a look at a sample config file.
 ```
 
 ## Accounts
-The accounts section of the config file is an array of account objects that can be used to deploy apps and run cicd. The accounts also represent environments.
+The accounts section of the config file is a collection of account objects that can be used to deploy apps and run cicd. The accounts also represent environments.
 We define three accounts in the sample config file above: `staging`, `production`, `cicd`, each with different account numbers.
 
 The `staging` account may represent a developer's personal account where they can test all Mira deployments. It uses the default profile defined in the `~/.aws` directory or the one passed in as `--profile` parameter in the CLI command.
