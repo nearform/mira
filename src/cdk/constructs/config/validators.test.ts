@@ -1,5 +1,4 @@
 import * as validators from './validators'
-import { execFile } from 'child_process'
 
 describe('Validators', () => {
   it('isValidAwsAccountId', async () => {
@@ -20,13 +19,6 @@ describe('Validators', () => {
     expect(validators.isValidAwsAccountIdList('1234567890123')).toBeFalsy()
     expect(validators.isValidAwsAccountIdList('123456789012,')).toBeFalsy()
     expect(validators.isValidAwsAccountIdList('1234567890123,000000000000')).toBeFalsy()
-  })
-
-  it('isValidAwsCliProfile', async () => {
-    expect(await validators.isValidAwsCliProfile('')).toBeFalsy()
-    expect(await validators.isValidAwsCliProfile('value')).toBeFalsy()
-    await execFile('aws', ['configure', 'set', 'region', 'eu-west-1', '--profile', 'user1'])
-    expect(await validators.isValidAwsCliProfile('user1')).toBeTruthy()
   })
 
   it('isValidAwsHostedZoneId', async () => {
