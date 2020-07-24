@@ -259,7 +259,7 @@ Found 1 error.
 
 ```
 
-To resolve this, make sure each cdk related item and the cdk package itself all match the version number supported by Mira in you package.json file.
+To resolve this, make sure each cdk related item and the cdk package itself all match the version number supported by Mira in your package.json file.
 
 ### Configuration Issues
 
