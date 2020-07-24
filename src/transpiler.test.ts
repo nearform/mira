@@ -41,7 +41,7 @@ test('should throw access error when passing empty path', async () => {
   try {
     await t.findTSConfigFile(' ')
   } catch (err) {
-    expect(err.errno).toBe(-13)
-    expect(err.code).toBe('EACCES')
+    expect(err.errno === -13 || err.errno === -1).toBe(true)
+    expect(err.code === 'EACCES' || err.code === 'EPERM').toBe(true)
   }
 })
