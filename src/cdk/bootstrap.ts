@@ -11,9 +11,9 @@ import Transpiler from '../transpiler'
 import * as JsonValidation from '../jsonvalidator'
 import configModule from 'config'
 import aws from 'aws-sdk'
-import { StackEvent } from 'aws-sdk/clients/cloudformation'
+import CloudFormation, { StackEvent } from 'aws-sdk/clients/cloudformation'
 import ChangeDetector from '../change-detector'
-
+import ErrorLogger from '../error-logger'
 /**
  * @class Responsible for beaming up bits to AWS.  Teleportation device not
  * included.
@@ -27,12 +27,14 @@ export class MiraBootstrap {
   cdkCommand: string;
   docsifyCommand: string
   stackFile: string
+  errorLogger: ErrorLogger
 
   constructor () {
     this.cdkCommand = path.join(require.resolve('aws-cdk'), '..', '..', 'bin', 'cdk')
     this.docsifyCommand = path.join(require.resolve('docsify-cli'), '..', '..', 'bin', 'docsify')
 
     this.app = new MiraApp()
+    this.errorLogger = new ErrorLogger()
     this.spawn = spawn
   }
 
@@ -47,7 +49,12 @@ export class MiraBootstrap {
     const envConfig = MiraConfig.getEnvironment(this.env)
     this.env = envConfig.name
     if (this.args.role) {
-      await assumeRole(this.args.role)
+      try {
+        await assumeRole(this.args.role)
+      } catch (error) {
+        console.warn(chalk.red('Error Assuming Role'), error.message)
+        return
+      }
     }
     let cmd = 'deploy'
     if (undeploy) {
@@ -375,6 +382,9 @@ export class MiraBootstrap {
       case 'docs':
         this.runDocs()
         break
+      case 'clean':
+        await this.errorLogger.cleanMessages()
+        break
       default:
         this.showHelp()
     }
@@ -396,6 +406,7 @@ export class MiraBootstrap {
         .option('file', { type: 'string', aliast: 'f', desc: 'Path to permissions stack file.' })
         .option('envVar', { type: 'string', desc: 'Environment variable passed into the code build' }))
       .command('docs', 'Starts local web server with documentation')
+      .command('clean', 'Removes error log files')
       .help()
       .demandCommand()
       .argv
@@ -443,7 +454,7 @@ export class MiraBootstrap {
     return events.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')[0]?.PhysicalResourceId
   }
 
-  async extractNestedStackError (): Promise<string[]|boolean> {
+  async extractNestedStackError (): Promise<StackEvent[]> {
     const account: Account = MiraConfig.getEnvironment(this.env)
     const stackName = this.useDevConfig(this.getServiceStackName, [account])
     // Environment variable required to parse ~/.aws/config file with profiles.
@@ -452,12 +463,24 @@ export class MiraBootstrap {
     let events
     try {
       const nestedStackName = await this.getFirstFailedNestedStackName(account, stackName)
-      const cloudformation = this.getAwsSdkConstruct('CloudFormation', account)
+      const cloudformation = this.getAwsSdkConstruct('CloudFormation', account) as CloudFormation
       events = await cloudformation.describeStackEvents({ StackName: nestedStackName }).promise()
     } catch (e) {
       console.log(chalk.red('Error, while getting error message from cloudformation. Seems something is wrong with your configuration.'))
     }
-    return events?.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')
+    const output = events?.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')
+    return output || []
+  }
+
+  filterStackErrorMessages (errors: StackEvent[]): StackEvent[] {
+    const output = errors.filter((error) => {
+      return error.ResourceStatusReason !== 'Resource creation cancelled'
+    })
+    return output
+  }
+
+  formatNestedStackError (item: StackEvent): string {
+    return `\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`
   }
 
   async printExtractedNestedStackErrors (): Promise<any> {
@@ -467,9 +490,12 @@ export class MiraBootstrap {
     const failedResources = await this.extractNestedStackError()
     if (Array.isArray(failedResources)) {
       console.log(chalk.red('\n\nYour app failed deploying, one of your nested stacks have failed to create or update resources. See the list of failed resources below:'))
-      failedResources.forEach((item: any) => {
-        console.log(chalk.red(`\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`))
+      const filteredMessages = this.filterStackErrorMessages(failedResources)
+      filteredMessages.map((errorMessage) => {
+        console.log(chalk.red(this.formatNestedStackError(errorMessage)))
       })
+      this.errorLogger.flushMessages(filteredMessages.map(m => this.formatNestedStackError(m)))
+
       console.log(chalk.red(`\n\n${printCarets(100)}\nAnalyze the list above, to find why your stack failed deployment.`))
     }
   }
