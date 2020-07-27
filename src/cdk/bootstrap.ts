@@ -443,7 +443,7 @@ export class MiraBootstrap {
     return events.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')[0]?.PhysicalResourceId
   }
 
-  async extractNestedStackError () {
+  async extractNestedStackError (): Promise<string[]|boolean> {
     const account: Account = MiraConfig.getEnvironment(this.env)
     const stackName = this.useDevConfig(this.getServiceStackName, [account])
     // Environment variable required to parse ~/.aws/config file with profiles.
@@ -461,15 +461,17 @@ export class MiraBootstrap {
   }
 
   async printExtractedNestedStackErrors (): Promise<any> {
-    const printCarets = (nb: number) => {
+    const printCarets = (nb: number): string => {
       return '^'.repeat(nb)
     }
     const failedResources = await this.extractNestedStackError()
-    console.log(chalk.red('\n\nYour app failed deploying, one of your nested stacks have failed to create or update resources. See the list of failed resources below:'))
-    failedResources.forEach((item: any) => {
-      console.log(chalk.red(`\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`))
-    })
-    console.log(chalk.red(`\n\n${printCarets(100)}\nAnalyze the list above, to find why your stack failed deployment.`))
+    if (Array.isArray(failedResources)) {
+      console.log(chalk.red('\n\nYour app failed deploying, one of your nested stacks have failed to create or update resources. See the list of failed resources below:'))
+      failedResources.forEach((item: any) => {
+        console.log(chalk.red(`\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`))
+      })
+      console.log(chalk.red(`\n\n${printCarets(100)}\nAnalyze the list above, to find why your stack failed deployment.`))
+    }
   }
 
   async transpile (): Promise<string|undefined> {
