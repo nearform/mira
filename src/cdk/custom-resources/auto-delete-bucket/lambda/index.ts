@@ -24,7 +24,6 @@ interface Properties {
 export const handler = async (
   event: CustomResourceProviderRequest<Properties>
 ): Promise<void> => {
-  console.log(JSON.stringify(event, null, 2))
   const { RequestType, ResourceProperties: { BucketName } = {} } = event
 
   let status = 'SUCCESS'

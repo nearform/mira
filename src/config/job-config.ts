@@ -135,9 +135,6 @@ export default class MiraConfig {
           const envData: EnvData = loadEnvironment(envKey)
           return massageEnvData(envData, false)
         })
-        if (!config.get('cicd.buildspec_file')) {
-          throw new Error('Missing config.cicd.buildspec_file')
-        }
         const details: CICDDetails = {
           stackName: deploymentStackName,
           role: loadAWSProfile(config.get('cicd.profile')),

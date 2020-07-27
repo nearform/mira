@@ -51,6 +51,12 @@ describe('Validators', () => {
     expect(validators.isValidDomain('a.c')).toBeFalsy()
   })
 
+  it('isValidGitBranchName', async () => {
+    expect(await validators.isValidGitBranchName('')).toBeFalsy()
+    expect(await validators.isValidGitBranchName(' ')).toBeFalsy()
+    expect(await validators.isValidGitBranchName('value')).toBeTruthy()
+  })
+
   it('isValidEnvironmentNameList', async () => {
     expect(validators.isValidEnvironmentNameList('ab')).toBeTruthy()
     expect(validators.isValidEnvironmentNameList('a1')).toBeTruthy()

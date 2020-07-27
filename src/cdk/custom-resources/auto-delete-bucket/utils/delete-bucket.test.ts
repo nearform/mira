@@ -101,4 +101,39 @@ describe('delete bucket', () => {
       }
     })
   })
+
+  it('deletes all objects from the bucket without Versions and DeleteMarkers value without Key', async () => {
+    mockListObjectVersionsPromise.mockResolvedValue({
+      IsTruncated: false,
+      DeleteMarkers: [{ VersionId: 'v3', RandomKey: 'test3' }]
+    })
+
+    await deleteBucket('testBucket')
+
+    expect(mockListObjectVersions).toBeCalledTimes(1)
+    expect(mockListObjectVersions).toBeCalledWith({ Bucket: 'testBucket' })
+
+    expect(mockDeleteObjects).toBeCalledTimes(1)
+    expect(mockDeleteObjects).toBeCalledWith({
+      Bucket: 'testBucket',
+      Delete: {
+        Objects: [
+          { Key: '', VersionId: 'v3' }
+        ]
+      }
+    })
+  })
+
+  it('deletes all objects from the bucket without Versions and DeleteMarkers', async () => {
+    mockListObjectVersionsPromise.mockResolvedValue({
+      IsTruncated: false
+    })
+
+    await deleteBucket('testBucket')
+
+    expect(mockListObjectVersions).toBeCalledTimes(1)
+    expect(mockListObjectVersions).toBeCalledWith({ Bucket: 'testBucket' })
+
+    expect(mockDeleteObjects).toBeCalledTimes(0)
+  })
 })

@@ -48,7 +48,6 @@ export async function isValidGitBranchName (input: string): Promise<unknown> {
 
     execFile('git', ['check-ref-format', '--branch', input], (error) => {
       if (error?.code) {
-        console.log(`\nNot a valid branch name: ${input}`)
         return resolve(false)
       }
       resolve(true)

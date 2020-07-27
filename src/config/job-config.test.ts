@@ -300,6 +300,8 @@ describe('MiraJobConfig', () => {
       mockConfigHandler(healthyConfig)
       expect(() => new MiraJobConfig('deploy')).toThrowError('Cannot deploy environment undefined')
 
+      expect(() => new MiraJobConfig('')).toThrowError('Cannot resolve deployment type')
+
       let brokenConfig
 
       brokenConfig = _.cloneDeep(healthyConfig)
