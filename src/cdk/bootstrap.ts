@@ -47,7 +47,12 @@ export class MiraBootstrap {
     const envConfig = MiraConfig.getEnvironment(this.env)
     this.env = envConfig.name
     if (this.args.role) {
-      await assumeRole(this.args.role)
+      try {
+        await assumeRole(this.args.role)
+      } catch (error) {
+        console.warn(chalk.red('Error Assuming Role'), error.message)
+        return
+      }
     }
     let cmd = 'deploy'
     if (undeploy) {

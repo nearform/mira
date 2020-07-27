@@ -80,13 +80,15 @@ Clone your newly created repository and follow the instructions below.
    ```
    __Note:__ `config/dev.json` file is specific to your personal setup and should not be tracked in GIT.
 
-7. Bootstrap AWS CDK on target AWS account and region, e.g.:
+7. If you want to restrict access to your AWS User, attach the policy you find in `aws-policy.json` file.
+
+8. Bootstrap AWS CDK on target AWS account and region, e.g.:
     ```bash
    cdk bootstrap aws://YOUR_NUMBER/YOUR_REGION --profile YOUR_PROFILE
    ```
    __Note:__ If CDK is already bootstrapped, you can skip this step.
    
-8. Deploy
+9. Deploy
 
    ```bash
    npm run deploy
