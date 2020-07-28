@@ -80,7 +80,7 @@ Clone your newly created repository and follow the instructions below.
    ```
    __Note:__ `config/dev.json` file is specific to your personal setup and should not be tracked in GIT.
 
-7. If you want to restrict access to your AWS User, attach the policy you find in `aws-policy.json` file.
+7. If you want to restrict access to your AWS User, go to your user's page in IAM click on "Add Permissions" -> "Attach existing policies directly" -> "Create Policy" -> JSON and paste the content of `aws-policy.json` file.
 
 8. Bootstrap AWS CDK on target AWS account and region, e.g.:
     ```bash
