@@ -29,6 +29,8 @@ describe('MiraServiceStack', () => {
 
   it('has app initialized', async () => {
     const miraServiceStackInstance = new MiraServiceStack(app, 'env', 'sufix')
+    // Because the resolved promise doesn't return anything
+    // this "undefined" test is actually testing if there was no errors
     expect(await miraServiceStackInstance.initialize()).toEqual(undefined)
     expect(await miraServiceStackInstance.initialized).toBe(undefined)
   })
