@@ -14,7 +14,7 @@ jest.mock('aws-sdk', () => ({
   ...jest.requireActual('aws-sdk'),
   IAM: jest.fn().mockReturnValue({
     getUser: () => ({
-      promise: () => ({ User: { UserName: 'test-user' } })
+      promise: jest.fn().mockReturnValue({ User: { UserName: 'test-user' } })
     })
   })
 }))
