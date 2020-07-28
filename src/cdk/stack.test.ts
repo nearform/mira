@@ -1,11 +1,22 @@
 import { MiraServiceStack, MiraStack } from './stack'
 import { MiraApp } from './app'
 import { MiraConfig } from '../config/mira-config'
+
 import { Stack, CfnOutput, Tag } from '@aws-cdk/core'
+jest.mock('config')
 
 jest.mock('@aws-cdk/core', () => ({
   ...jest.requireActual('@aws-cdk/core'),
   CfnOutput: jest.fn()
+}))
+
+jest.mock('aws-sdk', () => ({
+  ...jest.requireActual('aws-sdk'),
+  IAM: jest.fn().mockReturnValue({
+    getUser: () => ({
+      promise: () => ({ User: { UserName: 'test-user' } })
+    })
+  })
 }))
 
 MiraConfig.getEnvironment = jest.fn().mockReturnValue({
