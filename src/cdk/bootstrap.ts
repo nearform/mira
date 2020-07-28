@@ -347,6 +347,11 @@ export class MiraBootstrap {
         }
         break
       case 'undeploy':
+        if (!this.args.file) {
+          console.warn(chalk.red('Error Initializing'), 'Must supply' +
+            ' a --file=<stackFile> argument.')
+          return
+        }
         this.stackFile = this.args.file
         transpiledStackFile = await this.transpile()
         if (transpiledStackFile) {
