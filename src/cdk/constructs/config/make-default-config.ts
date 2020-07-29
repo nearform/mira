@@ -69,14 +69,24 @@ export default async function configWizard (): Promise<void> {
     ])
 
   const { account, region, name, prefix, profile } = answers
+
   const config: object = {
-    account,
-    region,
     app: {
-      name,
-      prefix
+      prefix,
+      name
     },
-    profile
+    dev: {
+      target: 'default'
+    },
+    accounts: {
+      default: {
+        env: {
+          account,
+          region
+        },
+        profile
+      }
+    }
   }
 
   createDefaultJSON(config)
