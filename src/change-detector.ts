@@ -48,7 +48,7 @@ export default class ChangeDetector {
   public async takeSnapshot (outputFile: string): Promise<null> {
     return new Promise((resolve, reject) => {
       glob(`${this.rootPath}/**`, {
-        ignore: ['**/node_modules/**', '**/cdk.out/**']
+        ignore: ['**/node_modules/**', '**/cdk.out/**', '**/mira-err**']
       }, async (err, res) => {
         if (err) {
           return reject(err)
