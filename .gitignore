@@ -125,3 +125,4 @@ dist
 !bin/*.js
 .ts-build-cache
 .mira.snapshot
+mira-error-logs*
