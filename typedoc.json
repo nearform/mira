@@ -1,0 +1,10 @@
+{
+  "name": "Mira",
+  "includeVersion": true,
+  "inputFiles": ["./src"],
+  "exclude": ["**/*+(index|.spec|.e2e|.test).ts"],
+  "mode": "modules",
+  "out": "docs/api/",
+  "theme": "minimal",
+  "readme": "docs/api.md"
+}
