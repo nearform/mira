@@ -43,15 +43,15 @@ export class MiraServiceStack extends cdk.Stack {
     }
 
     /**
-   * Applies security policies.
-   */
+     * Applies security policies.
+     */
     applyPolicies (customList: any): void {
       this.node.applyAspect(new Policies(customList))
     }
 
     /**
-   * Initialize this component in some async way.
-   */
+     * Initialize this component in some async way.
+     */
     async initialize (): Promise<unknown> {
       const iam = new aws.IAM()
       const owner = await iam.getUser().promise()

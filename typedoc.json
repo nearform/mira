@@ -2,8 +2,8 @@
   "name": "Mira",
   "includeVersion": true,
   "inputFiles": ["./src"],
-  "exclude": ["**/*+(index|.spec|.e2e|.test).ts"],
-  "mode": "modules",
+  "exclude": ["**/*+(index|.spec|.e2e|.test).ts", "**/__mocks__/*"],
+  "mode": "file",
   "out": "docs/api/",
   "theme": "minimal",
   "readme": "docs/api.md"

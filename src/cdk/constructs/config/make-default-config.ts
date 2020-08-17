@@ -4,6 +4,12 @@ import fs from 'fs'
 import path from 'path'
 import { buildSearchRegions } from './autocomplete'
 import * as validators from './validators'
+
+/**
+ * The default directory where Mira expects configuration files.
+ * Note: The path is relative to the root directory so ROOTDIR/config.
+ * @ignore
+ */
 const configDirPath = 'config'
 
 function createDefaultJSON (config: object): void {

@@ -2,6 +2,14 @@
 import aws from 'aws-sdk'
 import { execFileSync } from 'child_process'
 
+/**
+ * Allow Mira to assume a role based on a given arn. This is used for deployment
+ * and allows Mira to use the account specified in the configuration file.
+ *
+ * @internal
+ * @throws Cannot assume role ${roleArn}: Invalid Role
+ * @throws Cannot assume role ${roleArn}: Reason
+ */
 export async function assumeRole (roleArn: string): Promise<void> {
   console.log(`Assuming role ${roleArn}`)
   const sts = new aws.STS()

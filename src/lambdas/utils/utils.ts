@@ -6,8 +6,19 @@ import { ResourceRecordSets } from 'aws-sdk/clients/route53'
 const sleep = function (ms: number): Promise<unknown> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+/**
+ * The maximum number of attempts made in resolving various resources such as
+ * DNS records or Certificates.
+ * @ignore
+ */
 const maxAttempts = 10
 
+/**
+ * An Enum representing Route 53 Actions
+ *
+ * @ignore
+ */
 export enum Route53Action {
   UPSERT = 'UPSERT',
   CREATE = 'CREATE',

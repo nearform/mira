@@ -10,8 +10,11 @@ import {
 
 // Initially based on https://github.com/aws/aws-cdk/issues/929#issuecomment-516511171
 
-// AWS Regions list that supports serverless Postgres aurora.  List should be curated based on https://aws.amazon.com/rds/aurora/pricing/
-
+/**
+ * AWS Regions list that supports serverless Postgres aurora.
+ * List should be curated based on https://aws.amazon.com/rds/aurora/pricing/
+ * @ignore
+ */
 const supportedRegions = [
   'ap-northeast-1',
   'eu-west-1',

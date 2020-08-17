@@ -2,6 +2,11 @@ import { exec } from 'child_process'
 import glob from 'glob'
 import path from 'path'
 
+/**
+ * The Transpiler class allows Mira to compile recently changed TypeScript files to save time on larger code bases.
+ * It respects any existing `tsconfig.json` file within the project.
+ * @internal
+ */
 class Transpiler {
   filePath: string
   constructor (filePath: string) {

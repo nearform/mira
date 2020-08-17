@@ -1,5 +1,6 @@
 import S3, { ObjectIdentifierList } from 'aws-sdk/clients/s3'
 
+/** @ignore  */
 const s3 = new S3()
 
 export const deleteBucket = async (bucketName: string): Promise<void> => {

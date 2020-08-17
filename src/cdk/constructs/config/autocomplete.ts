@@ -1,3 +1,9 @@
+/**
+ * This module provides the AWS region autocomplete for the config bootstrap.
+ * @internal
+ */
+
+/** @ignore */
 const REGIONS = [
   'us-east-2',
   'us-east-1',
@@ -24,6 +30,12 @@ const REGIONS = [
   'us-gov-west-1'
 ]
 
+/**
+ * Build an autocomplete list of AWS regions
+ *
+ * @internal
+ * @ignore
+ * */
 export function buildSearchRegions () {
   return async function searchRegions (this: unknown, _: unknown, input: string): Promise<string[]> {
     input = input || ''

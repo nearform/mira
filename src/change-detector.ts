@@ -8,10 +8,17 @@ import tmp from 'tmp'
 interface FileData {
   [key: string]: string
 }
+
+/** @ignore  */
 const read = promisify(fs.readFile).bind(fs)
+/** @ignore  */
 const stat = promisify(fs.stat).bind(fs)
+/** @ignore  */
 const write = promisify(fs.writeFile).bind(fs)
 
+/**
+ * @internal
+ */
 export default class ChangeDetector {
   rootPath: string
   snapshotFile = '.mira.snapshot'
