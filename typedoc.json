@@ -1,10 +1,12 @@
 {
   "name": "Mira",
   "includeVersion": true,
-  "inputFiles": ["./src"],
-  "exclude": ["**/*+(index|.spec|.e2e|.test).ts", "**/__mocks__/*"],
+  "inputFiles": ["."],
+  "exclude": ["**/*+(.spec|.e2e|.test).ts", "**/__mocks__/*"],
   "mode": "file",
   "out": "docs/api/",
   "theme": "minimal",
-  "readme": "docs/api.md"
+  "readme": "docs/api.md",
+  "includeDeclarations": true,
+  "excludeExternals": true
 }

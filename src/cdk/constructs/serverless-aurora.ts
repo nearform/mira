@@ -32,6 +32,14 @@ export interface ServerlessAuroraProps {
   readonly vpc: IVpc
 }
 
+/**
+ * A Construct representing a Serverless Aurora Database for use with Mira
+ *
+ * @export
+ * @class ServerlessAurora
+ * @extends {Construct}
+ * @implements {ISecretAttachmentTarget}
+ */
 export class ServerlessAurora extends Construct implements ISecretAttachmentTarget {
   public securityGroupId: string
   public clusterIdentifier: string
@@ -49,11 +57,13 @@ export class ServerlessAurora extends Construct implements ISecretAttachmentTarg
     const isTestRegion = region.startsWith('test-')
     const isToken = Tokenization.isResolvable(region)
     if (!isToken && !isTestRegion && !supportedRegions.includes(region + '')) {
-      // The stackName is not available at this stage if the root stack is intherith from a MiraStack.
+      // The stackName is not available at this stage if the root stack is inherited from a MiraStack.
       // Requires a further investigation on the token resolution process.
       // In this specific case is not important to have the StackName than the resolution is postponed
-      // throw new Error(`The region (${region}) used for ${stackName} does not support Amazon Aurora serverless PostreSQL.  Please change the default region in the AWS credentials file, use another profile, or update cdk.json.  Supported regions are: ${supportedRegions.join(', ')}.`)
-      throw new Error(`The region (${region}) used does not support Amazon Aurora serverless PostreSQL.  Please change the default region in the AWS credentials file, use another profile, or update cdk.json.  Supported regions are: ${supportedRegions.join(', ')}.`)
+      // throw new Error(`The region (${region}) used for ${stackName} does not support Amazon Aurora serverless PostgreSQL.
+      // Please change the default region in the AWS credentials file, use another profile, or update cdk.json.
+      // Supported regions are: ${supportedRegions.join(', ')}.`)
+      throw new Error(`The region (${region}) used does not support Amazon Aurora serverless PostgreSQL.  Please change the default region in the AWS credentials file, use another profile, or update cdk.json.  Supported regions are: ${supportedRegions.join(', ')}.`)
     }
 
     this.vpc = props.vpc

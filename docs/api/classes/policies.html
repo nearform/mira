@@ -2708,8 +2708,6 @@ img {
 							</div>
 							<input type="checkbox" id="tsd-filter-inherited" checked />
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-							<input type="checkbox" id="tsd-filter-externals" checked />
-							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
 							<input type="checkbox" id="tsd-filter-only-exported" />
 							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
@@ -2728,15 +2726,6 @@ img {
 				<li class=" tsd-kind-constructor tsd-parent-kind-class">
 					<a href="policies.html#constructor" class="tsd-kind-icon">constructor</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a href="policies.html#allowedservices" class="tsd-kind-icon">allowed<wbr>Services</a>
-				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a href="policies.html#policiesresourcetype" class="tsd-kind-icon">policies<wbr>Resource<wbr>Type</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a href="policies.html#actionsallowed" class="tsd-kind-icon">actions<wbr>Allowed</a>
-				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class">
 					<a href="policies.html#visit" class="tsd-kind-icon">visit</a>
 				</li>
@@ -2746,6 +2735,20 @@ img {
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
+		<section class="tsd-panel tsd-comment">
+			<div class="tsd-comment tsd-typography">
+				<div class="lead">
+					<p>The Policy class is used by Mira to validate policy aspects of various cloud services.</p>
+				</div>
+				<dl class="tsd-comment-tags">
+					<dt>export</dt>
+					<dd></dd>
+					<dt>implements</dt>
+					<dd><p>{cdk.IAspect}</p>
+					</dd>
+				</dl>
+			</div>
+		</section>
 		<section class="tsd-panel tsd-hierarchy">
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
@@ -2770,17 +2773,9 @@ img {
 							<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="policies.html#constructor" class="tsd-kind-icon">constructor</a></li>
 						</ul>
 					</section>
-					<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
-						<h3>Properties</h3>
-						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="policies.html#allowedservices" class="tsd-kind-icon">allowed<wbr>Services</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="policies.html#policiesresourcetype" class="tsd-kind-icon">policies<wbr>Resource<wbr>Type</a></li>
-						</ul>
-					</section>
 					<section class="tsd-index-section ">
 						<h3>Methods</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="policies.html#actionsallowed" class="tsd-kind-icon">actions<wbr>Allowed</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class"><a href="policies.html#visit" class="tsd-kind-icon">visit</a></li>
 						</ul>
 					</section>
@@ -2799,7 +2794,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/cbd5140/src/cdk/aspects/security/policies.ts#L13">src/cdk/aspects/security/policies.ts:13</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/856938d/src/cdk/aspects/security/policies.ts#L20">src/cdk/aspects/security/policies.ts:20</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2813,66 +2808,8 @@ img {
 				</ul>
 			</section>
 		</section>
-		<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
-			<h2>Properties</h2>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-				<a name="allowedservices" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagPrivate">Private</span> allowed<wbr>Services</h3>
-				<div class="tsd-signature tsd-kind-icon">allowed<wbr>Services<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [&#x27;mobileanalytics:PutEvents&#x27;,&#x27;cognito-idp:CreateUserPool&#x27;,&#x27;secretsmanager:GetRandomPassword&#x27;,&#x27;ec2:AllocateAddress&#x27;,&#x27;ec2:AssociateRouteTable&#x27;,&#x27;ec2:AttachInternetGateway&#x27;,&#x27;ec2:CreateInternetGateway&#x27;,&#x27;ec2:CreateNatGateway&#x27;,&#x27;ec2:CreateRoute&#x27;,&#x27;ec2:CreateRouteTable&#x27;,&#x27;ec2:CreateSecurityGroup&#x27;,&#x27;ec2:CreateSubnet&#x27;,&#x27;ec2:CreateVpc&#x27;,&#x27;ec2:DeleteNatGateway&#x27;,&#x27;ec2:DeleteSubnet&#x27;,&#x27;ec2:DeleteVpc&#x27;,&#x27;ec2:Describe*&#x27;,&#x27;ec2:DetachInternetGateway&#x27;,&#x27;ec2:DisassociateAddress&#x27;,&#x27;ec2:DisassociateRouteTable&#x27;,&#x27;ec2:ModifySubnetAttribute&#x27;,&#x27;ec2:ModifyVpcAttribute&#x27;,&#x27;ec2:ReleaseAddress&#x27;,&#x27;acm:RequestCertificate&#x27;,&#x27;acm:DescribeCertificate&#x27;,&#x27;acm:DeleteCertificate&#x27;,&#x27;acm:ListCertificates&#x27;,&#x27;route53:GetChange&#x27;,&#x27;route53:ListResourceRecordSets&#x27;,&#x27;cloudfront:GetInvalidation&#x27;,&#x27;cloudfront:CreateInvalidation&#x27;,&#x27;personalize:CreateSchema&#x27;,&#x27;personalize:DeleteSchema&#x27;,&#x27;personalize:CreateDatasetGroup&#x27;,&#x27;personalize:DeleteDatasetGroup&#x27;,&#x27;personalize:CreateDataset&#x27;,&#x27;personalize:DeleteDataset&#x27;,&#x27;personalize:CreateDatasetImportJob&#x27;]</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/cbd5140/src/cdk/aspects/security/policies.ts#L26">src/cdk/aspects/security/policies.ts:26</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>reasons why to exclude some actions from validation:</p>
-					</div>
-					<p><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazonmobileanalytics.html">https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazonmobileanalytics.html</a>
-					<a href="https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-certificatemanager/lib/dns-validated-certificate.ts">https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-certificatemanager/lib/dns-validated-certificate.ts</a></p>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-				<a name="policiesresourcetype" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> policies<wbr>Resource<wbr>Type</h3>
-				<div class="tsd-signature tsd-kind-icon">policies<wbr>Resource<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [CfnQueuePolicy.CFN_RESOURCE_TYPE_NAME,CfnBucketPolicy.CFN_RESOURCE_TYPE_NAME,CfnManagedPolicy.CFN_RESOURCE_TYPE_NAME,CfnPolicy.CFN_RESOURCE_TYPE_NAME,CfnVPCEndpoint.CFN_RESOURCE_TYPE_NAME,CfnTopicPolicy.CFN_RESOURCE_TYPE_NAME]</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/cbd5140/src/cdk/aspects/security/policies.ts#L70">src/cdk/aspects/security/policies.ts:70</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The list of services that supports policyDocument</p>
-					</div>
-				</div>
-			</section>
-		</section>
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Methods</h2>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-				<a name="actionsallowed" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagPrivate">Private</span> actions<wbr>Allowed</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<li class="tsd-signature tsd-kind-icon">actions<wbr>Allowed<span class="tsd-signature-symbol">(</span>actions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/cbd5140/src/cdk/aspects/security/policies.ts#L79">src/cdk/aspects/security/policies.ts:79</a></li>
-							</ul>
-						</aside>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5>actions: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 				<a name="visit" class="tsd-anchor"></a>
 				<h3>visit</h3>
@@ -2883,7 +2820,7 @@ img {
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/cbd5140/src/cdk/aspects/security/policies.ts#L83">src/cdk/aspects/security/policies.ts:83</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/856938d/src/cdk/aspects/security/policies.ts#L98">src/cdk/aspects/security/policies.ts:98</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>

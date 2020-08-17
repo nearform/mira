@@ -10,7 +10,21 @@ import { Provider } from '@aws-cdk/custom-resources'
 import { Bucket, BucketProps } from '@aws-cdk/aws-s3'
 import { SingletonFunction, Runtime, Code } from '@aws-cdk/aws-lambda'
 
+/**
+ * A construct representing an AutoDeleteBucket
+ *
+ * @class AutoDeleteBucket
+ * @extends {Bucket}
+ * @category Construct
+ */
 export class AutoDeleteBucket extends Bucket {
+  /**
+   * Creates an instance of AutoDeleteBucket.
+   * @param {Construct} scope
+   * @param {string} id
+   * @param {BucketProps} [props={}]
+   * @memberof AutoDeleteBucket
+   */
   constructor (scope: Construct, id: string, props: BucketProps = {}) {
     if (props.removalPolicy && props.removalPolicy !== RemovalPolicy.DESTROY) {
       throw new Error('"removalPolicy" must be DESTROY')
