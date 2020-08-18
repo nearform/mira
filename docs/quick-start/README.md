@@ -302,7 +302,7 @@ If you have exhausted other possible causes and issues for a deployment failure,
 - Click `Delete` from the top menu bar and confirm.
 - Once deleted you can bootstrap the CDK again as documented above.
 
-If you delete the CDK Toolkit, you will not be able to deploy until it has been recreated and any future deployments will fail. This includes any configured CI/CD pipelines.
+*Please note* that if you delete the CDK Toolkit environment, you will not be able to deploy any new or existing Mira applications until it has been recreated. This also includes any configured CI/CD pipelines.
 
 
 <!---- External links ---->
