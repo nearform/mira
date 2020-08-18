@@ -291,7 +291,7 @@ You can resolve this by running `npx mira init` or checking your configuration f
 
 ### CDK Deployment Issues
 
-Deployment of Mira applications requires a bootstrapped CDK environment. This is created when you run the bootstrap command during initial set up (`cdk bootstrap`). This command creates a workspace where temporary assets and configurations can be stored during deployment. On rare occasions this work space can become corrupted and cause strange or unexplained failures such as permission issues. For example, on the S3 Sample application, it can manifest as a permission issue when attempting to copy files to the destination S3 bucket even though the deployment user may have administrator privilege.
+Deployment of Mira applications requires a bootstrapped CDK environment. This is created when you run the bootstrap command during initial set up (`cdk bootstrap`). This command creates a workspace where temporary assets and configurations can be stored during deployment. On rare occasions this workspace can become corrupted and cause strange or unexplained failures such as permission issues. For example, on the S3 Sample application, it can manifest as a permission issue when attempting to copy files to the destination S3 bucket even though the deployment user may have administrator privilege.
 
 If you have exhausted other possible causes and issues for a deployment failure, you can delete the CDK Toolkit and recreate it using the following steps:
 
