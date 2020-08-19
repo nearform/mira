@@ -7,6 +7,6 @@
   "out": "docs/api/",
   "theme": "minimal",
   "readme": "docs/api.md",
-  "includeDeclarations": true,
+  "includeDeclarations": false,
   "excludeExternals": true
 }
