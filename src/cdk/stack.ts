@@ -138,7 +138,7 @@ export class MiraStack extends NestedStack implements ExportOutputs {
     }
 
     /**
-   * Initialize this component in some async way.
+   * Initialize this component in an asynchronous manner.
    */
     initialize (): Promise<unknown> {
       return Promise.resolve()

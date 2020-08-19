@@ -3,7 +3,7 @@
  * @internal
  */
 
-/** @ignore */
+/** @ignore - Excluded from documentation generation. */
 const REGIONS = [
   'us-east-2',
   'us-east-1',
@@ -34,7 +34,7 @@ const REGIONS = [
  * Build an autocomplete list of AWS regions
  *
  * @internal
- * @ignore
+ * @ignore - Excluded from documentation generation.
  * */
 export function buildSearchRegions () {
   return async function searchRegions (this: unknown, _: unknown, input: string): Promise<string[]> {

@@ -10,14 +10,15 @@ const sleep = function (ms: number): Promise<unknown> {
 /**
  * The maximum number of attempts made in resolving various resources such as
  * DNS records or Certificates.
- * @ignore
+ *
+ * @ignore - Excluded from documentation generation.
  */
 const maxAttempts = 10
 
 /**
  * An Enum representing Route 53 Actions
  *
- * @ignore
+ * @ignore - Excluded from documentation generation.
  */
 export enum Route53Action {
   UPSERT = 'UPSERT',

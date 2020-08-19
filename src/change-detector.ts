@@ -9,11 +9,13 @@ interface FileData {
   [key: string]: string
 }
 
-/** @ignore  */
+/** @ignore - Excluded from documentation generation.  */
 const read = promisify(fs.readFile).bind(fs)
-/** @ignore  */
+
+/** @ignore - Excluded from documentation generation.  */
 const stat = promisify(fs.stat).bind(fs)
-/** @ignore  */
+
+/** @ignore - Excluded from documentation generation.  */
 const write = promisify(fs.writeFile).bind(fs)
 
 /**

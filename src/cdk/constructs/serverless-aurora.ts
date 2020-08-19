@@ -13,7 +13,8 @@ import {
 /**
  * AWS Regions list that supports serverless Postgres aurora.
  * List should be curated based on https://aws.amazon.com/rds/aurora/pricing/
- * @ignore
+ *
+ * @ignore - Excluded from documentation generation.
  */
 const supportedRegions = [
   'ap-northeast-1',
@@ -34,11 +35,6 @@ export interface ServerlessAuroraProps {
 
 /**
  * A Construct representing a Serverless Aurora Database for use with Mira
- *
- * @export
- * @class ServerlessAurora
- * @extends {Construct}
- * @implements {ISecretAttachmentTarget}
  */
 export class ServerlessAurora extends Construct implements ISecretAttachmentTarget {
   public securityGroupId: string

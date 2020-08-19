@@ -2,11 +2,11 @@ import configModule from 'config'
 import { pascalCase } from 'change-case'
 import parseGitUrl from 'git-url-parse'
 
-/** @ignore */
+/** @ignore - Excluded from documentation generation. */
 // eslint-disable-next-line
 const minimist = require('minimist')
 
-/** @ignore */
+/** @ignore - Excluded from documentation generation. */
 const args = minimist(process.argv)
 
 export interface AccountEnvData {
@@ -72,7 +72,7 @@ enum CONFIG_KEYS {
 /**
  * Command line arguments that do not require a configuration file to run.
  * @internal
- * @ignore
+ * @ignore - Excluded from documentation generation.
  */
 const whitelistedArgs: string[] = ['docs', 'init']
 
@@ -86,18 +86,12 @@ class MiraConfigClass {
   /**
    * The project name comes from the `app.name` property of the default.json configuration file.
    * It represents the name of the application being deployed.
-   *
-   * @type {string}
-   * @memberof MiraConfigClass
    */
   public readonly projectName: string
 
   /**
    * The project prefix comes from the `app.prefix` property of the default.json configuration file.
    * It represents a prefix added to the application name (eg prefix-name) during deployment.
-   *
-   * @type {string}
-   * @memberof MiraConfigClass
    */
   public readonly projectPrefix: string
 
@@ -117,9 +111,6 @@ class MiraConfigClass {
    * Stores a reference to the environment name we will be deploying to.
    * The name should be one of the accounts listed in the configuration file
    * `accounts` object.
-   *
-   * @type {string}
-   * @memberof MiraConfigClass
    */
   public defaultEnvironmentName: string
 

@@ -11,9 +11,10 @@ import path from 'path'
 import format from 'dateformat'
 import { promisify } from 'util'
 
-/** @ignore  */
+/** @ignore - Excluded from documentation generation.  */
 const unlink = promisify(fs.unlink).bind(fs)
-/** @ignore  */
+
+/** @ignore - Excluded from documentation generation.  */
 const readdir = promisify(fs.readdir).bind(fs)
 
 /**
@@ -31,9 +32,6 @@ export default class ErrorLogger {
 
   /**
    * Flush messages to the output stream.
-   *
-   * @param {string[]} messages
-   * @memberof ErrorLogger
    */
   flushMessages (messages: string[]): void {
     // do not run if in AWS CodeBuild
@@ -48,9 +46,6 @@ export default class ErrorLogger {
 
   /**
    * Remove older Mira Error Log files
-   *
-   * @returns {Promise<void>}
-   * @memberof ErrorLogger
    */
   async cleanMessages (): Promise<void> {
     const files = await readdir(process.cwd())

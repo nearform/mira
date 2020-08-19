@@ -1,6 +1,10 @@
 import { sendResponse } from '../../utils/send-response'
 import { IAM } from 'aws-sdk'
 
+/**
+ * IAM class
+ * @ignore - Excluded from documentation generation.
+ */
 const iam = new IAM()
 
 export const handler = async (event: any): Promise<void> => {

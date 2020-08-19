@@ -20,7 +20,7 @@ interface RepoConfig {
   readonly codeCommitUserPublicKey?: string
 }
 
-/** @ignore */
+/** @ignore - Excluded from documentation generation. */
 enum Deployment {
   CICD = 'CICD',
   DomainManager = 'DomainManager',
