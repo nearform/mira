@@ -8,7 +8,7 @@ import { execFileSync } from 'child_process'
  *
  * @internal
  * @throws Cannot assume role ${roleArn}: Invalid Role
- * @throws Cannot assume role ${roleArn}: <other reason>
+ * @throws Cannot assume role ${roleArn}: &lt;other reason&gt;
  */
 export async function assumeRole (roleArn: string): Promise<void> {
   console.log(`Assuming role ${roleArn}`)
