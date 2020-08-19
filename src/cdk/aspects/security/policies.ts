@@ -10,6 +10,9 @@ interface HasPolicyDocument extends cdk.IConstruct {
     cfnResourceType: string
 };
 
+/**
+ * The Policy class is used by Mira to validate policy aspects of various cloud services.
+ */
 export class Policies implements cdk.IAspect {
   constructor (customList?: any) {
     if (customList) {
@@ -22,6 +25,8 @@ export class Policies implements cdk.IAspect {
      *
      * https://docs.aws.amazon.com/IAM/latest/UserGuide/list_amazonmobileanalytics.html
      * https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-certificatemanager/lib/dns-validated-certificate.ts
+     *
+     * @ignore - Excluded from documentation generation.
      */
     private allowedServices: string[] = [
       'mobileanalytics:PutEvents',
@@ -66,6 +71,8 @@ export class Policies implements cdk.IAspect {
 
     /**
      * The list of services that supports policyDocument
+     *
+     * @ignore - Excluded from documentation generation.
      */
     private readonly policiesResourceType: string[] = [
       CfnQueuePolicy.CFN_RESOURCE_TYPE_NAME,
@@ -76,6 +83,10 @@ export class Policies implements cdk.IAspect {
       CfnTopicPolicy.CFN_RESOURCE_TYPE_NAME
     ]
 
+    /**
+     *
+     * @ignore - Excluded from documentation generation.
+     */
     private actionsAllowed (actions: string[]): boolean {
       return actions.filter((action: string) => !this.allowedServices.includes(action)).length === 0
     }

@@ -23,13 +23,13 @@ Ensure all your tests pass and linting is successful before opening a PR.
 
 Each release consists of three steps:
 
-1. Update the package version and commit it to the repository.
+1. Update the auto-generated documentation and package version, then commit them to the repository.
 2. Tag the package version commit with the same version number.
 3. Publish the new version of the package to NPM Packages.
 
 At the end of the release, there should be a commit on `master` tagged with the package version, and the package is published to the NPM packages repository in this git repository.
 
-### 1. Update the Package Version
+### 1. Update the Package Version and Documentation
 
 Ensure you are on the `master` branch, have pulled the latest version, and there are no outstanding changes.
 
@@ -46,10 +46,11 @@ The `npm version` command updates the minor version using the `minor` command, b
 npm version --no-git-tag-version minor
 ```
 
-This changes `package.json` and `package-lock.json` to have the new version `1.1.0`. Checkout a new branch and then commit these changes with the following commands:
+This changes `package.json` and `package-lock.json` to have the new version `1.1.0`. Checkout a new branch, regenerate the documentation and then commit these changes with the following commands:
 
 ```bash
 git checkout -B chore/version-1.1.0
+npm run typedoc
 git add -A
 git commit -m '1.1.0'
 git push -u origin HEAD

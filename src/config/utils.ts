@@ -10,8 +10,10 @@ export interface RoleConfig {
   readonly region: string
 }
 
-// It is important that we disallow undefined here,
-// otherwise resource name collisions may occur
+/**
+ * It is important that we disallow undefined here, otherwise resource name collisions may occur
+ * @internal
+ */
 export function nameResource (namespace: string, ...subNames: string[]): string {
   return [namespace, ...subNames].map(str => pascalCase(str + '')).join('-')
 }
@@ -31,7 +33,10 @@ export interface Domain {
   readonly webAppUrl: string
 }
 
-// In developer mode build using a sub-domain of the base domain. Otherwise, parse the base domain from the web app URL.
+/**
+ * In developer mode build using a sub-domain of the base domain. Otherwise, parse the base domain from the web app URL.
+ * @internal
+ */
 export function getUrl (envData: EnvData, isDeveloperMode: boolean, stackName: string): Domain {
   // If webAppUrl is specified, always prefer the given value.
   if (envData.webAppUrl) {
@@ -68,8 +73,11 @@ export function getUrl (envData: EnvData, isDeveloperMode: boolean, stackName: s
   return { baseDomain: envData.baseDomain, webAppUrl }
 }
 
-// FIXME: maybe there is a less hacky way to do this?
-// https://stackoverflow.com/questions/44433527/how-to-load-config-from-aws-config
+/**
+ * FIXME: maybe there is a less hacky way to do this?
+ * https://stackoverflow.com/questions/44433527/how-to-load-config-from-aws-config
+ * @internal
+ */
 export function loadAWSProfile (profile: string): RoleConfig {
   // temporarily override
   const cleanups = []

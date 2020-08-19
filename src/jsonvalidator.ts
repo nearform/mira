@@ -1,8 +1,20 @@
+/**
+ * ## Configuration File Validation
+ * The JSON Validator module provides a collection of internal functions used to verify and
+ * validate Mira configuration files. Fluent Schema is used to describe the schema itself and
+ * Ajv provides validation.
+ *
+ * @packageDocumentation
+ */
 import S from 'fluent-schema'
 import Ajv from 'ajv'
 import * as fs from 'fs'
 import * as path from 'path'
-/* This function programmatically defines the default.json file */
+
+/**
+ * This function programmatically defines the default.json file
+ * @internal
+ */
 export function getConfigSchema (): object {
   return S.object()
     .id('default-config')
@@ -74,6 +86,7 @@ export function getConfigSchema (): object {
 
 /**
  * Reads the defined file and returns it.
+ * @internal
  */
 export function readJsonFile (filePath: string): string {
   const file = path.join(__dirname, filePath)
@@ -85,7 +98,10 @@ export function readJsonFile (filePath: string): string {
   return configRaw
 }
 
-/* Uses a programmatically defined schema and validates a data input. */
+/**
+ * Uses a programmatically defined schema and validates a data input.
+ * @internal
+ */
 export function validateConfig (config: object): boolean {
   const ajv = new Ajv({ allErrors: true, coerceTypes: true })
   const valid = ajv.validate(getConfigSchema(), config)

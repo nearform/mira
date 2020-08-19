@@ -10,7 +10,19 @@ import { Provider } from '@aws-cdk/custom-resources'
 import { Bucket, BucketProps } from '@aws-cdk/aws-s3'
 import { SingletonFunction, Runtime, Code } from '@aws-cdk/aws-lambda'
 
+/**
+ * A construct representing an AutoDeleteBucket.
+ *
+ * This construct creates an S3 bucket that will be automatically
+ * emptied before the bucket itself is destroyed. This prevents
+ * Cloud Formation failing to destroy a stack when existing S3 resources
+ * remain.
+ *
+ */
 export class AutoDeleteBucket extends Bucket {
+  /**
+   * @param {BucketProps} [props={}] - Supports the same S3 bucket properties listed in [AWS S3 documentation](https://docs.aws.amazon.com/cdk/api/latest/typescript/api/aws-s3/bucket.html)
+   */
   constructor (scope: Construct, id: string, props: BucketProps = {}) {
     if (props.removalPolicy && props.removalPolicy !== RemovalPolicy.DESTROY) {
       throw new Error('"removalPolicy" must be DESTROY')

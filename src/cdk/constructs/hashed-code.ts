@@ -2,8 +2,11 @@ import { Code, CodeConfig, ResourceBindOptions } from '@aws-cdk/aws-lambda'
 import { Asset, AssetOptions } from '@aws-cdk/aws-s3-assets'
 import { CfnResource, Construct } from '@aws-cdk/core'
 
-// Same as AssetCode but exposes the sourceHash: https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-lambda/lib/code.ts  Feature request to expose sourceHash on the official AssetCode class: https://github.com/aws/aws-cdk/issues/4901
-
+/**
+ * Same as AssetCode but exposes the sourceHash: https://github.com/aws/aws-cdk/blob/master/packages/%40aws-cdk/aws-lambda/lib/code.ts
+ * Feature request to expose sourceHash on the official AssetCode class: https://github.com/aws/aws-cdk/issues/4901
+ *
+ */
 export class HashedCode extends Code {
   private asset?: Asset;
   public readonly isInline = false;
