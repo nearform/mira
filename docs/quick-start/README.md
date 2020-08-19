@@ -289,6 +289,22 @@ Error: Configuration property "app.name" is not defined
 
 You can resolve this by running `npx mira init` or checking your configuration file matches the expected fields. 
 
+### CDK Deployment Issues
+
+On rare occasions you may need to recreate the CDK bootstrap environment. This environment is created when you run `cdk bootstrap` and sets up a workspace where temporary assets and configurations can be stored during deployment. This workspace can sometimes become corrupted and cause strange or unexplained failures such as permission issues. For example, on the S3 Sample application, it can manifest as a permission issue when attempting to copy files to the destination S3 bucket even though the deployment user may have administrator privilege.
+
+If you have exhausted other possible causes and issues for a deployment failure, you can delete the CDK Toolkit and recreate it using the following steps:
+
+- Login to the AWS Web Console
+- (Optional) Switch Roles to match your deployment account
+- Go to CloudFormation Tool
+- Locate the `CDKToolkit` stack and highlight it
+- Click `Delete` from the top menu bar and confirm.
+- Once deleted you can bootstrap the CDK again as documented above.
+
+*Please note* that if you delete the CDK Toolkit environment, you will not be able to deploy any new or existing Mira applications until it has been recreated. This also includes any configured CI/CD pipelines.
+
+
 <!---- External links ---->
 [docs]: https://nf-mira.netlify.com/?#/
 [nvm]: https://github.com/nvm-sh/nvm
