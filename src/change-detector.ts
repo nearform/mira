@@ -20,7 +20,7 @@ const write = promisify(fs.writeFile).bind(fs)
 
 /**
  * The Change Detector Class is used to build and maintain a snapshot of code changes
- * between deployments. If there are no changes, Mira will not preform a deployment.
+ * between deployments. If there are no changes, Mira will not perform a deployment.
  *
  * Mira uses the `.mira.snapshot` file in the root of the application folder to track
  * changes. A file is considered changed if its time stamp is different to the one listed
