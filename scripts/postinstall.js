@@ -3,7 +3,7 @@ const colors = require('colors')
 // eslint-disable-next-line
 const fs = require('fs')
 
-const supportedCdkVersion = '1.49.1'
+const supportedCdkVersion = '1.61.1'
 const supportedCdkVersionString = `"${supportedCdkVersion}"`
 
 /**
