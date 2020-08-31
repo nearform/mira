@@ -17,7 +17,7 @@ Mira consists of the following built-ins:
  * An opinionated set of AWS CDK aspects, e.g. IAM Policy validator. 
  * Complementary sample applications e.g. a simple S3-based web hosting app.
  
-__Note: Currently supported version of the AWS CDK is: *[1.49.1](https://github.com/aws/aws-cdk/releases/tag/v1.49.1)*.__
+__Note: Currently supported version of the AWS CDK is: *[1.60.0](https://github.com/aws/aws-cdk/releases/tag/v1.60.0)*.__
  
 Please make sure your application depends on that exact version of the CDK.
   
