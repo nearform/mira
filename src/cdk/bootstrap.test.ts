@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { MiraApp } from './app'
 import config from 'config'
 import _ from 'lodash'
