@@ -2,12 +2,22 @@ import { MiraServiceStack, MiraStack } from './stack'
 import { MiraApp } from './app'
 import { MiraConfig } from '../config/mira-config'
 
-import { Stack, CfnOutput, Tag } from '@aws-cdk/core'
+import { Stack, CfnOutput } from '@aws-cdk/core'
 jest.mock('config')
+
+const add = jest.fn()
 
 jest.mock('@aws-cdk/core', () => ({
   ...jest.requireActual('@aws-cdk/core'),
-  CfnOutput: jest.fn()
+  CfnOutput: jest.fn(),
+  Tags: {
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    of: () => ({ add })
+  },
+  Aspects: {
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    of: () => ({ add })
+  }
 }))
 
 jest.mock('aws-sdk', () => ({
@@ -33,9 +43,8 @@ describe('MiraServiceStack', () => {
 
   it('applyPolicies calls applyAspect', () => {
     const miraServiceStackInstance = new MiraServiceStack(app, 'env')
-    miraServiceStackInstance.node.applyAspect = jest.fn()
     expect(miraServiceStackInstance.applyPolicies([])).toEqual(undefined)
-    expect(miraServiceStackInstance.node.applyAspect).toBeCalledTimes(1)
+    expect(add).toBeCalledTimes(1)
   })
 
   it('has app initialized', async () => {
@@ -111,21 +120,19 @@ describe('MiraStack Tags', () => {
   })
 
   it('Adds default tags', async () => {
-    Tag.add = jest.fn()
     const app = new MiraApp()
     const miraStackInstance = new MiraServiceStack(app, 'env')
     await miraStackInstance.initialized
 
-    expect(Tag.add).toHaveBeenCalledTimes(2)
+    expect(add).toHaveBeenCalledTimes(2)
   })
 
   it('Adds default tags and cost center', async () => {
-    Tag.add = jest.fn()
     MiraConfig.getCostCenter = jest.fn().mockReturnValue('123')
     const app = new MiraApp()
     const miraStackInstance = new MiraServiceStack(app, 'env')
     await miraStackInstance.initialized
 
-    expect(Tag.add).toHaveBeenCalledTimes(3)
+    expect(add).toHaveBeenCalledTimes(3)
   })
 })

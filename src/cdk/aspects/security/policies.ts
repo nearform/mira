@@ -52,6 +52,7 @@ export class Policies implements cdk.IAspect {
       'ec2:ModifySubnetAttribute',
       'ec2:ModifyVpcAttribute',
       'ec2:ReleaseAddress',
+      'ecr:GetAuthorizationToken',
       'acm:RequestCertificate',
       'acm:DescribeCertificate',
       'acm:DeleteCertificate',

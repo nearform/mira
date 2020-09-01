@@ -8,7 +8,7 @@ import {
 } from '@aws-cdk/aws-codepipeline-actions'
 import { Effect, PolicyStatement, Role, ServicePrincipal, User, IPrincipal } from '@aws-cdk/aws-iam'
 import { Secret } from '@aws-cdk/aws-secretsmanager'
-import { CfnOutput, Construct, Stack, StackProps, Tag } from '@aws-cdk/core'
+import { CfnOutput, Construct, Stack, StackProps, Tags } from '@aws-cdk/core'
 import { Repository } from '@aws-cdk/aws-codecommit'
 import { IAction } from '@aws-cdk/aws-codepipeline/lib/action'
 import { UploadPublicSsh } from '../upload-public-ssh'
@@ -45,7 +45,7 @@ export class Cicd extends Stack {
     super(parent, id, { env: props.env })
     this.pipelineEnvironment = props.environmentVariables
 
-    Tag.add(this, 'StackName', this.stackName)
+    Tags.of(this).add('StackName', this.stackName)
 
     const sourceOutput = new Artifact()
 
@@ -103,7 +103,7 @@ export class Cicd extends Stack {
    * @param callerIdentityResponse
    */
   private getCallerIdentity (callerIdentityResponse: AWS.STS.Types.GetCallerIdentityResponse): IPrincipal {
-    const callerArn = callerIdentityResponse.Arn!
+    const callerArn = callerIdentityResponse?.Arn || ''
     const account = callerArn.split(':')[4]
     const identityName = callerArn.split('/')[1]
     if (callerArn.indexOf(':assumed-role') > 0) {
