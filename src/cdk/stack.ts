@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core'
 import { MiraApp } from './app'
 import { NestedStack } from '@aws-cdk/aws-cloudformation'
-import { CfnOutput, Construct, Stack, Tag } from '@aws-cdk/core'
+import { CfnOutput, Construct, Stack, Aspects, Tags } from '@aws-cdk/core'
 import { IStringParameter, StringParameter } from '@aws-cdk/aws-ssm'
 import { Policies } from './aspects/security/policies'
 import { MiraConfig, Account } from '../config/mira-config'
@@ -46,7 +46,7 @@ export class MiraServiceStack extends cdk.Stack {
      * Applies security policies.
      */
     applyPolicies (customList: any): void {
-      this.node.applyAspect(new Policies(customList))
+      Aspects.of(this).add(new Policies(customList))
     }
 
     /**
@@ -56,13 +56,13 @@ export class MiraServiceStack extends cdk.Stack {
       const iam = new aws.IAM()
       const owner = await iam.getUser().promise()
 
-      Tag.add(this, 'StackName', this.stackName)
-      Tag.add(this, 'CreatedBy', owner.User.UserName)
+      Tags.of(this).add('StackName', this.stackName)
+      Tags.of(this).add('CreatedBy', owner.User.UserName)
 
       const costCenter = MiraConfig.getCostCenter()
 
       if (costCenter) {
-        Tag.add(this, 'CostCenter', costCenter)
+        Tags.of(this).add('CostCenter', costCenter)
       }
 
       return Promise.resolve()
