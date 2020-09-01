@@ -103,6 +103,7 @@ export class Cicd extends Stack {
    * @param callerIdentityResponse
    */
   private getCallerIdentity (callerIdentityResponse: AWS.STS.Types.GetCallerIdentityResponse): IPrincipal {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const callerArn = callerIdentityResponse.Arn!
     const account = callerArn.split(':')[4]
     const identityName = callerArn.split('/')[1]
