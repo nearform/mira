@@ -1,10 +1,11 @@
-import { Route53ManagerAccessRoleStack } from '.'
 import * as cdk from '@aws-cdk/core'
-import { MiraConfig } from '../../../../config/mira-config'
 
 import {
   ManagedPolicy
 } from '@aws-cdk/aws-iam'
+
+import { MiraConfig, DomainConfig } from '../../../../config/mira-config'
+import { Route53ManagerAccessRoleStack } from '.'
 
 describe('Route53ManagerAccessRoleStack', () => {
   it('Throw if hostedZoneId is not in domain config', async () => {
@@ -13,7 +14,9 @@ describe('Route53ManagerAccessRoleStack', () => {
       MiraConfig.getBaseStackName('DomainManager'),
       {}
     )
-    MiraConfig.getDomainConfig = (): any => ({})
+    MiraConfig.getDomainConfig = (): DomainConfig => ({
+      accounts: []
+    })
 
     expect(() => new Route53ManagerAccessRoleStack(stack)).toThrowError(
       'Cannot find hostedZoneId in config.'
@@ -27,14 +30,9 @@ describe('Route53ManagerAccessRoleStack', () => {
       {}
     )
 
-    MiraConfig.getDomainConfig = (): any => ({
-      hostedZoneId: 1,
-      profile: 'mira-dev',
-      name: 'default',
-      target: 'default',
-      dev: {
-        target: 'default'
-      }
+    MiraConfig.getDomainConfig = (): DomainConfig => ({
+      hostedZoneId: '123456',
+      accounts: []
     })
 
     MiraConfig.calculateSharedResourceName = (): string => 'value'
