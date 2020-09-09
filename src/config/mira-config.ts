@@ -9,6 +9,25 @@ const minimist = require('minimist')
 /** @ignore - Excluded from documentation generation. */
 const args = minimist(process.argv)
 
+export interface Config {
+  app: App
+  dev: Dev
+  accounts: {
+    [x: string]: Account
+  }
+  cicd?: CicdConfig
+  domain?: DomainConfig
+}
+
+interface App {
+  prefix: string
+  name: string
+}
+
+interface Dev {
+  target: string
+}
+
 export interface AccountEnvData {
   account: string
   region: string

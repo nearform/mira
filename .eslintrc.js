@@ -15,9 +15,9 @@ module.exports = {
   ],
     rules: {
     // Remove any type warnings.
-    '@typescript-eslint/no-explicit-any':['off',{
-      fixToUnknown: true,
-      ignoreRestArgs: true
+    '@typescript-eslint/no-explicit-any':['error',{
+      fixToUnknown: false,
+      ignoreRestArgs: false
     }],
     // Don't require semicolons in interface definitions
     '@typescript-eslint/member-delimiter-style': ['error', {
