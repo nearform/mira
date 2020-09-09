@@ -52,8 +52,8 @@ interface CicdConfig {
   readonly repositoryName: string
 }
 
-interface DomainConfig {
-  readonly hostedZoneId: string
+export interface DomainConfig {
+  readonly hostedZoneId?: string
   readonly accounts: string[]
 }
 
