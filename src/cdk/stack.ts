@@ -1,11 +1,11 @@
 import * as cdk from '@aws-cdk/core'
-import { MiraApp } from './app'
+import * as aws from 'aws-sdk'
 import { NestedStack } from '@aws-cdk/aws-cloudformation'
 import { CfnOutput, Construct, Stack, Aspects, Tags } from '@aws-cdk/core'
 import { IStringParameter, StringParameter } from '@aws-cdk/aws-ssm'
 import { Policies } from './aspects/security/policies'
 import { MiraConfig, Account } from '../config/mira-config'
-import * as aws from 'aws-sdk'
+import { MiraApp } from './app'
 
 interface ParsedName {
   readonly id: string
@@ -45,7 +45,7 @@ export class MiraServiceStack extends cdk.Stack {
     /**
      * Applies security policies.
      */
-    applyPolicies (customList: any): void {
+    applyPolicies (customList?: string[]): void {
       Aspects.of(this).add(new Policies(customList))
     }
 
@@ -85,6 +85,12 @@ export interface ExportOutputs {
   addOutput (name: string, value: string, shouldExport: boolean): void
 }
 
+interface MiraStackProps {
+  disablePolicies?: boolean
+  approvedWildcardActions?: string[]
+  [x: string]: unknown
+}
+
 /**
  * Note that in Mira, a "stack" is always nested within a service context to
  * support CICD out of the box.
@@ -92,11 +98,11 @@ export interface ExportOutputs {
 export class MiraStack extends NestedStack implements ExportOutputs {
     initialized: Promise<unknown>;
     static stackInstances: Record<string, Stack[]>;
-    parent: any;
+    parent: Construct
     name: string
-    props: any
+    props: MiraStackProps
 
-    constructor (parent: Construct, name?: string, props?: any) {
+    constructor (parent: Construct, name?: string, props?: MiraStackProps) {
       if (!name) {
         name = 'DefaultStack'
       }

@@ -1,13 +1,15 @@
 import * as cdk from '@aws-cdk/core'
 import { Cicd, PipelineEnvironmentVariable } from './constructs/cicd'
 import * as aws from 'aws-sdk'
-import { MiraConfig } from '../config/mira-config'
 import chalk from 'chalk'
+
+import { MiraConfig } from '../config/mira-config'
+import { MiraValidStack } from './app'
+
 // eslint-disable-next-line
 const minimist = require('minimist')
 
 const args = minimist(process.argv)
-
 /**
  * Main Mira class.  Bootstraps CDK and loads in Stacks per user input.
  */
@@ -15,7 +17,7 @@ export class MiraCiApp {
     cdkApp: cdk.App;
     instance: MiraCiApp;
     stackName: string;
-    stacks: any = {};
+    stacks: Array<MiraValidStack> = [];
 
     // eslint-disable-next-line
     constructor () {

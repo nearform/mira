@@ -30,7 +30,7 @@ interface MiraServiceStackConstructable {
   new(app: MiraApp): MiraServiceStack
 }
 
-type MiraValidStack = Stack &
+export type MiraValidStack = Stack &
   Prototypable &
   MiraStackConstructable &
   MiraServiceStackConstructable &
