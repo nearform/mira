@@ -11,7 +11,7 @@ interface SendResponseOptions {
   reason: string
   logicalResourceId: string
   physicalResourceId: string
-  data: any
+  data: object
 }
 
 /**
