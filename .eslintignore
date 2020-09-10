@@ -1,3 +1,5 @@
 cdk.out/
 node_modules/
 dist/
+docs/
+bin/
