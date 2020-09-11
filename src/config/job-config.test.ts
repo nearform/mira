@@ -24,10 +24,12 @@ jest.mock('aws-sdk', () => ({
   })
 }))
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const mockConfigHandler = (mockConfig: any): void => {
   config.get = (key: string): any => _.get(mockConfig, key)
   config.has = (key: string): any => _.has(mockConfig, key)
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 interface TestEnvData {
   profile?: string
