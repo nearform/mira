@@ -76,7 +76,7 @@ export class MiraBootstrap {
       cmd = 'synth'
     }
     const commandOptions = [
-      this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
+      this.cdkCommand,
       cmd,
       '--app', this.getCDKArgs('app.js'),
       envConfig.name ? `--env=${envConfig.name}` : '',
@@ -268,7 +268,7 @@ export class MiraBootstrap {
   /**
    * Gets the profile given the env.
    */
-  getProfile (environment: string): string|void {
+  getProfile (environment: string): string | void {
     // if we are in Codebuild environment, return 'client' which is the one set by assume-role
     if (process.env.CODEBUILD_CI) {
       return 'client'
@@ -505,7 +505,7 @@ export class MiraBootstrap {
     }
   }
 
-  async transpile (): Promise<string|undefined> {
+  async transpile (): Promise<string | undefined> {
     if (this.stackFile.match(/.ts$/)) {
       const T = new Transpiler(this.stackFile)
       const newFile = await T.run()
