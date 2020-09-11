@@ -1,15 +1,17 @@
-import { Construct, StackProps, Stack } from '@aws-cdk/core'
+import { Construct, Stack } from '@aws-cdk/core'
 import { Role, AccountPrincipal, PolicyStatement } from '@aws-cdk/aws-iam'
 import { MiraApp } from '../../../app'
 import { MiraConfig } from '../../../../config/mira-config'
 import { getBaseStackName, getDeployProjectRoleName } from '../../config/utils'
-export type DeploymentPermissionsProps = StackProps
+
+export interface DeploymentPermissionsProps {
+  env: string
+}
 
 export class DeploymentPermissions extends Stack {
-  // private config: CicdConfig
   public role: Role
 
-  constructor (parent: Construct, props?: any) {
+  constructor (parent: Construct, props: DeploymentPermissionsProps) {
     const name = getBaseStackName('CICDPermissions')
     const account = MiraConfig.getEnvironment(props.env)
     super(parent, name, { env: account.env })

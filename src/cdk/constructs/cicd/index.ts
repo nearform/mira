@@ -15,15 +15,17 @@ import { UploadPublicSsh } from '../upload-public-ssh'
 import { BuildEnvironmentVariableType } from '@aws-cdk/aws-codebuild/lib/project'
 import { Key } from '@aws-cdk/aws-kms'
 import * as aws from 'aws-sdk'
-import { getBaseStackName, getDeployProjectRoleName } from '../config/utils'
-import { MiraConfig } from '../../../config/mira-config'
 import { pascalCase } from 'change-case'
+
+import { MiraConfig } from '../../../config/mira-config'
 import { AutoDeleteBucket } from '../auto-delete-bucket'
+import { getBaseStackName, getDeployProjectRoleName } from '../config/utils'
 
 export interface PipelineEnvironmentVariable {
   key: string
   value: string
 }
+
 export interface CicdProps extends StackProps {
   callerIdentityResponse: aws.STS.Types.GetCallerIdentityResponse
   environmentVariables: PipelineEnvironmentVariable[]
@@ -40,6 +42,7 @@ export class Cicd extends Stack {
 
   constructor (parent: Construct, props: CicdProps) {
     const accounts = MiraConfig.getCICDAccounts()
+
     const id = MiraConfig.getBaseStackName('Cicd')
 
     super(parent, id, { env: props.env })
@@ -93,7 +96,7 @@ export class Cicd extends Stack {
         this.getSourceAction(sourceOutput)
       ]
     })
-    accounts.forEach((account: any) => {
+    accounts.forEach((account) => {
       this.addDeployStage(account.name, sourceOutput)
     })
   }

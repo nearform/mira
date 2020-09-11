@@ -17,11 +17,13 @@ jest.mock('config')
 
 MiraConfig.getEnvironment = jest.fn()
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const mockConfigHandler = (mockConfig: any): void => {
   config.get = (key: string): any => _.get(mockConfig, key)
   config.has = (key: string): any => _.has(mockConfig, key)
   config.util.toObject = () => mockConfig
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 describe('MiraBootstrap', () => {
   const miraBootstrapInstance = new MiraBootstrap()
