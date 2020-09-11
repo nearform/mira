@@ -29,11 +29,11 @@ describe('MiraBootstrap', () => {
   const miraBootstrapInstance = new MiraBootstrap()
   it('has resolved cdkCommand path', () => {
     const validCdkPathPart = 'node_modules/aws-cdk/bin/cdk'
-    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.cdkCommand)).toBeTruthy()
+    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.cdkCommand.replace(/\\/g, '/'))).toBeTruthy()
   })
   it('has resolved docsify path', () => {
     const validCdkPathPart = 'node_modules/docsify-cli/bin/docsify'
-    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.docsifyCommand)).toBeTruthy()
+    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.docsifyCommand.replace(/\\/g, '/'))).toBeTruthy()
   })
   it('has app initialized', () => {
     expect(miraBootstrapInstance.app instanceof MiraApp).toBeTruthy()

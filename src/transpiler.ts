@@ -29,7 +29,7 @@ class Transpiler {
     return new Promise((resolve, reject) => {
       exec(command, {
         cwd: process.cwd()
-      }, (err: Error|null) => {
+      }, (err: Error | null) => {
         if (err) {
           return reject(err)
         }
@@ -44,10 +44,14 @@ class Transpiler {
     return this.filePath.substring(0, this.filePath.length - 2) + newExtension
   }
 
-  public async findTSConfigFile (start: string): Promise<string|null> {
+  public async findTSConfigFile (start: string): Promise<string | null> {
     return new Promise((resolve, reject) => {
-      glob(`${start}/**/tsconfig.json`, {
-        ignore: '/**/node_modules/**'
+      glob('**/tsconfig.json', {
+        cwd: start,
+        ignore: [
+          '/**/node_modules/**',
+          'node_modules/**'
+        ]
       }, (err, matches) => {
         if (err) {
           return reject(err)
