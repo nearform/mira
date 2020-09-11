@@ -9,11 +9,11 @@ import path from 'path'
  */
 class Transpiler {
   filePath: string
-  constructor(filePath: string) {
+  constructor (filePath: string) {
     this.filePath = filePath
   }
 
-  async run(): Promise<string> {
+  async run (): Promise<string> {
     const res = await this.findTSConfigFile(process.cwd())
     if (res) {
       const relativePath = path.dirname(path.relative(process.cwd(), res))
@@ -24,7 +24,7 @@ class Transpiler {
     }
   }
 
-  private async compile(configPath: string): Promise<string> {
+  private async compile (configPath: string): Promise<string> {
     const command = `npx tsc -p ${configPath}`
     return new Promise((resolve, reject) => {
       exec(command, {
@@ -40,13 +40,13 @@ class Transpiler {
     })
   }
 
-  public changeExtension(newExtension: string): string {
+  public changeExtension (newExtension: string): string {
     return this.filePath.substring(0, this.filePath.length - 2) + newExtension
   }
 
-  public async findTSConfigFile(start: string): Promise<string | null> {
+  public async findTSConfigFile (start: string): Promise<string | null> {
     return new Promise((resolve, reject) => {
-      glob(`**/tsconfig.json`, {
+      glob('**/tsconfig.json', {
         cwd: start,
         ignore: [
           '/**/node_modules/**',
