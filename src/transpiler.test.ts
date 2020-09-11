@@ -10,9 +10,9 @@ test('should throw if no tsconfig file is found', () => {
 
 test('should find correct tsconfig.json file', async () => {
   const t = new Transpiler('sampleFile.ts')
-  const root = path.join(__dirname, '..')
-  const res = await t.findTSConfigFile(root)
-  expect(res).toBe(`${root}/tsconfig.json`)
+  const root = path.resolve(path.join(__dirname, '..'))
+  const res = await t.findTSConfigFile(root) || ''
+  expect(path.resolve(`${root}/${res}`)).toBe(path.resolve(`${root}/tsconfig.json`))
 })
 
 test('should change extension to file', () => {

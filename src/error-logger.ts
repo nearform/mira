@@ -1,4 +1,5 @@
 'use strict'
+import cp from 'child_process'
 import fs from 'fs'
 import path from 'path'
 /**
@@ -25,7 +26,7 @@ const readdir = promisify(fs.readdir).bind(fs)
  */
 export default class ErrorLogger {
   file: string
-  constructor () {
+  constructor() {
     const d = format(new Date(), 'yyyymmddhhss')
     this.file = path.join(process.cwd(), `mira-errors-${d}.log`)
   }
@@ -33,7 +34,7 @@ export default class ErrorLogger {
   /**
    * Flush messages to the output stream.
    */
-  flushMessages (messages: string[]): void {
+  flushMessages(messages: string[]): void {
     // do not run if in AWS CodeBuild
     if (undefined === process.env.CODEBUILD_BUILD_ID) {
       const ws = fs.createWriteStream(this.file)
@@ -47,14 +48,23 @@ export default class ErrorLogger {
   /**
    * Remove older Mira Error Log files
    */
-  async cleanMessages (): Promise<void> {
+  async cleanMessages(): Promise<void> {
     const files = await readdir(process.cwd())
     const promises = files
       .filter((file) => {
         return file.match(/mira-errors-\d{12}\.log$/)
       })
-      .map((file) => {
-        return unlink(file)
+      .map(async (file) => {
+        return unlink(file).catch(() =>
+          Promise.resolve(() => {
+            // Windows fix, sometimes this will still generate a non-zero exit
+            // code but will also delete the file (intended action).  Some
+            // Windows users may not have installed MiniGW / WSL and this will
+            // also fail.
+            try { cp.execSync(`rm -f ${file}`) } catch (e) {
+              //NOOP
+            }
+          }))
       })
     await Promise.all(promises)
   }
