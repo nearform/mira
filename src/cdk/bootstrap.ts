@@ -15,6 +15,9 @@ import aws from 'aws-sdk'
 import CloudFormation, { StackEvent } from 'aws-sdk/clients/cloudformation'
 import ChangeDetector from '../change-detector'
 import ErrorLogger from '../error-logger'
+
+type ValidAwsContruct = CloudFormation
+
 /**
  * @class Responsible for beaming up bits to AWS.  Teleportation device not
  * included.
@@ -84,6 +87,7 @@ export class MiraBootstrap {
       this.env ? `--profile=${this.getProfile(this.env)}` : '',
       ...additionalArgs
     ]
+
     const proc = this.spawn(
       'node',
       commandOptions, {
@@ -248,7 +252,7 @@ export class MiraBootstrap {
     let appArg = `${q}node --preserve-symlinks "${appPath}" `
     // Still inside the quotes, explode the args.
     // appArg += this.getArgs().join(' ')
-    appArg += ` --file=${this.stackFile}`
+    appArg += this.stackFile ? ` --file=${this.stackFile}` : ''
     appArg += resultedEnv ? ` --env=${resultedEnv}` : ''
     appArg += isCi ? ` --file=${MiraConfig.getPermissionsFilePath()}` : ''
     appArg += q // End quote.
@@ -410,7 +414,7 @@ export class MiraBootstrap {
   /**
    * Shows help for the CDK.
    */
-  showHelp(): any {
+  showHelp(): ParsedArgs {
     return yargs // eslint-disable-line
       .scriptName('npx mira')
       .usage('Usage: npx mira COMMAND')
@@ -444,7 +448,7 @@ export class MiraBootstrap {
    * @param fn
    * @param params
    */
-  useDevConfig(fn: Function, params: any): any {
+  useDevConfig<R, Z>(fn: (args: R) => Z, params: [R]): Z {
     const tmpEnv = process.env.NODE_ENV || 'default'
     process.env.NODE_ENV = 'dev'
     const rsp = fn.apply(this, params)
@@ -457,7 +461,7 @@ export class MiraBootstrap {
     return `${MiraApp.getBaseStackNameFromParams(tmpConfig.app.prefix, tmpConfig.app.name, 'Service')}-${account.name}`
   }
 
-  getAwsSdkConstruct(construct: any, account: Account): any {
+  getAwsSdkConstruct(construct: string, account: Account): ValidAwsContruct {
     const credentials = new aws.SharedIniFileCredentials({ profile: this.getProfile(this.env) || '' })
     aws.config.credentials = credentials
     // eslint-disable-next-line
@@ -465,7 +469,7 @@ export class MiraBootstrap {
     return new aws[construct]({ region: account.env.region })
   }
 
-  async getFirstFailedNestedStackName(account: Account, stackName: string): Promise<string> {
+  async getFirstFailedNestedStackName(account: Account, stackName: string): Promise<string | undefined> {
     const cloudformation = this.getAwsSdkConstruct('CloudFormation', account)
     const events = await cloudformation.describeStackEvents({ StackName: stackName }).promise()
     return events.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')[0]?.PhysicalResourceId
@@ -500,7 +504,7 @@ export class MiraBootstrap {
     return `\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`
   }
 
-  async printExtractedNestedStackErrors(): Promise<any> {
+  async printExtractedNestedStackErrors(): Promise<void> {
     const printCarets = (nb: number): string => {
       return '^'.repeat(nb)
     }

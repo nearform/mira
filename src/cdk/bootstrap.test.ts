@@ -17,21 +17,23 @@ jest.mock('config')
 
 MiraConfig.getEnvironment = jest.fn()
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const mockConfigHandler = (mockConfig: any): void => {
   config.get = (key: string): any => _.get(mockConfig, key)
   config.has = (key: string): any => _.has(mockConfig, key)
   config.util.toObject = () => mockConfig
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 describe('MiraBootstrap', () => {
   const miraBootstrapInstance = new MiraBootstrap()
   it('has resolved cdkCommand path', () => {
     const validCdkPathPart = 'node_modules/aws-cdk/bin/cdk'
-    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.cdkCommand)).toBeTruthy()
+    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.cdkCommand.replace(/\\/g, '/'))).toBeTruthy()
   })
   it('has resolved docsify path', () => {
     const validCdkPathPart = 'node_modules/docsify-cli/bin/docsify'
-    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.docsifyCommand)).toBeTruthy()
+    expect(new RegExp(validCdkPathPart, 'g').test(miraBootstrapInstance.docsifyCommand.replace(/\\/g, '/'))).toBeTruthy()
   })
   it('has app initialized', () => {
     expect(miraBootstrapInstance.app instanceof MiraApp).toBeTruthy()

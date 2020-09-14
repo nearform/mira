@@ -1,4 +1,5 @@
 import { IConfig } from 'config'
+import { Config } from '../src/config/mira-config'
 
 const config: Record<string, unknown> = {
   'app.prefix': 'John',
@@ -42,7 +43,7 @@ const configMock: IConfig = {
     return setting in config
   },
   util: {
-    loadFileConfigs (): any {
+    loadFileConfigs (): Config {
       return {
         app: {
           name: 'S3Webhosting',
@@ -53,16 +54,21 @@ const configMock: IConfig = {
         },
         accounts: {
           default: {
+            name: 'hello',
+            profile: 'mira-dev',
             env: {
               account: '101259067028',
               region: 'eu-west-1'
-            },
-            profile: 'mira-dev'
+            }
           }
         }
       }
     }
-  } as any
+  } as any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
+/*
+  The `any` type in the line above is required to accomplish the same value returned by
+  the `loadFileConfigs` function in the `config` module
+ */
 
 export default configMock

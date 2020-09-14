@@ -6,7 +6,7 @@ import { sendResponse } from '../utils/send-response'
  *
  * https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/crpg-ref-requests.html
  */
-export interface CustomResourceProviderRequest<T1 = any, T2 = any> {
+export interface CustomResourceProviderRequest<T1, T2> {
   RequestType: 'Create' | 'Update' | 'Delete'
   ResponseURL: string
   StackId: string
@@ -22,7 +22,7 @@ interface Properties {
 }
 
 export const handler = async (
-  event: CustomResourceProviderRequest<Properties>
+  event: CustomResourceProviderRequest<Properties, Properties>
 ): Promise<void> => {
   const { RequestType, ResourceProperties: { BucketName } = { BucketName: null } } = event
 

@@ -1,12 +1,10 @@
-import { Route53Action, Utils, send } from './utils'
+import { Context, SNSEvent } from 'aws-lambda'
 
-interface ResponseData {
-  Arn?: string
-}
+import { Route53Action, Utils, send, ResponseData, LambdaEvent } from './utils'
 
-export const handler = async (event: any, context: any): Promise<string> => {
+export const handler = async (event: SNSEvent, context: Context): Promise<string> => {
   console.log(`SNS event: ${JSON.stringify(event)}`)
-  const lambdaEvent = JSON.parse(event.Records[0].Sns.Message)
+  const lambdaEvent = JSON.parse(event.Records[0].Sns.Message) as LambdaEvent
 
   const hostedZone = process.env.HOSTED_ZONE || ''
   if (!hostedZone) throw new Error('Hosted Zone not set')

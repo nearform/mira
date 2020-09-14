@@ -1,10 +1,20 @@
 import { CertificateManager } from '.'
 import { CfnOutput, Stack, App } from '@aws-cdk/core'
 import { Topic } from '@aws-cdk/aws-sns'
-import { MiraConfig } from '../../../../config/mira-config'
-import { AccountPrincipal, Role, PolicyStatement, ManagedPolicy } from '@aws-cdk/aws-iam'
+import {
+  AccountPrincipal,
+  Role,
+  PolicyStatement,
+  ManagedPolicy
+} from '@aws-cdk/aws-iam'
 import { AssetCode, SingletonFunction } from '@aws-cdk/aws-lambda'
 import { SnsEventSource } from '@aws-cdk/aws-lambda-event-sources'
+
+import {
+  MiraConfig,
+  DomainConfig,
+  Account
+} from '../../../../config/mira-config'
 
 jest.mock('@aws-cdk/aws-iam', () => ({
   ...jest.requireActual('@aws-cdk/aws-iam'),
@@ -52,9 +62,17 @@ describe('CertificateManager', () => {
       {}
     )
 
-    MiraConfig.getDomainConfig = (): any => ({})
+    // TODO Check if DomainConfig is always available
+    // Add the validation in the config
+    MiraConfig.getDomainConfig = (): DomainConfig => ({
+      accounts: []
+    })
 
-    MiraConfig.getEnvironment = (): any => ({})
+    MiraConfig.getEnvironment = (): Account => ({
+      name: 'some-name',
+      profile: 'some-profile',
+      env: { account: '12345', region: 'eu-west-1' }
+    })
 
     expect(() => new CertificateManager(stack)).toThrowError(
       'Cannot find hostedZoneId in config.'
@@ -68,23 +86,30 @@ describe('CertificateManager', () => {
       {}
     )
 
-    MiraConfig.getDomainConfig = (): any => ({
-      hostedZoneId: 1,
-      profile: 'mira-dev',
-      name: 'default',
-      target: 'default',
-      dev: {
-        target: 'default'
-      }
+    MiraConfig.getDomainConfig = (): DomainConfig => ({
+      hostedZoneId: '123123123',
+      accounts: []
     })
 
-    MiraConfig.getEnvironment = (): any => ({
+    MiraConfig.getEnvironment = (): Account => ({
+      name: 'some-name',
+      profile: 'some-profile',
       env: {
-        account: 'test-account'
+        account: 'test-account',
+        region: 'eu-west-1'
       }
     })
 
-    MiraConfig.getDomainAllowedPrincipals = (): any => ([{ env: { account: {} } }])
+    MiraConfig.getDomainAllowedPrincipals = (): Account[] => [
+      {
+        name: 'some-name',
+        profile: 'some-profile',
+        env: {
+          account: 'test-account2',
+          region: 'eu-west-1'
+        }
+      }
+    ]
 
     expect(() => new CertificateManager(stack)).not.toThrowError()
 
