@@ -115,6 +115,17 @@ then Mira will copy it to `../app/mira.old`.  To reinstall a remote version of
 Mira from GitHub or NPM just delete your `node_modules` folder and re-run 
 `npm install` in your application directory.
 
+### Implementation Details
+
+The reason Mira uses the `link` script found under `scripts/link.js` is because
+of complications arising from AWS CDK requiring itself to be listed as a
+peer dependency.  Utilizing the `--preserve-symlinks` flag alongside `npm link`
+usage is not enough: Mira will still read `app/node_modules/mira/node_modules/aws-cdk`.
+
+As a result of this, Mira implements the `link` script which will symlink in the
+necessary files and dependencies to run Mira without symlinking the AWS CDK
+dependencies intended to be used as peer dependencies.
+
 ## Continuous Integration
 
 __Note:__ If you decide to not use CI, you can skip this part.
