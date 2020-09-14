@@ -94,6 +94,26 @@ Clone your newly created repository and follow the instructions below.
    __Note:__ The default tags will be associated to that stack: StackName,  CreatedBy (Owner) and CostCenter (If defined).
 At this step you should have your development environment deployed and ready to use.
 
+## Developing with Mira locally
+
+You may want to author changes to the Mira package and immediately use those
+changes in your Mira application.  You can do this using the following syntax
+from your local Mira directory:
+
+```
+node scripts/link.js [APPLICATION_PATH]
+```
+
+For instance, if your application is at `../app` you'd run the script:
+
+```
+node scripts/link.js ../app
+```
+
+If you have an existing installation or Mira dependency installed in `../app` 
+then Mira will copy it to `../app/mira.old`.  To reinstall a remote version of
+Mira from GitHub or NPM just delete your `node_modules` folder and re-run 
+`npm install` in your application directory.
 
 ## Continuous Integration
 
