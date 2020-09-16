@@ -53,7 +53,7 @@ The web stack contains a React.js [Single Page Application](https://en.wikipedia
 
 The application has a single entry point through CloudFront that manages the routing, serving static files from an S3 Bucket and the Api calls from the Api Gateway.
 
-The Api service runs on Ecs Fargate container service with a Network Load Balancer (NLB) and an Autoscaling.
+The Api service runs an ECS Fargate container service, with a Network Load Balancer (NLB) and Autoscaling.
 
 The Authentication is managed by Api Gateway through a Cognito UserPool. 
 
