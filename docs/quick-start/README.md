@@ -3,8 +3,7 @@
 Mira is published as an NPM package. To use Mira, it must be added as a dependency to your own project. To get started, choose one of the following sample apps and generate your own project repository:
 
 - [mira-sample-s3-webhosting](https://github.com/nearform/mira-sample-s3-webhosting/generate)
-
-NB Just one sample app available at this time
+- [titus](https://github.com/nearform/titus)
 
 ⚠️ Remember to make your new repository __🕵🏻‍♀️ Private__ as you store potentially sensitive information in the Mira configuration files.
 

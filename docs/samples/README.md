@@ -2,6 +2,7 @@
 
 The Mira Accelerator includes the following sample applications:
 - [S3 Web Hosting App](#s3-web-hosting-app)
+- [Titus](#titus-app)
 <!-- - [Cognito 3-Tier Web App](#cognito-3-tier-web-app)-->
 <!-- - [Auth0 3-Tier Web App](#auth0-3-tier-web-app)-->
 <!-- - [Personalize App](#personalize-app)-->
@@ -11,9 +12,10 @@ The Mira Accelerator includes the following sample applications:
 
 - [mira-sample-s3-webhosting](https://github.com/nearform/mira-sample-s3-webhosting/generate)
 
+
 This application is a simple hello world app. This sample app is recommended for project owners who want the benefits of Mira CI orchestration only.
 
-The `infra/src/index.ts` file contains the the full application infrastructure definition.
+The `infra/src/index.ts` file contains the full application infrastructure definition.
 
 If the `config/default.json` file is already prepared, simply run `npx mira deploy s3 --file=infra/src/index.ts`
 to deploy the application,.
@@ -21,6 +23,46 @@ to deploy the application,.
 __Note:__ Mira accepts both `.js` and `.ts` files as the entry file. Mira will look for the first `tsconfig.json` file found with `glob` 
 
 Follow the `README.md` file provided in the sample app for full instructions.
+
+## Titus App
+
+- [Titus](https://github.com/nearform/titus)
+
+Titus is a development and deployment stack for SaaS applications that encapsulates best practice and supports rapid innovation.
+
+Using Titus across the organisation drives consistency while accelerating project set-up and deployment. Even unskilled cloud developers can rapidly get from project kick-off to feature development without understanding all of the underlying cloud services.
+
+Titus provides excellent developer experience throughout projects and allows rapid on-boarding of new developers.
+
+
+### Overview
+This sample application uses many AWS services and can be used as a reference to create a complex infrastructure using Mira.
+
+An high level description of TITUS can be summarized with:
+
+- React frontend
+- Api service
+- Authentication with Cognito
+- Data storage on RDS Postgres
+
+The schema below shows the deployed architecture:
+
+![titus infrastructure](../img/infra-titus.png#hla)
+
+The web stack contains a React.js [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application) which provides the UI.
+
+The application has a single entry point through CloudFront that manage the routing serving static files from an S3 Bucket and the api calls from the Api Gateway.
+
+The Api service runs on Ecs Fargate container service with a Network Load Balancer (NLB) and an Autoscaling.
+
+The Authentication is managed by Api Gateway through a Cognito UserPool. 
+
+The Api Gateway is connected to NLB using a Vpc Private Link. 
+NLB and Fargate instances are not accessible from the public network. Can be accessed only by the Api Gateway.
+
+A DNS entry is created in Route53 and a certificate is assigned to the endpoint to allow https connection.
+
+Follow the `README.md` file provided in the Titus app in located in `packages/titus-infra/` for full instructions.
 
 ## Sample Application Considerations
 
