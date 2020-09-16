@@ -58,7 +58,7 @@ The Api service runs an ECS Fargate container service, with a Network Load Balan
 The Authentication is managed by Api Gateway through a Cognito UserPool. 
 
 The Api Gateway is connected to NLB using a Vpc Private Link. 
-NLB and Fargate instances are not accessible from the public network. Can be accessed only by the Api Gateway.
+The NLB and Fargate instances are not accessible from the public network; they can be accessed only by the Api Gateway.
 
 A DNS entry is created in Route53 and a certificate is assigned to the endpoint to allow https connection.
 
