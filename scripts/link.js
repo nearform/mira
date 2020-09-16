@@ -20,6 +20,9 @@ const createMiraBootstrap = (pkgDir) => {
     fs.writeFileSync(`${pkgDir}/node_modules/mira-bootstrap/cli.js`,
         'require(\'mira/bin/cli\');', 'utf8')
 
+    try { fs.mkdirSync(`${pkgDir}/node_modules/.bin`) } catch (err) {
+        // NOOP
+    }
     fs.readdirSync(__dirname + '/bin').forEach((file) => {
         fs.symlinkSync(`${__dirname}/bin/${file}`, `${pkgDir}/node_modules/.bin/${file}`)
     })

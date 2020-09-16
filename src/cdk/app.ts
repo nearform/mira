@@ -140,10 +140,10 @@ export class MiraApp {
         initializationList.push(serviceStack.initialized)
         for (const Stack of Stacks) {
           const stack = new Stack(serviceStack)
-          if (!stack.props.disablePolicies) {
+          if (stack.props && !stack.props.disablePolicies) {
             serviceStack.applyPolicies(stack.props.approvedWildcardActions)
           }
-          initializationList.push(stack.initialized)
+          initializationList.push(stack.initialized || Promise.resolve())
         }
       } else if (Stacks[0].prototype instanceof MiraServiceStack) {
         for (const Stack of Stacks) {
