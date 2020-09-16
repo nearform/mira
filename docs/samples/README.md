@@ -51,7 +51,7 @@ The schema below shows the deployed architecture:
 
 The web stack contains a React.js [Single Page Application](https://en.wikipedia.org/wiki/Single-page_application) which provides the UI.
 
-The application has a single entry point through CloudFront that manage the routing serving static files from an S3 Bucket and the api calls from the Api Gateway.
+The application has a single entry point through CloudFront that manages the routing, serving static files from an S3 Bucket and the Api calls from the Api Gateway.
 
 The Api service runs on Ecs Fargate container service with a Network Load Balancer (NLB) and an Autoscaling.
 
