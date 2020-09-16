@@ -32,7 +32,7 @@ Titus is a development and deployment stack for SaaS applications that encapsula
 
 Using Titus across the organisation drives consistency while accelerating project set-up and deployment. Even unskilled cloud developers can rapidly get from project kick-off to feature development without understanding all of the underlying cloud services.
 
-Titus provides excellent developer experience throughout projects and allows rapid on-boarding of new developers.
+Titus provides an excellent developer experience for projects and allows rapid onboarding of new developers.
 
 
 ### Overview
