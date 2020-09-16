@@ -38,7 +38,7 @@ Titus provides an excellent developer experience for projects and allows rapid o
 ### Overview
 This sample application uses many AWS services and can be used as a reference to create a complex infrastructure using Mira.
 
-An high level description of TITUS can be summarized with:
+At a high level, TITUS is composed of:
 
 - React frontend
 - Api service
