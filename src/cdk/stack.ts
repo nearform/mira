@@ -54,7 +54,6 @@ export class MiraServiceStack extends cdk.Stack {
      */
     async initialize (): Promise<unknown> {
       const iam = new aws.IAM()
-      const sts = new aws.STS()
 
       let owner
       let createdBy: string
@@ -62,8 +61,9 @@ export class MiraServiceStack extends cdk.Stack {
         owner = await iam.getUser().promise()
         createdBy = owner.User.UserName
       } catch (error) {
-        console.log('Unable to get current user, fallback to caller identity')
+        // console.log('Unable to get current user, fallback to caller identity')
 
+        const sts = new aws.STS()
         owner = await sts.getCallerIdentity().promise()
         // this is only needed because of Typescript since we use the getCallerIdentity call only when the iam.getUser call fails
         // and that only happens when an assumed role is used instead of an actual user profile
