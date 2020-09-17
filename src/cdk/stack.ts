@@ -54,10 +54,25 @@ export class MiraServiceStack extends cdk.Stack {
      */
     async initialize (): Promise<unknown> {
       const iam = new aws.IAM()
-      const owner = await iam.getUser().promise()
+      const sts = new aws.STS()
+
+      let owner
+      let createdBy: string
+      try {
+        owner = await iam.getUser().promise()
+        createdBy = owner.User.UserName
+      } catch (error) {
+        console.log('Unable to get current user, fallback to caller identity')
+
+        owner = await sts.getCallerIdentity().promise()
+        // this is only needed because of Typescript since we use the getCallerIdentity call only when the iam.getUser call fails
+        // and that only happens when an assumed role is used instead of an actual user profile
+        // in this case the UserId property will be there and the actual userId will be used since it is not possible to get the actual user name
+        createdBy = owner.UserId ? owner.UserId.split(':')[0] : 'usr'
+      }
 
       Tags.of(this).add('StackName', this.stackName)
-      Tags.of(this).add('CreatedBy', owner.User.UserName)
+      Tags.of(this).add('CreatedBy', createdBy)
 
       const costCenter = MiraConfig.getCostCenter()
 
