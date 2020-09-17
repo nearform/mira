@@ -64,7 +64,7 @@ The NLB and Fargate instances are not accessible from the public network; they c
 
 A DNS entry is created in Route53 and a certificate is assigned to the endpoint to allow connection through https.
 
-For full instructions, follow the [README.md](https://github.com/nearform/titus/packages/titus-infra-aws) file provided in the Titus app.
+For full instructions, follow the [README.md](https://github.com/nearform/titus/tree/master/packages/titus-infra-aws) file provided in the Titus app.
 
 ## Sample Application Considerations
 
