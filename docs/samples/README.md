@@ -55,6 +55,8 @@ The application has a single entry point through CloudFront that manages the rou
 
 The Api service runs an ECS Fargate container service, with a Network Load Balancer (NLB) and Autoscaling.
 
+The RDS Postgres instance provides the RDBMS features to the application.
+
 The Authentication is managed by Api Gateway through a Cognito UserPool. 
 
 The Api Gateway is connected to NLB using a Vpc Private Link. 
@@ -62,7 +64,7 @@ The NLB and Fargate instances are not accessible from the public network; they c
 
 A DNS entry is created in Route53 and a certificate is assigned to the endpoint to allow connection through https.
 
-For full instructions, follow the `README.md` file provided in the Titus app, located in `packages/titus-infra-aws/`.
+For full instructions, follow the [README.md](https://github.com/nearform/titus/packages/titus-infra-aws) file provided in the Titus app.
 
 ## Sample Application Considerations
 
