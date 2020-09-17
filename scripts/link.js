@@ -137,8 +137,14 @@ if (getPackageFile(args._[0])) {
         }
         fs.renameSync(`${pkgDir}/node_modules/mira`, `${pkgDir}/mira.old`)
     }
-    symlinkMira(pkgDir)
-    symlinkDependencies(pkgDir)
+    try { symlinkMira(pkgDir) } catch (e) {
+        // NOOP
+    }
+    try { symlinkDependencies(pkgDir) } catch (e) {
+        // NOOP
+    }
 
-    createMiraBootstrap(pkgDir)
+    try { createMiraBootstrap(pkgDir) } catch (e) {
+        // NOOP
+    }
 }
