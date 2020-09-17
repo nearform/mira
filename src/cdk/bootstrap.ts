@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import chalk from 'chalk'
 import { ParsedArgs } from 'minimist'
 import { spawn } from 'child_process'
@@ -236,8 +237,19 @@ export class MiraBootstrap {
   getCDKArgs (filename: string, isCi = false, env?: string): string {
     const resultedEnv = this.env || env
     const q = process.platform === 'win32' ? '"' : '\''
-    const appPath = path.resolve(__dirname, filename)
-    let appArg = `${q}node "${appPath}" `
+    let appPath = path.resolve(__dirname, filename)
+    if (fs.existsSync('node_modules/mira')) {
+      if (fs.lstatSync('node_modules/mira/dist').isSymbolicLink()) {
+        // Mira has been locally linked.
+        try { fs.mkdirSync('node_modules/mira-bootstrap') } catch (e) {
+          // NOOP
+        }
+        fs.writeFileSync('node_modules/mira-bootstrap/bootstrap-app.js',
+          'require(\'mira/dist/src/cdk/app.js\')', 'utf8')
+        appPath = 'node_modules/mira-bootstrap/bootstrap-app.js'
+      }
+    }
+    let appArg = `${q}node --preserve-symlinks "${appPath}" `
     // Still inside the quotes, explode the args.
     // appArg += this.getArgs().join(' ')
     appArg += this.stackFile ? ` --file=${this.stackFile}` : ''
