@@ -54,6 +54,7 @@ export class Cicd extends Stack {
 
     const encryptionKey = new Key(this, 'key', {
       enableKeyRotation: true,
+      // TODO might worth exposing this property as a config value
       removalPolicy: RemovalPolicy.DESTROY
     })
 
