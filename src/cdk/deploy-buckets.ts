@@ -13,7 +13,7 @@ import { MiraApp } from './app'
 import { MiraConfig, Account } from '../config/mira-config'
 import { PromiseResult } from 'aws-sdk/lib/request'
 import { Bucket } from 'aws-sdk/clients/s3'
-let files = fs.readdirSync('cdk.out')
+let cdkFiles = fs.existsSync('cdk.out') ? fs.readdirSync('cdk.out') : []
 const { getBaseStackNameFromParams } = MiraApp
 let miraS3: AWS.S3
 
@@ -52,11 +52,11 @@ export const getBucketObjects = async (Bucket: string): Promise<PromiseResult<AW
 }
 
 interface CDKTemplateResource {
-    Type: string,
+    Type: string
     Properties: {
         DestinationBucketName: {
             Ref: string
-        },
+        }
         SourceBucketNames: Array<{Ref: string}>
     }
 }
@@ -189,7 +189,7 @@ export const getS3Buckets = async (prefix: string, siteName: string): Promise<Bu
   const s3 = await getS3()
   const response: AWS.S3.ListBucketsOutput = await s3.listBuckets().promise()
   if (!response || !response.Buckets) {
-      throw new Error('Failed to retrieve buckets.')
+    throw new Error('Failed to retrieve buckets.')
   }
   prefix = prefix.toLowerCase().slice(0, 30)
   siteName = siteName.toLowerCase()
@@ -200,9 +200,6 @@ export const getS3Buckets = async (prefix: string, siteName: string): Promise<Bu
   return targetBuckets
 }
 
-interface SiteBucketObject {
-
-}
 /**
  * For a given template file, gets all site buckets.
  */
@@ -240,8 +237,8 @@ export const getStackName = (): string => {
  */
 export const getTemplateFiles = (): LooseObject => {
   const templateFiles = {} as LooseObject
-  files = files.filter((file: string) => file.endsWith('.template.json'))
-  for (const file of files) {
+  cdkFiles = cdkFiles.filter((file: string) => file.endsWith('.template.json'))
+  for (const file of cdkFiles) {
     templateFiles[file] = JSON.parse(fs.readFileSync(`cdk.out/${file}`, 'utf8'))
   }
   return templateFiles
@@ -251,7 +248,7 @@ export const getTemplateFiles = (): LooseObject => {
  * Removes assets directories.
  */
 export const removeAssetDirectories = (): void => {
-  for (const dir of files) {
+  for (const dir of cdkFiles) {
     if (fs.statSync(`cdk.out/${dir}`).isDirectory()) {
       cp.execSync(`rm -rf ${dir}`, {
         cwd: `${process.cwd()}/cdk.out`
