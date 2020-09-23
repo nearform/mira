@@ -100,6 +100,12 @@ const symlinkDependencies = (pkgDir) => {
         }
         fs.symlinkSync(`${__dirname}/../node_modules/${dep}`,
             `${pkgDir}/node_modules/mira/node_modules/${dep}`)
+        try {
+            fs.symlinkSync(`${__dirname}/../node_modules/${dep}`,
+                `${pkgDir}/node_modules/${dep}`)
+        } catch(e) {
+            // NOOP
+        }
     })
 }
 
