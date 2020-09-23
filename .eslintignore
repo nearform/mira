@@ -5,3 +5,4 @@ docs/
 bin/
 scripts/link.js
 aws-samples/
+**/*.test.ts

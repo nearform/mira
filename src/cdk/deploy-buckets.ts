@@ -10,14 +10,15 @@ import config from 'config'
 import { assumeRole } from '../assume-role'
 import glob from 'glob'
 import { MiraApp } from './app'
-import { MiraConfig } from '../config/mira-config'
+import { MiraConfig, Account } from '../config/mira-config'
 import { PromiseResult } from 'aws-sdk/lib/request'
+import { Bucket } from 'aws-sdk/clients/s3'
 let files = fs.readdirSync('cdk.out')
 const { getBaseStackNameFromParams } = MiraApp
 let miraS3: AWS.S3
 
 interface LooseObject {
-    [key: string]: unknown
+    [key: string]: any
 }
 
 /**
@@ -50,6 +51,19 @@ export const getBucketObjects = async (Bucket: string): Promise<PromiseResult<AW
   return s3.listObjects({ Bucket }).promise()
 }
 
+interface CDKTemplateResource {
+    Type: string,
+    Properties: {
+        DestinationBucketName: {
+            Ref: string
+        },
+        SourceBucketNames: Array<{Ref: string}>
+    }
+}
+interface CDKTemplate {
+    Resources: {[key: string]: CDKTemplateResource}
+}
+
 /**
  * Gets references for bucket.
  */
@@ -57,11 +71,11 @@ export const getBucketRefs = async (): Promise<LooseObject> => {
   const files = getTemplateFiles()
   const bucketsBySite = await getSiteBuckets()
   for (const file in files) {
-    const template = files[file]
+    const template: CDKTemplate = files[file] as CDKTemplate
     if (!template.Resources) {
       continue
     }
-    for (const name in template.Resources) {
+    for (const name in template) {
       const { Type, Properties } = template.Resources[name]
       if (!Type) {
         continue
@@ -117,7 +131,7 @@ export const getBucketResources = (): LooseObject => {
 /**
  * Gets the environment for Mira.
  */
-export const getEnvironment = (): string => {
+export const getEnvironment = (): Account => {
   const env = MiraConfig.getEnvironment()
   return env
 }
@@ -171,9 +185,12 @@ export const getS3 = async (): Promise<AWS.S3> => {
  * @param {String} prefix
  * @param {String} siteName
  */
-export const getS3Buckets = async (prefix: string, siteName: string): Promise<Array<string>> => {
+export const getS3Buckets = async (prefix: string, siteName: string): Promise<Bucket[]> => {
   const s3 = await getS3()
-  const response = await s3.listBuckets().promise()
+  const response: AWS.S3.ListBucketsOutput = await s3.listBuckets().promise()
+  if (!response || !response.Buckets) {
+      throw new Error('Failed to retrieve buckets.')
+  }
   prefix = prefix.toLowerCase().slice(0, 30)
   siteName = siteName.toLowerCase()
   const bucketPrefix = `${prefix}-${siteName}`
@@ -183,13 +200,16 @@ export const getS3Buckets = async (prefix: string, siteName: string): Promise<Ar
   return targetBuckets
 }
 
+interface SiteBucketObject {
+
+}
 /**
  * For a given template file, gets all site buckets.
  */
 export const getSiteBuckets = async (): Promise<LooseObject> => {
   const files = getTemplateFiles()
   const siteBuckets = {} as LooseObject
-  const bucketsByFile = getBucketResources()
+  const bucketsByFile: LooseObject = getBucketResources()
   for (const file in files) {
     if (!bucketsByFile[file]) {
       continue
@@ -210,8 +230,8 @@ export const getSiteBuckets = async (): Promise<LooseObject> => {
  * Gets the stack name.
  */
 export const getStackName = (): string => {
-  const stackName = getBaseStackNameFromParams(config.app.prefix,
-    config.app.name, 'Service')
+  const stackName = getBaseStackNameFromParams(config.get('app.prefix'),
+    config.get('app.name'), 'Service')
   return stackName
 }
 

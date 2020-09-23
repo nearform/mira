@@ -14,7 +14,7 @@ module.exports = {
   ],
     rules: {
     // Remove any type warnings.
-    '@typescript-eslint/no-explicit-any':['error',{
+    '@typescript-eslint/no-explicit-any':['info',{
       fixToUnknown: false,
       ignoreRestArgs: false
     }],
