@@ -238,15 +238,16 @@ export class MiraBootstrap {
     const resultedEnv = this.env || env
     const q = process.platform === 'win32' ? '"' : '\''
     let appPath = path.resolve(__dirname, filename)
+
     if (fs.existsSync('node_modules/mira')) {
       if (fs.lstatSync('node_modules/mira/dist').isSymbolicLink()) {
         // Mira has been locally linked.
         try { fs.mkdirSync('node_modules/mira-bootstrap') } catch (e) {
           // NOOP
         }
-        fs.writeFileSync('node_modules/mira-bootstrap/bootstrap-app.js',
-          'require(\'mira/dist/src/cdk/app.js\')', 'utf8')
-        appPath = 'node_modules/mira-bootstrap/bootstrap-app.js'
+        fs.writeFileSync(`node_modules/mira-bootstrap/bootstrap-${filename}`,
+          `require('mira/dist/src/cdk/${filename}')`, 'utf8')
+        appPath = `node_modules/mira-bootstrap/bootstrap-${filename}`
       }
     }
     let appArg = `${q}node --preserve-symlinks "${appPath}" `
