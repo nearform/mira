@@ -10,7 +10,7 @@ import { execFileSync } from 'child_process'
  * @throws Cannot assume role ${roleArn}: Invalid Role
  * @throws Cannot assume role ${roleArn}: &lt;other reason&gt;
  */
-export async function assumeRole (roleArn: string): Promise<void> {
+export async function assumeRole (roleArn: string): Promise<AWS.Config> {
   console.log(`Assuming role ${roleArn}`)
   const sts = new aws.STS()
   try {
@@ -19,7 +19,7 @@ export async function assumeRole (roleArn: string): Promise<void> {
       RoleSessionName: 'mira-assumed-role'
     }).promise()
     if (roleData.Credentials) {
-      aws.config.update({
+      aws.config = new aws.Config({
         accessKeyId: roleData.Credentials.AccessKeyId,
         secretAccessKey: roleData.Credentials.SecretAccessKey,
         sessionToken: roleData.Credentials.SessionToken
@@ -48,6 +48,7 @@ export async function assumeRole (roleArn: string): Promise<void> {
           }
         )
       })
+      return aws.config
     } else {
       throw new Error(`Cannot assume role ${roleArn}: Invalid Role`)
     }
