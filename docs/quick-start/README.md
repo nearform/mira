@@ -94,6 +94,10 @@ Clone your newly created repository and follow the instructions below.
    __Note:__ The default tags will be associated to that stack: StackName,  CreatedBy (Owner) and CostCenter (If defined).
 At this step you should have your development environment deployed and ready to use.
 
+### Experimental Feature: Deploying S3 Bucket Content Only
+
+Sometimes you want to only deploy changes made to S3 content, such as with frontends you wish to deploy.  It can be cumbersome to go through a stack changeset as this can take minutes.  You can use the `--s3-only` flag to attempt to deploy any assets that CDK would otherwise push up to S3 buckets.
+
 ## Developing with Mira locally
 
 You may want to author changes to the Mira package and immediately use those
@@ -114,6 +118,8 @@ If you have an existing installation or Mira dependency installed in `../app`
 then Mira will copy it to `../app/mira.old`.  To reinstall a remote version of
 Mira from GitHub or NPM just delete your `node_modules` folder and re-run 
 `npm install` in your application directory.
+
+## 
 
 ### Implementation Details
 
