@@ -19,6 +19,7 @@ const { getBaseStackNameFromParams } = MiraApp
 let miraS3: AWS.S3
 
 interface LooseObject {
+    /* eslint-disable-next-line */
     [key: string]: any
 }
 
@@ -271,7 +272,7 @@ export const quickDeploy = async (): Promise<void> => {
   for (const site in sites) {
     const { s3: buckets, assets } = sites[site]
     for (const Bucket of buckets) {
-        console.info(colors.yellow('Updating Bucket'), Bucket)
+      console.info(colors.yellow('Updating Bucket'), Bucket)
       for (const id of assets) {
         const files = await getAssetFiles(id)
         for (const file of files) {
@@ -293,7 +294,7 @@ export const quickDeploy = async (): Promise<void> => {
           }
           console.info(`${colors.cyan('File Available at')}: https://${Bucket}.s3-${getEnvironment().env.region}.amazonaws.com/${file}`)
         }
-        
+
         console.info(colors.green('Done Updating Bucket'))
       }
     }
