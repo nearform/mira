@@ -48,6 +48,7 @@ export class MiraApp {
   serviceStack: MiraServiceStack;
   stackName: string;
   stacks: MiraStackList = [];
+  static cliArgs = args
 
   // eslint-disable-next-line
   constructor() {
@@ -170,6 +171,11 @@ export class MiraApp {
    */
   initializeApp (): void {
     this.cdkApp = new cdk.App()
+  }
+
+  static isVerbose (): boolean {
+    return MiraApp.cliArgs.verbose && MiraApp.cliArgs.verbose !== 'false' &&
+      MiraApp.cliArgs.verbose !== '0'
   }
 }
 

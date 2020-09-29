@@ -5,6 +5,7 @@
 import AWS from 'aws-sdk'
 import assert from 'assert'
 import fs from 'fs'
+import colors from 'colors/safe'
 import cp from 'child_process'
 import config from 'config'
 import { assumeRole } from '../assume-role'
@@ -75,7 +76,10 @@ export const getBucketRefs = async (): Promise<LooseObject> => {
     if (!template.Resources) {
       continue
     }
-    for (const name in template) {
+    for (const name in template.Resources) {
+      if (!template.Resources[name]) {
+        continue
+      }
       const { Type, Properties } = template.Resources[name]
       if (!Type) {
         continue
@@ -267,6 +271,7 @@ export const quickDeploy = async (): Promise<void> => {
   for (const site in sites) {
     const { s3: buckets, assets } = sites[site]
     for (const Bucket of buckets) {
+        console.info(colors.yellow('Updating Bucket'), Bucket)
       for (const id of assets) {
         const files = await getAssetFiles(id)
         for (const file of files) {
@@ -277,10 +282,19 @@ export const quickDeploy = async (): Promise<void> => {
             ContentType: require('mime-types').lookup(file),
             Key: file
           }
-          console.info(`Putting object: ${JSON.stringify(obj, null, 2)}`)
+          if (MiraApp.isVerbose()) {
+            console.info(`Putting object: ${JSON.stringify(obj, null, 2)}`)
+          } else {
+            console.info(`\n${colors.yellow('Putting object:')}\n${file}`)
+          }
           const result = await s3.putObject(obj).promise()
-          console.info(`Put object: ${JSON.stringify(result, null, 2)}`)
+          if (MiraApp.isVerbose()) {
+            console.info(`Put object: ${JSON.stringify(result, null, 2)}`)
+          }
+          console.info(`${colors.cyan('File Available at')}: https://${Bucket}.s3-${getEnvironment().env.region}.amazonaws.com/${file}`)
         }
+        
+        console.info(colors.green('Done Updating Bucket'))
       }
     }
   }
