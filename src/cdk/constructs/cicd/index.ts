@@ -8,7 +8,7 @@ import {
 } from '@aws-cdk/aws-codepipeline-actions'
 import { Effect, PolicyStatement, Role, ServicePrincipal, User, IPrincipal } from '@aws-cdk/aws-iam'
 import { Secret } from '@aws-cdk/aws-secretsmanager'
-import { CfnOutput, Construct, Stack, StackProps, Tags } from '@aws-cdk/core'
+import { CfnOutput, Construct, Stack, StackProps, Tags, RemovalPolicy } from '@aws-cdk/core'
 import { Repository } from '@aws-cdk/aws-codecommit'
 import { IAction } from '@aws-cdk/aws-codepipeline/lib/action'
 import { UploadPublicSsh } from '../upload-public-ssh'
@@ -53,7 +53,9 @@ export class Cicd extends Stack {
     const sourceOutput = new Artifact()
 
     const encryptionKey = new Key(this, 'key', {
-      enableKeyRotation: true
+      enableKeyRotation: true,
+      // TODO might worth exposing this property as a config value
+      removalPolicy: RemovalPolicy.DESTROY
     })
 
     /**

@@ -15,6 +15,7 @@ import aws from 'aws-sdk'
 import CloudFormation, { StackEvent } from 'aws-sdk/clients/cloudformation'
 import ChangeDetector from '../change-detector'
 import ErrorLogger from '../error-logger'
+import { quickDeploy, removeAssetDirectories } from './deploy-buckets'
 
 type ValidAwsContruct = CloudFormation
 
@@ -76,7 +77,9 @@ export class MiraBootstrap {
       delete this.args.stackName
     }
 
-    if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
+    if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run') ||
+      Object.prototype.hasOwnProperty.call(this.args, 's3-only')) {
+      removeAssetDirectories()
       cmd = 'synth'
     }
     const commandOptions = [
@@ -105,6 +108,9 @@ export class MiraBootstrap {
         resolve()
       })
     })
+    if (Object.prototype.hasOwnProperty.call(this.args, 's3-only')) {
+      await quickDeploy()
+    }
   }
 
   /**
@@ -457,6 +463,11 @@ export class MiraBootstrap {
   }
 
   getServiceStackName (account: Account): string {
+    const tmpConfig = configModule.util.loadFileConfigs(path.join(process.cwd(), 'config'))
+    return `${MiraApp.getBaseStackNameFromParams(tmpConfig.app.prefix, tmpConfig.app.name, 'Service')}-${account.name}`
+  }
+
+  static getServiceStackName (account: Account): string {
     const tmpConfig = configModule.util.loadFileConfigs(path.join(process.cwd(), 'config'))
     return `${MiraApp.getBaseStackNameFromParams(tmpConfig.app.prefix, tmpConfig.app.name, 'Service')}-${account.name}`
   }

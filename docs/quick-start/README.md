@@ -94,6 +94,16 @@ Clone your newly created repository and follow the instructions below.
    __Note:__ The default tags will be associated to that stack: StackName,  CreatedBy (Owner) and CostCenter (If defined).
 At this step you should have your development environment deployed and ready to use.
 
+### Experimental Feature: Deploying S3 Bucket Content Only
+
+Sometimes you want to only deploy changes made to S3 content, such as with frontends you wish to deploy.  It can be cumbersome to go through a stack changeset as this can take minutes.  You can use the `--s3-only` flag to attempt to deploy any assets that CDK would otherwise push up to S3 buckets.  This can shrink deployment times down to 15-30 seconds and allows you to share S3-connected assets easily.  To do this, you might run a command like:
+
+`npx mira deploy myStackName --file=path/to/stackFile.js --s3-only`
+
+Note, that this command will only work if you have already deployed this stack once before!  If it is successful, you should see the console log the HTTP-accessible location of your files:
+
+![quick-deploy]
+
 ## Developing with Mira locally
 
 You may want to author changes to the Mira package and immediately use those
@@ -340,3 +350,6 @@ If you have exhausted other possible causes and issues for a deployment failure,
 [docs]: https://nf-mira.netlify.com/?#/
 [nvm]: https://github.com/nvm-sh/nvm
 [Duplicating a repository]: https://help.github.com/en/github/creating-cloning-and-archiving-repositories/duplicating-a-repository
+
+<!-- Images -->
+[quick-deploy]: img/quick-deploy.png
