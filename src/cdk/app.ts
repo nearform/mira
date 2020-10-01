@@ -1,5 +1,6 @@
 import * as cdk from '@aws-cdk/core'
 import chalk from 'chalk'
+import config from 'config'
 import { MiraServiceStack, MiraStack } from './stack'
 import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
@@ -177,6 +178,15 @@ export class MiraApp {
     return MiraApp.cliArgs.verbose && MiraApp.cliArgs.verbose !== 'false' &&
       MiraApp.cliArgs.verbose !== '0'
   }
+}
+
+/**
+ * Gets the stack name.
+ */
+export const getStackName = (): string => {
+  const stackName = getBaseStackNameFromParams(config.get('app.prefix'),
+    config.get('app.name'), 'Service')
+  return stackName
 }
 
 // Ensure we're within a CDK deploy context.
