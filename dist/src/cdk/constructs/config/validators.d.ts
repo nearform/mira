@@ -1,0 +1,10 @@
+export declare function isValidAwsAccountId(input: string): boolean;
+export declare function isValidAwsAccountIdList(input: string): boolean;
+export declare function isValidAwsCliProfile(input: string): Promise<unknown>;
+export declare function isValidAwsHostedZoneId(input: string): boolean;
+export declare function isValidBaseDomain(input: string): boolean;
+export declare function isValidDomain(input: string): boolean;
+export declare function isValidGitBranchName(input: string): Promise<unknown>;
+export declare function isValidEnvironmentNameList(input: string): boolean;
+export declare function isValidSshRsaPublicKey(input: string): boolean;
+export declare function isValidAwsSecretsManagerArn(input: string): boolean;

@@ -1,0 +1,9 @@
+{
+    "app": {
+        "prefix": "nf",
+        "name": "webapp"
+    },
+    "dev": {
+        "target": "default"
+    }
+}
