@@ -23,7 +23,8 @@
     "prepublishOnly": "npm run lint-ci && npm run build && npm run test",
     "postinstall": "node scripts/postinstall.js"
   },
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "@aws-cdk/assert": "1.61.1",
     "@aws-cdk/assets": "1.61.1",
     "@aws-cdk/aws-cloudformation": "1.61.1",
@@ -74,9 +75,7 @@
     "prettier": "^1.19.1",
     "ts-jest": "^26.3.0",
     "typedoc": "^0.17.8",
-    "typescript": "^3.6.5"
-  },
-  "dependencies": {
+    "typescript": "^3.6.5",
     "@types/aws-lambda": "^8.10.62",
     "@types/dateformat": "^3.0.1",
     "@types/tmp": "^0.2.0",
