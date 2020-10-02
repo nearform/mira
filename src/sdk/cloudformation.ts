@@ -42,17 +42,10 @@ export const getCfn = async (): Promise<CloudFormation> => {
  */
 export const getStackResources = async (StackName: string): Promise<LooseObject> => {
   const cfn = await getCfn()
-  return new Promise((resolve, reject) => {
-    cfn.listStackResources({
-      StackName
-    }, (err, data) => {
-      if (err) {
-        reject(err)
-      } else if (data) {
-        resolve(data)
-      }
-    })
-  })
+  const result = await cfn.listStackResources({
+    StackName
+  }).promise()
+  return result as LooseObject
 }
 
 /**
@@ -60,27 +53,23 @@ export const getStackResources = async (StackName: string): Promise<LooseObject>
  */
 export const getStacks = async (filter?: string): Promise<LooseObject> => {
   const cfn = (await getCfn())
-  return new Promise((resolve, reject) => {
-    cfn.listStacks({
-      StackStatusFilter: [
-        'IMPORT_COMPLETE',
-        'UPDATE_ROLLBACK_COMPLETE',
-        'UPDATE_COMPLETE',
-        'ROLLBACK_COMPLETE',
-        'CREATE_COMPLETE'
-      ]
-    }, async (err, data) => {
-      if (err) {
-        reject(err)
-      } else if (data && data.StackSummaries) {
-        let stacks = data.StackSummaries
-        if (filter) {
-          stacks = data.StackSummaries.filter(({ StackName }) => StackName.startsWith(filter))
-        }
-        resolve(stacks)
-      }
-    })
-  })
+  const result = await cfn.listStacks({
+    StackStatusFilter: [
+      'IMPORT_COMPLETE',
+      'UPDATE_ROLLBACK_COMPLETE',
+      'UPDATE_COMPLETE',
+      'ROLLBACK_COMPLETE',
+      'CREATE_COMPLETE'
+    ]
+  }).promise()
+  if (result && result.StackSummaries) {
+    let stacks = result.StackSummaries
+    if (filter) {
+      stacks = result.StackSummaries.filter(({ StackName }) => StackName.startsWith(filter))
+    }
+    return stacks as LooseObject
+  }
+  return {} as LooseObject
 }
 
 /**
@@ -92,8 +81,8 @@ export const getInstaceStacks = async (): Promise<LooseObject> => {
 }
 
 interface LooseObject {
-    /* eslint-disable-next-line */
-    [key: string]: any
+  /* eslint-disable-next-line */
+  [key: string]: any
 }
 
 /**
