@@ -1,6 +1,8 @@
-# CI/CD
+# Continuous Integration
 
-## CI/CD architecture
+See also [CI/CD Quickstart Guide](../quick-start/README.md#continuous-integration).
+
+## CI/CD Architecture
 
 Mira utilizes cloud-native services for the delivery pipeline.
 
