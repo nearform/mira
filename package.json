@@ -112,6 +112,7 @@
     "@aws-cdk/aws-secretsmanager": "1.61.1",
     "@aws-cdk/custom-resources": "1.61.1",
     "@aws-cdk/aws-sns": "1.61.1",
+    "@aws-cdk/assert": "1.61.1",
     "@aws-cdk/aws-s3": "1.61.1",
     "@aws-cdk/aws-sqs": "1.61.1",
     "@aws-cdk/assets": "1.61.1",
