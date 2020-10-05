@@ -38,6 +38,8 @@ then Mira will copy it to `../app/mira.old`.  To reinstall a remote version of
 Mira from GitHub or NPM just delete your `node_modules` folder and re-run 
 `npm install` in your application directory.
 
+Each time you make local changes to Mira, you will need to run `npm run build` within the `mira` package. Likewise, in your application: if you change your `package.json`, add or remove a dependency you will impact Mira and will need to re-run `npm install` and `node scripts/link [APPLICATION_PATH]`. This is because Mira symlinks itself into the application `node_modules` folder and running an `npm install` in the application will wipe modules that it thinks are not relevant, i.e. it will delete Mira's dependencies from its `node_modules`. This caveat may be later automated but is important to note at this time.
+
 ### Implementation Details
 
 The reason Mira uses the `link` script found under `scripts/link.js` is because

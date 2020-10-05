@@ -2,7 +2,7 @@
 This section describes how to configure your app to work with Mira.
 The configuration system is based on the [node config](https://www.npmjs.com/package/config) library.
 
-__Warning:__ Once app properties are set, any change will trigger a replacement of the stacks!
+__Note:__ Once app configuration properties are set, any change to them will trigger a full redeploy of the stacks (rather than an incremental update).
 
 ## File Location
 

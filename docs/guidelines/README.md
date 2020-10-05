@@ -4,6 +4,11 @@
 
 * Mira is published as an NPM package. To use Mira, it must be added as a dependency to your own project.
 * Keep your infrastructure definition and your business logic in separate node modules. Otherwise, when you upload your code into the cloud, the CDK dependencies are also uploaded.
+* Mira shouldn't be installed globally as CDK requires its dependencies to be shared by both the application and Mira - this breaks if Mira is installed globally.
+* CDK has known a constraint of requiring all dependency versions to match exactly. e.g. If you have @aws-cdk/rds at 1.61.1 and @aws-cdk/lambda at 1.61.2 your deployments will not work. If you encounter errors, it is best to:
+    - pin the modules in your package.json so they do not use any version range syntax, e.g. ^1.61.0 or ~1.61.0
+    - wipe node_modules and package-lock.json / yarn.lock
+    - reinstall dependencies
 
 ## Sample Application Considerations
 

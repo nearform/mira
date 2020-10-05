@@ -26,6 +26,8 @@ Mira and the AWS CDK are now installed.
 ## Configure Mira
 Once you have Mira installed, you can invoke it via the `npx` command. For example, to view the built-in documentation run `npx mira docs`. This presents you with a local URL that you use in your browser.
 
+>Note: NPX is intended to be used with Mira being installed locally to >an application's node_modules directory. Mira relies on NPX to resolve >cross-platform issues. NPX will lookup node_modules/bin/mira and run that >command from your application directory.
+
 To configure Mira you need to create a default configuration file. You need your AWS account number and chosen deployment region information to hand. Run `npx mira init` to start the configuration wizard. Enter appropriate values when prompted to replace the sample values shown below:
 ```
 This utility will walk you through creating a default.json file.
@@ -116,13 +118,13 @@ This sets up some handy defaults for the project that you can customise later if
 Now that you have a website and your TypeScript environment set up, define your infrastructure and how to deploy your content from your development machine to the cloud.
 
 Mira is based on the AWS CDK which (among other great things) gives us two key concepts to work with:
-* A construct, which you can think of as a building block representing a service.
-* A stack, which is a collection of one or more constructs.
+* A [Construct], which you can think of as a building block representing a service.
+* A [Stack], which is a collection of one or more constructs.
 
 When we define a cloud application, we describe it in terms of services and how they fit together. In this example the service we use is S3. To build our application, we use an S3 construct and define our own stack which describes the resources, permissions and services needed to deploy and run our application.
 
 We wrap our infrastructure code in a stack, MiraStack, so it can be deployed. MiraStack also includes useful methods and definitions to help enforce best practice. 
-Refer to the AWS documentation for more information on [constructs] or [stacks]. Let’s implement this in code to make it clearer. 
+Refer to the AWS documentation for more information on [Construct] and [Stack]. Let’s implement this in code to make it clearer. 
 
 Create a new file called `index.ts` inside the `infra/src` folder. This file will contain your stack and the constructs to define and build your application.
 Edit the `index.ts` file to include each entry described in detail below. 
@@ -264,5 +266,5 @@ Nigel-S3Webhosting-Service-default: destroying...
 [aws-s3-deployment]: https://docs.aws.amazon.com/cdk/api/latest/docs/aws-s3-deployment-readme.html
 [BucketDeployment]: https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_aws-s3-deployment.BucketDeployment.html
 [CDK construct library]: https://docs.aws.amazon.com/cdk/api/latest/docs/aws-construct-library.html
-[constructs]: https://docs.aws.amazon.com/cdk/latest/guide/constructs.html
-[stacks]: https://docs.aws.amazon.com/cdk/latest/guide/stacks.html
+[Construct]: https://docs.aws.amazon.com/cdk/latest/guide/constructs.html
+[Stack]: https://docs.aws.amazon.com/cdk/latest/guide/stacks.html
