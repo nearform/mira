@@ -15,24 +15,24 @@ const args = minimist(process.argv.slice(2))
 export default class MiraEnv {
     env: Account
     static instance: MiraEnv
-    constructor() {
+    constructor () {
       if (!MiraEnv.instance) {
         MiraEnv.instance = this
       } else if (args.env !== 'test') {
-          console.warn('MiraEnv was instantiated twice outside a testing environment' +
+        console.warn('MiraEnv was instantiated twice outside a testing environment' +
               '.  This will likely cause unknown behavior.')
       }
     }
 
-    initialize(): void {
-        this.parseFile()
+    initialize (): void {
+      this.parseFile()
       this.parseEnv()
     }
 
     /**
  * Parses the environment variable.
  */
-    parseEnv(): Account {
+    parseEnv (): Account {
       if (!args.env && process.env.NODE_ENV) {
         args.env = process.env.NODE_ENV
       } else if (!args.env) {
@@ -47,17 +47,17 @@ export default class MiraEnv {
     /**
      * Parses the file variable.
      */
-    parseFile(): string {
-        if (!args.file) {
-            console.warn('You must specify a --file argument when using the ' +
+    parseFile (): string {
+      if (!args.file) {
+        console.warn('You must specify a --file argument when using the ' +
                 'deploy or undeploy command within mira.')
-            // TODO: Specify exit code.
-            process.exit(1)
-        }
-        if (Array.isArray(args.file)) {
-            return args.file
-        }
-        return args.file.split(',')
+        // TODO: Specify exit code.
+        process.exit(1)
+      }
+      if (Array.isArray(args.file)) {
+        return args.file
+      }
+      return args.file.split(',')
     }
 }
 new MiraEnv()

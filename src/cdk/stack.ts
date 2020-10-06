@@ -33,7 +33,7 @@ export class MiraStack extends MiraObject {
   parent?: MiraStack
   stack: cdk.Stack
   props: MiraStackProps
-  constructor(name?: string, parent?: MiraStack) {
+  constructor (name?: string, parent?: MiraStack) {
     if (!name) {
       name = 'DefaultStack'
       console.warn('No stack name provided, prefer a named stack.  Defaulting ' +
@@ -65,7 +65,7 @@ export class MiraStack extends MiraObject {
   /**
    * Adds tags to the stack.
    */
-  async addTags(): Promise<void> {
+  async addTags (): Promise<void> {
     const createdBy = await this.getUser()
 
     Tags.of(this.stack).add('StackName', this.getResourceName())
@@ -81,14 +81,14 @@ export class MiraStack extends MiraObject {
   /**
    * Applies security policies.
    */
-  applyPolicies(customList?: string[]): void {
+  applyPolicies (customList?: string[]): void {
     Aspects.of(this.stack).add(new Policies(customList))
   }
 
   /**
    * Creates a parameter that will reside on the stack in Cfn.
    */
-  createParameter(fullName: string, description: string, value: string): StringParameter {
+  createParameter (fullName: string, description: string, value: string): StringParameter {
     const { id, parameterName } = this.parseParameterName(fullName)
 
     return new StringParameter(this.stack, id, {
@@ -101,7 +101,7 @@ export class MiraStack extends MiraObject {
   /**
    * Get a username either from the IAM service or from STS.
    */
-  async getUser(): Promise<string> {
+  async getUser (): Promise<string> {
     const iam = new aws.IAM()
     let owner
     let createdBy: string
@@ -119,7 +119,7 @@ export class MiraStack extends MiraObject {
     return createdBy
   }
 
-  async initialize(): Promise<void> {
+  async initialize (): Promise<void> {
     const account: Account = this.getEnv().env
     if (this.parent) {
       this.stack = new NestedStack(this.parent.stack, this.getResourceName())
@@ -137,7 +137,7 @@ export class MiraStack extends MiraObject {
   /**
    * Loads a parameter from attributes.
    */
-  loadParameter(fullName: string): IStringParameter {
+  loadParameter (fullName: string): IStringParameter {
     const { id, parameterName } = this.parseParameterName(fullName)
     return StringParameter.fromStringParameterAttributes(this.stack, id, {
       parameterName

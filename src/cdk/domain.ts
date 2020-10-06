@@ -26,7 +26,6 @@ export class MiraDomainApp extends MiraApp {
     if (!this.cdkApp) {
       this.initializeApp()
     }
-    const stack = new cdk.Stack(this.cdkApp, MiraConfig.getBaseStackName('DomainManager'), { })
 
     new CertificateManager()
     new Route53Manager()
