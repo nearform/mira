@@ -15,6 +15,7 @@ import {
   DomainConfig,
   Account
 } from '../../../../config/mira-config'
+import { MiraApp } from '../../../app'
 
 jest.mock('@aws-cdk/aws-iam', () => ({
   ...jest.requireActual('@aws-cdk/aws-iam'),
@@ -55,6 +56,10 @@ jest.mock('@aws-cdk/aws-sns', () => ({
 }))
 
 describe('CertificateManager', () => {
+  beforeEach(() => {
+    new MiraApp()
+    MiraApp.instance.initializeApp()
+  })
   it('Throw if hostedZoneId is not in domain config', async () => {
     const stack = new Stack(
       new App(),
