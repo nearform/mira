@@ -10,36 +10,39 @@ export class MiraObject {
     initialized: Promise<any>
     name: string
     resourceType: string
-    constructor(name: string, resourceType: string = 'resource') {
-        if (resourceType === 'resource') {
-            console.warn('Warning: resource type not defined for '
-                + `${this.constructor.name}, defaulting to 'resource' as name`)
+    constructor(name: string, resourceType = 'resource') {
+      if (resourceType === 'resource') {
+          console.warn('Warning: resource type not defined for ' +
+              `${this.constructor.name}, defaulting to 'resource' as name`)
+      }
+      this.resourceType = resourceType
+      this.name = name
+    /* eslint-disable-next-line */
+      this.initialized = new Promise(async (resolve) => {
+        try {
+          // TODO: With stack, we won't run this code.
+          await this.preInitialize()
+          await this.initialize()
+          // TODO: With stack, we won't run this code.
+          await this.postInitialize()
+            resolve()
+        } catch (e) {
+          console.warn(`Initialization of ${this.constructor.name} object failed:`, e)
+          throw new Error(e)
         }
-        this.resourceType = resourceType
-        this.name = name
-        this.initialized = new Promise(async (resolve) => {
-            try {
-                // TODO: With stack, we won't run this code.
-                await this.preInitialize()
-                await this.initialize()
-                // TODO: With stack, we won't run this code.
-                await this.postInitialize()
-                resolve()
-
-            } catch (e) {
-                console.warn(`Initialization of ${this.constructor.name} object failed:`, e)
-                throw new Error(e)
-            }
-
-        })
+      })
     }
 
     /**
      * @todo Consider stuffing all naming related functions in this class, i.e.
      * migrate from MiraConfig.
      */
-    public calculateSharedResourceName(resource: string): string {
-        return MiraConfig.calculateSharedResourceName(resource)
+    public calculateSharedResourceName(): string {
+        return MiraConfig.calculateSharedResourceName(this.resourceType)
+    }
+
+    static calculateSharedResourceName(resourceType: string): string {
+        return MiraConfig.calculateSharedResourceName(resourceType)
     }
 
     /**
@@ -47,11 +50,11 @@ export class MiraObject {
      * migrate from MiraConfig.
      */
     public getBaseStackName(suffix = ''): string {
-        return MiraConfig.getBaseStackName(suffix)
+      return MiraConfig.getBaseStackName(suffix)
     }
 
-    getEnv() {
-        return MiraEnv.instance
+    getEnv(): MiraEnv {
+      return MiraEnv.instance
     }
 
     /**
@@ -59,7 +62,7 @@ export class MiraObject {
      * migrate from MiraConfig.
      */
     public getEnvironment(name?: string): Account {
-        return MiraConfig.getEnvironment(name)
+      return MiraConfig.getEnvironment(name)
     }
 
     /**
@@ -67,14 +70,14 @@ export class MiraObject {
      * migrate from MiraConfig.
      */
     public getFullAccountProps(name: string): Account {
-        return MiraConfig.getFullAccountProps(name)
+      return MiraConfig.getFullAccountProps(name)
     }
 
     /**
      * Gets the name for this resource.
      */
-    getResourceName() {
-        return `${this.calculateSharedResourceName(this.resourceType)}-${this.name}`
+    getResourceName(): string {
+        return `${this.calculateSharedResourceName()}-${this.name}`
     }
 
     /**
@@ -82,27 +85,27 @@ export class MiraObject {
      * migrate from MiraConfig.
      */
     public getTargetName(name?: string): string {
-        return MiraConfig.getTargetName(name)
+      return MiraConfig.getTargetName(name)
     }
 
     /**
      * Asynchronous initilaization of a Mira resource.
      */
-    public async initialize() {
-        // NOOP.
+    public async initialize(): Promise<void> {
+      // NOOP.
     }
 
     /**
      * Asynchronous post-initilaization of a Mira resource.
      */
-    public async postInitialize() {
-        // NOOP.
+    public async postInitialize(): Promise<void> {
+      // NOOP.
     }
 
     /**
      * Asynchronous pre-initilaization of a Mira resource.
      */
-    public async preInitialize() {
-        // NOOP.
+    public async preInitialize(): Promise<void> {
+      // NOOP.
     }
 }

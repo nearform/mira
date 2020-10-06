@@ -16,28 +16,48 @@ export default class MiraEnv {
     env: Account
     static instance: MiraEnv
     constructor() {
-        if (!MiraEnv.instance) {
-            MiraEnv.instance = this
-        } else if (args.env !== 'test') {
-            console.warn('MiraEnv was instantiated twice outside a testing environment'
-                + '.  This will likely cause unknown behavior.')
-        }
+      if (!MiraEnv.instance) {
+        MiraEnv.instance = this
+      } else if (args.env !== 'test') {
+          console.warn('MiraEnv was instantiated twice outside a testing environment' +
+              '.  This will likely cause unknown behavior.')
+      }
     }
 
-    initialize() {
-        this.parseEnv()
+    initialize(): void {
+        this.parseFile()
+      this.parseEnv()
     }
 
-    parseEnv() {
-        if (!args.env && process.env.NODE_ENV) {
-            args.env = process.env.NODE_ENV
-        } else if (!args.env) {
-            console.warn('Warning: Environment not specified, defauling to dev.')
-            args.env = 'dev'
+    /**
+ * Parses the environment variable.
+ */
+    parseEnv(): Account {
+      if (!args.env && process.env.NODE_ENV) {
+        args.env = process.env.NODE_ENV
+      } else if (!args.env) {
+        console.warn('Warning: Environment not specified, defauling to dev.')
+        args.env = 'dev'
+      }
+      // TODO: Perhaps we migrate this fn to this class?
+      this.env = MiraConfig.getEnvironment(args.env)
+      return this.env
+    }
+
+    /**
+     * Parses the file variable.
+     */
+    parseFile(): string {
+        if (!args.file) {
+            console.warn('You must specify a --file argument when using the ' +
+                'deploy or undeploy command within mira.')
+            // TODO: Specify exit code.
+            process.exit(1)
         }
-        // TODO: Perhaps we migrate this fn to this class?
-        this.env = MiraConfig.getEnvironment(args.env)
-        return this.env
+        if (Array.isArray(args.file)) {
+            return args.file
+        }
+        return args.file.split(',')
     }
 }
 new MiraEnv()

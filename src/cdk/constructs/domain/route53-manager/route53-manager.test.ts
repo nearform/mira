@@ -72,7 +72,7 @@ describe('Route53Manager', () => {
       accounts: []
     })
 
-    expect(() => new Route53Manager(stack)).toThrowError(
+    expect(() => new Route53Manager()).toThrowError(
       'Cannot find hostedZoneId in config.'
     )
   })
@@ -102,7 +102,7 @@ describe('Route53Manager', () => {
 
     MiraConfig.calculateSharedResourceName = (resource: string): string => `prefix-${resource}`
 
-    expect(() => new Route53Manager(stack)).not.toThrowError()
+    expect(() => new Route53Manager()).not.toThrowError()
 
     expect(AccountPrincipal).toBeCalledTimes(2)
     expect(Topic).toBeCalledTimes(1)

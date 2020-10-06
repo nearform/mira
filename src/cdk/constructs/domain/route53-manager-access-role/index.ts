@@ -1,4 +1,3 @@
-import { Construct } from '@aws-cdk/core'
 import {
   Effect,
   ManagedPolicy,
@@ -8,13 +7,13 @@ import { MiraConfig } from '../../../../config/mira-config'
 import { MiraStack } from '../../../stack'
 
 export class Route53ManagerAccessRoleStack extends MiraStack {
-  constructor (parent: Construct) {
-    super(parent, Route53ManagerAccessRoleStack.name)
+  constructor () {
+    super(Route53ManagerAccessRoleStack.name)
     const { hostedZoneId } = MiraConfig.getDomainConfig()
     if (!hostedZoneId) {
       throw new Error('Cannot find hostedZoneId in config.')
     }
-    new ManagedPolicy(this, 'permissionBoundaryPolicy',
+    new ManagedPolicy(this.stack, 'permissionBoundaryPolicy',
       {
         managedPolicyName: MiraConfig.calculateSharedResourceName('Route53ManagerPolicyBoundary'),
         description: 'Boundary that defines what action can be performed by the Route53Manager stack resources',

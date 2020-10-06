@@ -238,14 +238,14 @@ class MiraConfigClass {
     return Object.assign({}, configModule.get(name), { account }) as CicdConfig
   }
 
-  private getFullAccountProps (name: string): Account {
+  public getFullAccountProps (name: string): Account {
     const accountsKey = CONFIG_KEYS.ACCOUNTS
     if (!configModule.has(accountsKey)) throw new Error(`Missing ${accountsKey} section in your configuration file`)
     if (!configModule.has(`${accountsKey}.${name}`)) throw new Error(`Missing ${accountsKey}.${name} section in your configuration file`)
     return Object.assign({}, configModule.get(`${accountsKey}.${name}`), { name }) as Account
   }
 
-  private getTargetName (name?: string): string {
+  public getTargetName (name?: string): string {
     const devTargetPath = `${CONFIG_KEYS.DEV}.${CONFIG_KEYS.TARGET}`
     if (!name) {
       if (!configModule.has(devTargetPath)) {

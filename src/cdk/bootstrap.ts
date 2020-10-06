@@ -453,6 +453,8 @@ export class MiraBootstrap {
    * In case of CDK executions 'dev' is set as NODE_ENV during spawn.
    * @param fn
    * @param params
+   * @todo The typing in this function is very complicated.  Should be migrated
+   * to env.ts?
    */
   useDevConfig<R, Z> (fn: (args: R) => Z, params: [R]): Z {
     const tmpEnv = process.env.NODE_ENV || 'default'

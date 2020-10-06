@@ -74,7 +74,7 @@ describe('CertificateManager', () => {
       env: { account: '12345', region: 'eu-west-1' }
     })
 
-    expect(() => new CertificateManager(stack)).toThrowError(
+    expect(() => new CertificateManager()).toThrowError(
       'Cannot find hostedZoneId in config.'
     )
   })
@@ -111,7 +111,6 @@ describe('CertificateManager', () => {
       }
     ]
 
-    expect(() => new CertificateManager(stack)).not.toThrowError()
 
     expect(AccountPrincipal).toBeCalledTimes(1)
     expect(AssetCode).toBeCalledTimes(1)

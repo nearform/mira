@@ -1,17 +1,9 @@
 import AWS, { CloudFormation } from 'aws-sdk'
 
 import config from 'config'
-import { getStackName } from '../cdk/app'
+import { MiraObject } from '../cdk/object'
 import { getRoleArn, assumeRole } from '../assume-role'
 import { MiraConfig } from '../config/mira-config'
-
-/**
- * Gets the full stack name.
- * @todo Refactor this into a more proper place.
- */
-export const getFullStackName = (): string => {
-  return `${getStackName()}-${MiraConfig.getEnvironment().name}`
-}
 
 let miraCfn: AWS.CloudFormation
 /**
@@ -76,7 +68,7 @@ export const getStacks = async (filter?: string): Promise<LooseObject> => {
  * Gets all stacks are associated with this Mira instance.
  */
 export const getInstaceStacks = async (): Promise<LooseObject> => {
-  const stackName = `${getStackName()}-${MiraConfig.getEnvironment().name}`
+  const stackName = (MiraObject.calculateSharedResourceName('stack'))
   return getStacks(stackName)
 }
 

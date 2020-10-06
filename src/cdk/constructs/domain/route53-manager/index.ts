@@ -1,4 +1,4 @@
-import { CfnOutput, Construct, Duration } from '@aws-cdk/core'
+import { CfnOutput, Duration } from '@aws-cdk/core'
 import { Topic } from '@aws-cdk/aws-sns'
 import { SingletonFunction, Runtime, AssetCode } from '@aws-cdk/aws-lambda'
 import { FollowMode } from '@aws-cdk/assets'
@@ -8,9 +8,9 @@ import { MiraConfig } from '../../../../config/mira-config'
 import path from 'path'
 import { MiraStack } from '../../../stack'
 export class Route53Manager extends MiraStack {
-  constructor (parent: Construct) {
+  constructor () {
     const id = MiraConfig.getBaseStackName('Route53Manager')
-    super(parent, id)
+    super(id)
     const account = MiraConfig.getEnvironment()
     const { hostedZoneId } = MiraConfig.getDomainConfig()
     if (!hostedZoneId) {
@@ -19,7 +19,7 @@ export class Route53Manager extends MiraStack {
 
     const allowedPrincipals = MiraConfig.getDomainAllowedPrincipals().map(account => new AccountPrincipal(account.env.account))
 
-    const domainSubscriptionTopic = new Topic(this, 'DomainSubscriptionTopic', {
+    const domainSubscriptionTopic = new Topic(this.stack, 'DomainSubscriptionTopic', {
       displayName: 'Domain Subscription Topic',
       topicName: MiraConfig.getBaseStackName(`${account.name}-DomainSubscriptionTopic`)
     })
@@ -35,9 +35,9 @@ export class Route53Manager extends MiraStack {
       follow: FollowMode.ALWAYS
     })
 
-    const permissionsBoundary = ManagedPolicy.fromManagedPolicyName(this, 'Route53PermissionsBoundary', MiraConfig.calculateSharedResourceName('Route53ManagerPolicyBoundary'))
+    const permissionsBoundary = ManagedPolicy.fromManagedPolicyName(this.stack, 'Route53PermissionsBoundary', MiraConfig.calculateSharedResourceName('Route53ManagerPolicyBoundary'))
 
-    const DomainManagerRole = new Role(this, 'Route53ManagerRole', {
+    const DomainManagerRole = new Role(this.stack, 'Route53ManagerRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       permissionsBoundary
     })
@@ -59,7 +59,7 @@ export class Route53Manager extends MiraStack {
 
     DomainManagerRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'))
 
-    const Route53ManagerLambda = new SingletonFunction(this, 'Route53ManagerLambda', {
+    const Route53ManagerLambda = new SingletonFunction(this.stack, 'Route53ManagerLambda', {
       code,
       handler: 'route53-manager.handler',
       runtime: Runtime.NODEJS_10_X,
@@ -73,7 +73,7 @@ export class Route53Manager extends MiraStack {
 
     Route53ManagerLambda.addEventSource(new SnsEventSource(domainSubscriptionTopic))
 
-    new CfnOutput(this, 'domainSubscriptionTopicArn', {
+    new CfnOutput(this.stack, 'domainSubscriptionTopicArn', {
       value: domainSubscriptionTopic.topicArn
     })
     const allowedCompositePrincipals = new CompositePrincipal(
@@ -81,7 +81,7 @@ export class Route53Manager extends MiraStack {
         .getDomainAllowedPrincipals()
         .map(account => new AccountPrincipal(account.env.account))
     )
-    const CrossAccountDomainManagerRole = new Role(this, 'CrossAccountDomainManagerRole', {
+    const CrossAccountDomainManagerRole = new Role(this.stack, 'CrossAccountDomainManagerRole', {
       assumedBy: allowedCompositePrincipals,
       roleName: MiraConfig.getBaseStackName('DomainManager-Role'),
       permissionsBoundary
@@ -96,7 +96,7 @@ export class Route53Manager extends MiraStack {
       resources: ['*'],
       actions: ['route53:GetChange']
     }))
-    new CfnOutput(this, 'CrossAccountDomainManagerRoleArn', {
+    new CfnOutput(this.stack, 'CrossAccountDomainManagerRoleArn', {
       value: CrossAccountDomainManagerRole.roleArn
     })
   }

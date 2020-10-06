@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core'
 import * as aws from 'aws-sdk'
 import { NestedStack } from '@aws-cdk/aws-cloudformation'
-import { CfnOutput, Construct, Stack, Aspects, Tags } from '@aws-cdk/core'
+import { CfnOutput, Construct, Aspects, Tags } from '@aws-cdk/core'
 import { IStringParameter, StringParameter } from '@aws-cdk/aws-ssm'
 import { Policies } from './aspects/security/policies'
 import { MiraConfig, Account } from '../config/mira-config'
@@ -18,18 +18,6 @@ interface LooseObject {
   [key: string]: any
 }
 
-/**
- * @class Object containing persistent state for MiraStack.  This generally
- * is instantiated and attached one time, but is useful as a class object for
- * testing purposes to cleanly wipe and configure state.
- */
-class MiraStackState {
-  /**
-   * Stores stack instances by name.
-   */
-  stackInstances = {}
-}
-
 export interface ExportOutputs {
   addOutput (name: string, value: string, shouldExport: boolean): void
 }
@@ -40,16 +28,16 @@ interface MiraStackProps {
   [x: string]: unknown
 }
 
-export default class MiraStack extends MiraObject implements ExportOutputs {
+export class MiraStack extends MiraObject {
   static topLevelStacks: LooseObject
   parent?: MiraStack
   stack: cdk.Stack
-  nestedStack: cdk.NestedStack
+  props: MiraStackProps
   constructor(name?: string, parent?: MiraStack) {
     if (!name) {
       name = 'DefaultStack'
-      console.warn('No stack name provided, prefer a named stack.  Defaulting '
-        + 'to name \'DefaultStack\'')
+      console.warn('No stack name provided, prefer a named stack.  Defaulting ' +
+        'to name \'DefaultStack\'')
     }
     super(name, 'stack')
     this.parent = parent
@@ -77,8 +65,8 @@ export default class MiraStack extends MiraObject implements ExportOutputs {
   /**
    * Adds tags to the stack.
    */
-  async addTags() {
-    let createdBy = await this.getUser()
+  async addTags(): Promise<void> {
+    const createdBy = await this.getUser()
 
     Tags.of(this.stack).add('StackName', this.getResourceName())
     Tags.of(this.stack).add('CreatedBy', createdBy)
@@ -113,7 +101,7 @@ export default class MiraStack extends MiraObject implements ExportOutputs {
   /**
    * Get a username either from the IAM service or from STS.
    */
-  async getUser() {
+  async getUser(): Promise<string> {
     const iam = new aws.IAM()
     let owner
     let createdBy: string
@@ -131,10 +119,10 @@ export default class MiraStack extends MiraObject implements ExportOutputs {
     return createdBy
   }
 
-  async initialize() {
+  async initialize(): Promise<void> {
     const account: Account = this.getEnv().env
     if (this.parent) {
-
+      this.stack = new NestedStack(this.parent.stack, this.getResourceName())
     } else {
       this.stack = new cdk.Stack(MiraApp.instance.cdkApp, this.getResourceName(), {
         env: {
@@ -156,7 +144,7 @@ export default class MiraStack extends MiraObject implements ExportOutputs {
     })
   }
 
-/**
+  /**
  * Parses a parameter given a fully qualified parameter path.
  */
   private parseParameterName (fullName: string): ParsedName {
@@ -170,6 +158,3 @@ export default class MiraStack extends MiraObject implements ExportOutputs {
     return { id, parameterName }
   }
 }
-
-// Attach the default state.
-Object.assign(MiraStack, new MiraStackState())
