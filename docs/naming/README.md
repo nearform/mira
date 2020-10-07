@@ -79,6 +79,30 @@ out-of-the-box and call `MiraNames.getName(resourceType: string, resouceName: st
 
 ![resourcename]
 
+## Resource Lookup
+
+It is important to look up resource names under a few conditions:
+* At run-time, e.g. in a Lambda, you want to reference an account resource without wanting to specify environment name and stack
+* At build-time, you want to look up a `Construct` object by a friendly name for use in constructing other `Construct`'s
+
+Mira does this for you by containing a directory of resources at build-time on
+`MiraNames.resourcesByType`.  If you had some SQS queue with the following name:
+
+`dev-somePrefix-someApp-someStackName-sqs-myQueue`
+
+You'd be able to lookup that `Construct` object and its associated objects via:
+`MiraNames.resourcesByType['sqs']['myQueue']`
+
+After you deploy a constructed stack in Mira, Mira will push this same information
+to S3 so that it may be looked up at run-time.  During run-time, you'd specify
+the environment and the stack name (using environment variables passed into the 
+run-time):
+```
+const miraResources = aws.s3.getObject({Bucket: 'mira', Key: 'resources'}).promise()
+const {QueueUrl} = miraResources[process.env.NODE_ENV][process.env.STACK_NAME]['sqs']['myQueue'];
+```
+
+
 <!-- Images -->
 [overview]: ../img/naming/overview.png
 [env]: ../img/naming/env.png
