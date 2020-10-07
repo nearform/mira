@@ -2,6 +2,7 @@
 * [Mira Overview](/overview/)
 * [Quick Start Guide](/quick-start/)
 * [Working with Mira](/working-with-mira/)
+* [Naming](/naming/)
 * [Configuration](/config/)
 * [Continuous Integration](/cicd/)
 * [Guidelines](/guidelines/)
