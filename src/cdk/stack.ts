@@ -33,13 +33,16 @@ export class MiraStack extends MiraObject {
   parent?: MiraStack
   stack: cdk.Stack
   props: MiraStackProps
-  constructor (name?: string, parent?: MiraStack) {
+  constructor(name?: string, parent?: MiraStack, existingStack?: cdk.Stack) {
     if (!name) {
       name = 'DefaultStack'
       console.warn('No stack name provided, prefer a named stack.  Defaulting ' +
         'to name \'DefaultStack\'')
     }
     super(name, 'stack')
+    if (existingStack) {
+      this.stack = existingStack
+    }
     this.parent = parent
   }
 
@@ -86,6 +89,13 @@ export class MiraStack extends MiraObject {
   }
 
   /**
+   * Bootstraps some external stack.
+   */
+  static bootstrap(stack: cdk.Stack) {
+    return new MiraStack(stack.stackName, undefined, stack)
+  }
+
+  /**
    * Creates a parameter that will reside on the stack in Cfn.
    */
   createParameter (fullName: string, description: string, value: string): StringParameter {
@@ -121,9 +131,9 @@ export class MiraStack extends MiraObject {
 
   async initialize (): Promise<void> {
     const account: Account = this.getEnv().env
-    if (this.parent) {
+    if (!this.stack && this.parent) {
       this.stack = new NestedStack(this.parent.stack, this.getResourceName())
-    } else {
+    } else if (!this.stack) {
       this.stack = new cdk.Stack(MiraApp.instance.cdkApp, this.getResourceName(), {
         env: {
           region: account.env.region,
@@ -131,6 +141,10 @@ export class MiraStack extends MiraObject {
         }
       })
       await this.addTags()
+      // Add more logic here.
+      if (!this.props.disablePolicies) {
+        this.applyPolicies(this.props.approvedWildcardActions)
+      }
     }
   }
 

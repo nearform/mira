@@ -133,7 +133,8 @@ export class MiraApp {
           }
           initializationList.push(stack.initialized)
         } else if (Stacks[idx] instanceof cdk.Stack) {
-          new Stacks[idx](this.cdkApp, 'GenericCDKStack')
+          const stack = new Stacks[idx](this.cdkApp, 'GenericCDKStack')
+          MiraStack.bootstrap(stack)
         } else if (typeof Stacks[idx] === 'function') {
           Stacks[idx]()
         }
