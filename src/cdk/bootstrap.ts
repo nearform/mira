@@ -200,6 +200,7 @@ export class MiraBootstrap {
    * TODO: check this functionality together with sample app that supports custom domain.
    */
   deployDomain (): void {
+    console.log('deploying domain')
     const envConfig = MiraConfig.getEnvironment(this.env)
     let cmd = 'deploy'
     if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
@@ -429,6 +430,7 @@ export class MiraBootstrap {
         .option('envVar', { type: 'string', desc: 'Environment variable passed into the code build' }))
       .command('docs', 'Starts local web server with documentation')
       .command('clean', 'Removes error log files')
+      .command('domain', 'Deploys Domain Manager')
       .help()
       .demandCommand()
       .argv
