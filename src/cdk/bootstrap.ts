@@ -245,6 +245,7 @@ export class MiraBootstrap {
    * TODO: check this functionality together with sample app that supports custom domain.
    */
   deployDomain (): void {
+    console.log('deploying domain')
     const envConfig = MiraConfig.getEnvironment(this.env)
     let cmd = 'deploy'
     if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
@@ -282,6 +283,7 @@ export class MiraBootstrap {
     const resultedEnv = this.env || env
     const q = process.platform === 'win32' ? '"' : "'"
     let appPath = path.resolve(__dirname, filename)
+
     if (fs.existsSync('node_modules/mira')) {
       if (fs.lstatSync('node_modules/mira/dist').isSymbolicLink()) {
         // Mira has been locally linked.
@@ -291,11 +293,11 @@ export class MiraBootstrap {
           // NOOP
         }
         fs.writeFileSync(
-          'node_modules/mira-bootstrap/bootstrap-app.js',
-          "require('mira/dist/src/cdk/app.js')",
+          `node_modules/mira-bootstrap/bootstrap-${filename}`,
+          `require('mira/dist/src/cdk/${filename}')`,
           'utf8'
         )
-        appPath = 'node_modules/mira-bootstrap/bootstrap-app.js'
+        appPath = `node_modules/mira-bootstrap/bootstrap-${filename}`
       }
     }
     let appArg = `${q}node --preserve-symlinks "${appPath}" `
@@ -515,6 +517,7 @@ export class MiraBootstrap {
       )
       .command('docs', 'Starts local web server with documentation')
       .command('clean', 'Removes error log files')
+      .command('domain', 'Deploys Domain Manager')
       .help()
       .demandCommand().argv
   }
