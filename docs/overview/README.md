@@ -11,10 +11,7 @@ Mira consists of three core elements:
 Mira enables you to create a dedicated development environment for every developer.
 Every stack is managed by AWS CloudFormation.
 
-Developer can select one of available sample applications as a starting position for the new application.
-
-Available sample application are:
-* [Basic S3 based web hosting app](../samples/README.md?id=s3-web-hosting-app). 
+You can select one of the available sample applications as a starting position for a new application.
 
 ## Serverless Services
 
@@ -45,15 +42,12 @@ __Note:__
 ## Get Started Using Mira
  If you are a developer and you want to get started using Mira, see the [Quick Start Guide](quick-start/). This Guide assumes you already have an existing Mira repository and a existing AWS accounts. 
 
+
+<!---
 ## Key Features
 
-### Mira
-  - Developer friendly CLI, simply run `npx mira`.
-      - init - option to initialize mandatory files.
-      - deploy - option to deploy your application directly from your computer.
-      - cicd - option to deploy shared CI Pipeline
-      - docs - option to run a docsify webserver and see the Mira docs.
   - `MiraStack` class that is...
+
 ### Mira Sample Apps
 
   - Monorepo using yarn workspaces in sample applications
@@ -64,3 +58,4 @@ __Note:__
     - DB data is encrypted at rest and in transit
     - S3 buckets used for CICD pipeline are encrypted
 
+--->

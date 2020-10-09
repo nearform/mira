@@ -11,7 +11,7 @@ export interface DeploymentPermissionsProps {
 export class DeploymentPermissions extends Stack {
   public role: Role
 
-  constructor (parent: Construct, props: DeploymentPermissionsProps) {
+  constructor (parent: Construct, props: DeploymentPermissionsProps = { env: 'dev' }) {
     const name = getBaseStackName('CICDPermissions')
     const account = MiraConfig.getEnvironment(props.env)
     super(parent, name, { env: account.env })

@@ -126,3 +126,4 @@ dist
 .ts-build-cache
 .mira.snapshot
 mira-error-logs*
+**/cdk.out

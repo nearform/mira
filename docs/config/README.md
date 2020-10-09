@@ -1,27 +1,14 @@
-# Config File
-This section describes how to configure the configuration file `./config/default.json`.
-Mira's configuration system is based on the [node config](https://www.npmjs.com/package/config) library.
+# Configuration
+This section describes how to configure your app to work with Mira.
+The configuration system is based on the [node config](https://www.npmjs.com/package/config) library.
 
-## Location
+__Note:__ Once app configuration properties are set, any change to them will trigger a full redeploy of the stacks (rather than an incremental update).
+
+## File Location
 
 In your app, the config file must be located in `./config/default.json`
 
-## Main Section
-
-```
-"app": {
-  "prefix": "John"
-  "name" : "Sample App"
-}
-```
-
-This data is used to generate Cloud Development Kit (CDK) Resource names.
-
-The example above generates `John-SampleApp` as the prefix for stacks, roles, pipelines stages and so on.
-
-__Warning:__ Once app properties are set, any change will trigger a replacement of the stacks!
-
-# A Sample Config File
+## A Sample Config File
 
 Let's take a look at a sample config file.
 ```
@@ -87,15 +74,27 @@ Let's take a look at a sample config file.
     }
 }
 ```
+### Main Section
 
-## Accounts
+```
+"app": {
+  "prefix": "John"
+  "name" : "Sample App"
+}
+```
+
+This data is used to generate Cloud Development Kit (CDK) Resource names.
+
+The example above generates `John-SampleApp` as the prefix for stacks, roles, pipelines stages and so on.
+
+### Accounts Section
 The accounts section of the config file is a collection of account objects that can be used to deploy apps and run cicd. The accounts also represent environments.
 We define three accounts in the sample config file above: `staging`, `production`, `cicd`, each with different account numbers.
 
 The `staging` account may represent a developer's personal account where they can test all Mira deployments. It uses the default profile defined in the `~/.aws` directory or the one passed in as `--profile` parameter in the CLI command.
 
 
-## CI/CD
+### CI/CD Section
 The `cicd` section specifies the various stages of the deployment pipeline and other properties required for the CI pipeline to work.
 * `target` - Name of the account where the CI pipeline will be deployed.
 * `buildspecFile` - Path to the buildspec file used by AWS CodeBuld for application deployment.
@@ -118,20 +117,20 @@ Stage is described by 3 properties:
     * `withDomain` - A boolean that specifies if the application supports a custom domain. __NB domain usage to follow in upcoming releases.__.
     * `requireManualApproval` - A boolean that specifies if manual approval is needed in the pipeline before continuing deployment.
 
-## Domain
+## Domain Configuration
 
 Domain management components (Certificate, Route53 and so on) are deployed on the `Domain` account. It uses `Z1234567890` as the Hosted Zone ID.
 
 NB Example domain usage to follow in upcoming releases.
 
 
-## Cost Center
+## Cost Center Tag
 
-To enable the creation of the cost center tag you need to specify a costCenter property.
+To enable the creation of the cost center tag you need to specify a `costCenter` property.
 
 See [Using Cost Allocation Tags](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html) for more information.
 
-## Developer config
+## Developer Configuration
 
 To enable custom config modifications for developers working in the same team, Mira expects a `config/dev.json` file to be created.
 
