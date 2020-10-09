@@ -56,6 +56,13 @@ export class MiraApp {
     }
 
     const stackImport = await import(stackFile)
+    if (!stackImport.default || !(stackImport.prototype instanceof cdk.Stack)) {
+      for (let key in stackImport) {
+        if (typeof stackImport[key] === 'function' && stackImport[key].prototype instanceof Stack) {
+          return stackImport[key]
+        }
+      }
+    }
     return stackImport.default as MiraValidStack
   }
 
@@ -132,9 +139,9 @@ export class MiraApp {
             stack.applyPolicies(stack.props.approvedWildcardActions)
           }
           initializationList.push(stack.initialized)
-        } else if (Stacks[idx] instanceof cdk.Stack) {
-          const stack = new Stacks[idx](this.cdkApp, 'GenericCDKStack')
-          MiraStack.bootstrap(stack)
+        } else if (Stacks[idx].prototype instanceof cdk.Stack) {
+          const stack = new (Stacks[idx])(this.cdkApp, Stacks[idx].name)
+          initializationList.push(MiraStack.bootstrap(stack))
         } else if (typeof Stacks[idx] === 'function') {
           Stacks[idx]()
         }

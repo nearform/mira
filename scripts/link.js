@@ -96,6 +96,10 @@ const symlinkDependencies = (pkgDir) => {
     const dependencies = fs.readdirSync(__dirname + '/../node_modules/')
     dependencies.forEach((dep) => {
         if (excludeList.includes(dep)) {
+            try {
+                fs.symlinkSync(`${__dirname}/../node_modules/${dep}`,
+                    `${pkgDir}/node_modules/${dep}`)
+            } catch (e) { }
             return
         }
         fs.symlinkSync(`${__dirname}/../node_modules/${dep}`,
@@ -134,14 +138,14 @@ if (getPackageFile(args._[0])) {
     if (fs.existsSync(`${pkgDir}/node_modules/mira`) &&
         !fs.statSync(`${pkgDir}/node_modules/mira`).isSymbolicLink()) {
         console.info(`Looks like Mira has already been installed in ${pkgObj.name}`)
-        console.info(`Backing up old mira dependency to ${pkgDir}/mira.old`)
-        if (fs.existsSync(`${pkgDir}/mira.old`)) {
+        console.info(`Backing up old mira dependency to ${pkgDir}/node_modules/mira.old`)
+        if (fs.existsSync(`${pkgDir}/node_modules/mira.old`)) {
             console.warn('mira.old folder already exists, deleting.')
-            cp.execSync(`rm -rf ${pkgDir}/mira.old`, {
+            cp.execSync(`rm -rf ${pkgDir}/node_modules/mira.old`, {
                 stdio: 'ignore'
             })
         }
-        fs.renameSync(`${pkgDir}/node_modules/mira`, `${pkgDir}/mira.old`)
+        fs.renameSync(`${pkgDir}/node_modules/mira`, `${pkgDir}/node_modules/mira.old`)
     }
     try { symlinkMira(pkgDir) } catch (e) {
         // NOOP

@@ -9,10 +9,10 @@ if ($PSVersionTable.PSVersion -lt "6.0" -or $IsWindows) {
 }
 $ret=0
 if (Test-Path "$basedir/node$exe") {
-  & "$basedir/node$exe"  "$basedir/../mira/bin/cli.js" $args
+  & "$basedir/node$exe"  "--preserve-symlinks $basedir/../mira-bootstrap/cli.js" $args
   $ret=$LASTEXITCODE
 } else {
-  & "node$exe"  "$basedir/../mira/bin/cli.js" $args
+  & "node$exe"  "--preserve-symlinks $basedir/../mira-bootstrap/cli.js" $args
   $ret=$LASTEXITCODE
 }
 exit $ret

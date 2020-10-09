@@ -33,13 +33,14 @@ export class MiraStack extends MiraObject {
   parent?: MiraStack
   stack: cdk.Stack
   props: MiraStackProps
-  constructor(name?: string, parent?: MiraStack, existingStack?: cdk.Stack) {
+  constructor(name?: string, parent?: MiraStack, existingStack?: cdk.Stack, props?: MiraStackProps) {
     if (!name) {
       name = 'DefaultStack'
       console.warn('No stack name provided, prefer a named stack.  Defaulting ' +
         'to name \'DefaultStack\'')
     }
     super(name, 'stack')
+    this.props = props || {}
     if (existingStack) {
       this.stack = existingStack
     }
@@ -92,7 +93,8 @@ export class MiraStack extends MiraObject {
    * Bootstraps some external stack.
    */
   static bootstrap(stack: cdk.Stack) {
-    return new MiraStack(stack.stackName, undefined, stack)
+    const obj = new MiraStack(stack.stackName, undefined, stack)
+    return obj.initialized
   }
 
   /**
@@ -140,11 +142,11 @@ export class MiraStack extends MiraObject {
           account: account.env.account
         }
       })
-      await this.addTags()
-      // Add more logic here.
-      if (!this.props.disablePolicies) {
-        this.applyPolicies(this.props.approvedWildcardActions)
-      }
+    }
+    await this.addTags()
+    // Add more logic here.
+    if (!this.props.disablePolicies) {
+      this.applyPolicies(this.props.approvedWildcardActions)
     }
   }
 
