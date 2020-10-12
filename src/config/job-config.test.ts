@@ -24,10 +24,12 @@ jest.mock('aws-sdk', () => ({
   })
 }))
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const mockConfigHandler = (mockConfig: any): void => {
   config.get = (key: string): any => _.get(mockConfig, key)
   config.has = (key: string): any => _.has(mockConfig, key)
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 interface TestEnvData {
   profile?: string
@@ -120,7 +122,7 @@ describe('MiraJobConfig', () => {
         }
       })
 
-      const webAppUrlConfig = _.cloneDeep(healthyConfig)
+      const webAppUrlConfig: {[key: string]: any} = _.cloneDeep(healthyConfig)
       delete webAppUrlConfig.environments.Developer.baseDomain;
       (webAppUrlConfig.environments.Developer as TestEnvData).webAppUrl = 'custom.company.com'
       mockConfigHandler(webAppUrlConfig)
@@ -302,7 +304,7 @@ describe('MiraJobConfig', () => {
 
       expect(() => new MiraJobConfig('')).toThrowError('Cannot resolve deployment type')
 
-      let brokenConfig
+      let brokenConfig: {[key: string]: any}
 
       brokenConfig = _.cloneDeep(healthyConfig)
       delete brokenConfig.environments
@@ -341,7 +343,7 @@ describe('MiraJobConfig', () => {
     })
 
     it('Handles Developer deployment', () => {
-      let brokenConfig
+      let brokenConfig: {[key: string]: any}
 
       brokenConfig = _.cloneDeep(healthyConfig)
       delete brokenConfig.environments
@@ -379,7 +381,7 @@ describe('MiraJobConfig', () => {
     })
 
     it('Handles CICD deployment', () => {
-      let brokenConfig
+      let brokenConfig: {[key: string]: any}
 
       brokenConfig = _.cloneDeep(healthyConfig)
       delete brokenConfig.cicd
@@ -430,7 +432,7 @@ describe('MiraJobConfig', () => {
     })
 
     it('Handles DomainManager deployment', () => {
-      let brokenConfig
+      let brokenConfig: {[key: string]: any}
       process.argv = ['npx', 'mira', 'domain']
 
       brokenConfig = _.cloneDeep(healthyConfig)

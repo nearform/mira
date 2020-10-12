@@ -1,10 +1,10 @@
+import { Context, SNSEvent } from 'aws-lambda'
 import { Utils, send } from './utils'
-
 interface ResponseData {
   Arn?: string
 }
 
-export const handler = async (event: any, context: any): Promise<string> => {
+export const handler = async (event: SNSEvent, context: Context): Promise<string> => {
   console.log(`SNS event: ${JSON.stringify(event)}`)
   const lambdaEvent = JSON.parse(event.Records[0].Sns.Message)
 

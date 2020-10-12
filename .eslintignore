@@ -1,3 +1,7 @@
 cdk.out/
 node_modules/
 dist/
+docs/
+bin/
+scripts/link.js
+**/*.test.ts

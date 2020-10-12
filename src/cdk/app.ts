@@ -1,15 +1,43 @@
 import * as cdk from '@aws-cdk/core'
 import chalk from 'chalk'
+import config from 'config'
 import { MiraServiceStack, MiraStack } from './stack'
 import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
 import * as path from 'path'
-import { getBaseStackName, getBaseStackNameFromParams } from './constructs/config/utils'
+import {
+  getBaseStackName,
+  getBaseStackNameFromParams
+} from './constructs/config/utils'
 import { MiraConfig } from '../config/mira-config'
 // eslint-disable-next-line
-const minimist = require('minimist')
+const minimist = require("minimist");
 
 const args = minimist(process.argv)
+
+interface Prototypable {
+  prototype: Stack
+}
+
+interface StackConstructable {
+  new(app: cdk.App, props: { env: string }): Stack
+}
+
+interface MiraStackConstructable {
+  new(service: MiraServiceStack): MiraStack
+}
+
+interface MiraServiceStackConstructable {
+  new(app: MiraApp): MiraServiceStack
+}
+
+export type MiraValidStack = Stack &
+  Prototypable &
+  MiraStackConstructable &
+  MiraServiceStackConstructable &
+  StackConstructable
+
+type MiraStackList = Array<MiraValidStack>
 
 /**
  * Main Mira class.  Bootstraps CDK and loads in Stacks per user input.
@@ -20,11 +48,11 @@ export class MiraApp {
   mainStack: MiraStack;
   serviceStack: MiraServiceStack;
   stackName: string;
-  stacks: any = {};
-  appStacks: any = {};
+  stacks: MiraStackList = [];
+  static cliArgs = args
 
   // eslint-disable-next-line
-  constructor () {
+  constructor() {
     MiraConfig.setDefaultEnvironmentName(args.env)
   }
 
@@ -33,14 +61,14 @@ export class MiraApp {
    * @param {String} fileName (Optional) Can provide an arbitary name to
    * lookup if name exists in configs.
    */
-  async getStack (fileName: string): Promise<Stack | boolean> {
+  async getStack (fileName: string): Promise<MiraValidStack | boolean> {
     const stackFile = path.resolve(fileName)
     if (!fs.existsSync(stackFile)) {
       return false
     }
 
     const stackImport = await import(stackFile)
-    return stackImport.default as Stack
+    return stackImport.default as MiraValidStack
   }
 
   /**
@@ -48,14 +76,14 @@ export class MiraApp {
    * @param {String} stackName (Optional) Can provide an arbitary name to
    * lookup if name exists in configs.
    */
-  async getStacks (): Promise<Array<Stack>> {
-    const stacks: Array<Stack> = []
+  async getStacks (): Promise<MiraStackList> {
+    const stacks: MiraStackList = []
     for (const fileName of MiraApp.getStackFiles()) {
       const stack = await this.getStack(fileName)
       if (!stack) {
         throw new Error(`The stack file ${fileName} doesn't exist`)
       }
-      stacks.push(stack as Stack)
+      stacks.push(stack as MiraValidStack)
     }
     return stacks
   }
@@ -81,7 +109,11 @@ export class MiraApp {
     return getBaseStackName(suffix)
   }
 
-  static getBaseStackNameFromParams (prefix: string, name: string, suffix?: string): string {
+  static getBaseStackNameFromParams (
+    prefix: string,
+    name: string,
+    suffix?: string
+  ): string {
     return getBaseStackNameFromParams(prefix, name, suffix)
   }
 
@@ -93,12 +125,14 @@ export class MiraApp {
       this.initializeApp()
     }
 
-    const Stacks = await this.getStacks() as any
+    const Stacks = await this.getStacks()
 
     if (!Stacks.length) {
-      console.warn('No stack found when initializing, please use the ' +
+      console.warn(
+        'No stack found when initializing, please use the ' +
         '--stack=[StackName] flag ' +
-        'when running this script.')
+        'when running this script.'
+      )
     }
     try {
       const initializationList = []
@@ -128,8 +162,7 @@ export class MiraApp {
         this.cdkApp.synth()
       }
     } catch (e) {
-      console.error(chalk.red('Failed:'), 'could not deploy the stack',
-        e)
+      console.error(chalk.red('Failed:'), 'could not deploy the stack', e)
       process.exit(1)
     }
   }
@@ -140,6 +173,20 @@ export class MiraApp {
   initializeApp (): void {
     this.cdkApp = new cdk.App()
   }
+
+  static isVerbose (): boolean {
+    return MiraApp.cliArgs.verbose && MiraApp.cliArgs.verbose !== 'false' &&
+      MiraApp.cliArgs.verbose !== '0'
+  }
+}
+
+/**
+ * Gets the stack name.
+ */
+export const getStackName = (): string => {
+  const stackName = getBaseStackNameFromParams(config.get('app.prefix'),
+    config.get('app.name'), 'Service')
+  return stackName
 }
 
 // Ensure we're within a CDK deploy context.
@@ -148,8 +195,9 @@ export class MiraApp {
 // is imported this code below will run. I check that the command is
 // executed with 'app.js' file as argument and nod 'ci-app.js' or 'domain.js'
 if (args._.filter((arg: string) => arg.match(/app.js$/)).length > 0) {
-  console.info(`>>> ${chalk
-      .yellow('Initializing CDK for App')}: ${chalk.grey(args.file)}`)
+  console.info(
+    `>>> ${chalk.yellow('Initializing CDK for App')}: ${chalk.grey(args.file)}`
+  )
   const app = new MiraApp()
   app.initialize()
 }

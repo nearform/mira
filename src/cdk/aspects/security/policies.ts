@@ -14,7 +14,7 @@ interface HasPolicyDocument extends cdk.IConstruct {
  * The Policy class is used by Mira to validate policy aspects of various cloud services.
  */
 export class Policies implements cdk.IAspect {
-  constructor (customList?: any) {
+  constructor (customList?: string[]) {
     if (customList) {
       this.allowedServices = customList
     }

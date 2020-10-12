@@ -1,4 +1,5 @@
 'use strict'
+import cp from 'child_process'
 import fs from 'fs'
 import path from 'path'
 /**
@@ -53,8 +54,17 @@ export default class ErrorLogger {
       .filter((file) => {
         return file.match(/mira-errors-\d{12}\.log$/)
       })
-      .map((file) => {
-        return unlink(file)
+      .map(async (file) => {
+        return unlink(file).catch(() =>
+          Promise.resolve(() => {
+            // Windows fix, sometimes this will still generate a non-zero exit
+            // code but will also delete the file (intended action).  Some
+            // Windows users may not have installed MiniGW / WSL and this will
+            // also fail.
+            try { cp.execSync(`rm -f ${file}`) } catch (e) {
+              // NOOP
+            }
+          }))
       })
     await Promise.all(promises)
   }

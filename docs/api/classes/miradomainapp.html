@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MiraDomainApp | Mira - v1.3.0</title>
-	<meta name="description" content="Documentation for Mira - v1.3.0">
+	<title>MiraDomainApp | Mira - v1.4.0</title>
+	<meta name="description" content="Documentation for Mira - v1.4.0">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
 /* ==========================================================================
@@ -2692,7 +2692,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="../index.html">Mira - v1.3.0</a></strong>
+					<strong><a href="../index.html">Mira - v1.4.0</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2727,9 +2727,6 @@ img {
 					<a href="miradomainapp.html#constructor" class="tsd-kind-icon">constructor</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a href="miradomainapp.html#appstacks" class="tsd-kind-icon">app<wbr>Stacks</a>
-				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a href="miradomainapp.html#cdkapp" class="tsd-kind-icon">cdk<wbr>App</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -2746,6 +2743,9 @@ img {
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a href="miradomainapp.html#stacks" class="tsd-kind-icon">stacks</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a href="miradomainapp.html#cliargs" class="tsd-kind-icon">cli<wbr>Args</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a href="miradomainapp.html#getstack" class="tsd-kind-icon">get<wbr>Stack</a>
@@ -2770,6 +2770,9 @@ img {
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 					<a href="miradomainapp.html#getstackname" class="tsd-kind-icon">get<wbr>Stack<wbr>Name</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a href="miradomainapp.html#isverbose" class="tsd-kind-icon">is<wbr>Verbose</a>
 				</li>
 			</ul>
 		</li>
@@ -2810,13 +2813,13 @@ img {
 					<section class="tsd-index-section tsd-is-inherited">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="miradomainapp.html#appstacks" class="tsd-kind-icon">app<wbr>Stacks</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="miradomainapp.html#cdkapp" class="tsd-kind-icon">cdk<wbr>App</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="miradomainapp.html#instance" class="tsd-kind-icon">instance</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="miradomainapp.html#mainstack" class="tsd-kind-icon">main<wbr>Stack</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="miradomainapp.html#servicestack" class="tsd-kind-icon">service<wbr>Stack</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="miradomainapp.html#stackname" class="tsd-kind-icon">stack<wbr>Name</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="miradomainapp.html#stacks" class="tsd-kind-icon">stacks</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="miradomainapp.html#cliargs" class="tsd-kind-icon">cli<wbr>Args</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
@@ -2830,6 +2833,7 @@ img {
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="miradomainapp.html#getbasestacknamefromparams" class="tsd-kind-icon">get<wbr>Base<wbr>Stack<wbr>Name<wbr>From<wbr>Params</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="miradomainapp.html#getstackfiles" class="tsd-kind-icon">get<wbr>Stack<wbr>Files</a></li>
 							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="miradomainapp.html#getstackname" class="tsd-kind-icon">get<wbr>Stack<wbr>Name</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="miradomainapp.html#isverbose" class="tsd-kind-icon">is<wbr>Verbose</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2848,7 +2852,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Overrides <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#constructor">constructor</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/domain.ts#L16">src/cdk/domain.ts:16</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/domain.ts#L16">src/cdk/domain.ts:16</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <a href="miradomainapp.html" class="tsd-signature-type">MiraDomainApp</a></h4>
@@ -2859,24 +2863,13 @@ img {
 		<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-				<a name="appstacks" class="tsd-anchor"></a>
-				<h3>app<wbr>Stacks</h3>
-				<div class="tsd-signature tsd-kind-icon">app<wbr>Stacks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-				<aside class="tsd-sources">
-					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#appstacks">appStacks</a></p>
-					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L24">src/cdk/app.ts:24</a></li>
-					</ul>
-				</aside>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 				<a name="cdkapp" class="tsd-anchor"></a>
 				<h3>cdk<wbr>App</h3>
 				<div class="tsd-signature tsd-kind-icon">cdk<wbr>App<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">App</span></div>
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#cdkapp">cdkApp</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L18">src/cdk/app.ts:18</a></li>
+						<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L46">src/cdk/app.ts:46</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2887,7 +2880,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#instance">instance</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L19">src/cdk/app.ts:19</a></li>
+						<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L47">src/cdk/app.ts:47</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2898,7 +2891,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#mainstack">mainStack</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L20">src/cdk/app.ts:20</a></li>
+						<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L48">src/cdk/app.ts:48</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2909,7 +2902,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#servicestack">serviceStack</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L21">src/cdk/app.ts:21</a></li>
+						<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L49">src/cdk/app.ts:49</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2920,18 +2913,29 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#stackname">stackName</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L22">src/cdk/app.ts:22</a></li>
+						<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L50">src/cdk/app.ts:50</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 				<a name="stacks" class="tsd-anchor"></a>
 				<h3>stacks</h3>
-				<div class="tsd-signature tsd-kind-icon">stacks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+				<div class="tsd-signature tsd-kind-icon">stacks<span class="tsd-signature-symbol">:</span> <a href="../globals.html#mirastacklist" class="tsd-signature-type">MiraStackList</a><span class="tsd-signature-symbol"> = []</span></div>
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#stacks">stacks</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L23">src/cdk/app.ts:23</a></li>
+						<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L51">src/cdk/app.ts:51</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+				<a name="cliargs" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagStatic">Static</span> cli<wbr>Args</h3>
+				<div class="tsd-signature tsd-kind-icon">cli<wbr>Args<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = args</span></div>
+				<aside class="tsd-sources">
+					<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#cliargs">cliArgs</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L52">src/cdk/app.ts:52</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2942,14 +2946,14 @@ img {
 				<a name="getstack" class="tsd-anchor"></a>
 				<h3>get<wbr>Stack</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>Stack<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Stack</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Stack<span class="tsd-signature-symbol">(</span>fileName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#miravalidstack" class="tsd-signature-type">MiraValidStack</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#getstack">getStack</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L36">src/cdk/app.ts:36</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L64">src/cdk/app.ts:64</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2967,7 +2971,7 @@ img {
 								</div>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Stack</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#miravalidstack" class="tsd-signature-type">MiraValidStack</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -2975,14 +2979,14 @@ img {
 				<a name="getstacks" class="tsd-anchor"></a>
 				<h3>get<wbr>Stacks</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>Stacks<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Stack</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Stacks<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#mirastacklist" class="tsd-signature-type">MiraStackList</a><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#getstacks">getStacks</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L51">src/cdk/app.ts:51</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L79">src/cdk/app.ts:79</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -2990,7 +2994,7 @@ img {
 								<p>Loads the stacks</p>
 							</div>
 						</div>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Stack</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../globals.html#mirastacklist" class="tsd-signature-type">MiraStackList</a><span class="tsd-signature-symbol">&gt;</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -3005,7 +3009,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Overrides <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#initialize">initialize</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/domain.ts#L25">src/cdk/domain.ts:25</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/domain.ts#L25">src/cdk/domain.ts:25</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3028,7 +3032,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Overrides <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#initializeapp">initializeApp</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/domain.ts#L42">src/cdk/domain.ts:42</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/domain.ts#L42">src/cdk/domain.ts:42</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3051,7 +3055,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#getbasestackname">getBaseStackName</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L80">src/cdk/app.ts:80</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L108">src/cdk/app.ts:108</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3075,7 +3079,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#getbasestacknamefromparams">getBaseStackNameFromParams</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L84">src/cdk/app.ts:84</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L112">src/cdk/app.ts:112</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -3105,7 +3109,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#getstackfiles">getStackFiles</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L66">src/cdk/app.ts:66</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L94">src/cdk/app.ts:94</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3128,7 +3132,7 @@ img {
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#getstackname">getStackName</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nearform/mira/blob/c154152/src/cdk/app.ts#L76">src/cdk/app.ts:76</a></li>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L104">src/cdk/app.ts:104</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3140,19 +3144,38 @@ img {
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+				<a name="isverbose" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>Verbose</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<li class="tsd-signature tsd-kind-icon">is<wbr>Verbose<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Inherited from <a href="miraapp.html">MiraApp</a>.<a href="miraapp.html#isverbose">isVerbose</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/nearform/mira/blob/d54e653/src/cdk/app.ts#L177">src/cdk/app.ts:177</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+					</li>
+				</ul>
+			</section>
 		</section>
 		<footer class="with-border-bottom">
 			<div class="container">
 				<h2>Legend</h2>
 				<div class="tsd-legend-group">
 					<ul class="tsd-legend">
+						<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+						<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+						<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+					</ul>
+					<ul class="tsd-legend">
 						<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 						<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 						<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-					</ul>
-					<ul class="tsd-legend">
-						<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-						<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 					</ul>
 					<ul class="tsd-legend">
 						<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>

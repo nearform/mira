@@ -4,9 +4,6 @@ import { Cicd } from '.'
 
 jest.mock('config')
 
-interface Context {
-  [name: string]: string | any[] | any
-}
 describe('CICD', () => {
   it('Creates a CICD stack with role as Caller Identity', async () => {
     const app = new App()

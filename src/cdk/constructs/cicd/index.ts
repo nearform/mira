@@ -8,22 +8,24 @@ import {
 } from '@aws-cdk/aws-codepipeline-actions'
 import { Effect, PolicyStatement, Role, ServicePrincipal, User, IPrincipal } from '@aws-cdk/aws-iam'
 import { Secret } from '@aws-cdk/aws-secretsmanager'
-import { CfnOutput, Construct, Stack, StackProps, Tags } from '@aws-cdk/core'
+import { CfnOutput, Construct, Stack, StackProps, Tags, RemovalPolicy } from '@aws-cdk/core'
 import { Repository } from '@aws-cdk/aws-codecommit'
 import { IAction } from '@aws-cdk/aws-codepipeline/lib/action'
 import { UploadPublicSsh } from '../upload-public-ssh'
 import { BuildEnvironmentVariableType } from '@aws-cdk/aws-codebuild/lib/project'
 import { Key } from '@aws-cdk/aws-kms'
 import * as aws from 'aws-sdk'
-import { getBaseStackName, getDeployProjectRoleName } from '../config/utils'
-import { MiraConfig } from '../../../config/mira-config'
 import { pascalCase } from 'change-case'
+
+import { MiraConfig } from '../../../config/mira-config'
 import { AutoDeleteBucket } from '../auto-delete-bucket'
+import { getBaseStackName, getDeployProjectRoleName } from '../config/utils'
 
 export interface PipelineEnvironmentVariable {
   key: string
   value: string
 }
+
 export interface CicdProps extends StackProps {
   callerIdentityResponse: aws.STS.Types.GetCallerIdentityResponse
   environmentVariables: PipelineEnvironmentVariable[]
@@ -40,6 +42,7 @@ export class Cicd extends Stack {
 
   constructor (parent: Construct, props: CicdProps) {
     const accounts = MiraConfig.getCICDAccounts()
+
     const id = MiraConfig.getBaseStackName('Cicd')
 
     super(parent, id, { env: props.env })
@@ -50,7 +53,9 @@ export class Cicd extends Stack {
     const sourceOutput = new Artifact()
 
     const encryptionKey = new Key(this, 'key', {
-      enableKeyRotation: true
+      enableKeyRotation: true,
+      // TODO might worth exposing this property as a config value
+      removalPolicy: RemovalPolicy.DESTROY
     })
 
     /**
@@ -93,7 +98,7 @@ export class Cicd extends Stack {
         this.getSourceAction(sourceOutput)
       ]
     })
-    accounts.forEach((account: any) => {
+    accounts.forEach((account) => {
       this.addDeployStage(account.name, sourceOutput)
     })
   }

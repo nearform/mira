@@ -1,10 +1,18 @@
-import { Route53Manager } from '.'
 import { CfnOutput, Stack, App } from '@aws-cdk/core'
-import { MiraConfig } from '../../../../config/mira-config'
-import { AccountPrincipal, CompositePrincipal, Role, PolicyStatement, ManagedPolicy, ServicePrincipal } from '@aws-cdk/aws-iam'
+import {
+  AccountPrincipal,
+  CompositePrincipal,
+  Role,
+  PolicyStatement,
+  ManagedPolicy,
+  ServicePrincipal
+} from '@aws-cdk/aws-iam'
 import { Topic } from '@aws-cdk/aws-sns'
 import { AssetCode, SingletonFunction } from '@aws-cdk/aws-lambda'
 import { SnsEventSource } from '@aws-cdk/aws-lambda-event-sources'
+
+import { DomainConfig, MiraConfig, Account } from '../../../../config/mira-config'
+import { Route53Manager } from '.'
 
 jest.mock('@aws-cdk/core', () => ({
   ...jest.requireActual('@aws-cdk/core'),
@@ -55,8 +63,14 @@ describe('Route53Manager', () => {
       {}
     )
 
-    MiraConfig.getEnvironment = (): any => ({})
-    MiraConfig.getDomainConfig = (): any => ({})
+    MiraConfig.getEnvironment = (): Account => ({
+      name: 'some-name',
+      profile: 'some-profile',
+      env: { account: '12345', region: 'eu-west-1' }
+    })
+    MiraConfig.getDomainConfig = (): DomainConfig => ({
+      accounts: []
+    })
 
     expect(() => new Route53Manager(stack)).toThrowError(
       'Cannot find hostedZoneId in config.'
@@ -70,20 +84,23 @@ describe('Route53Manager', () => {
       {}
     )
 
-    MiraConfig.getEnvironment = (): any => ({})
-    MiraConfig.getDomainConfig = (): any => ({
-      hostedZoneId: 1,
-      profile: 'mira-dev',
-      name: 'default',
-      target: 'default',
-      dev: {
-        target: 'default'
-      }
+    MiraConfig.getEnvironment = (): Account => ({
+      name: 'some-name',
+      profile: 'some-profile',
+      env: { account: '12345', region: 'eu-west-1' }
+    })
+    MiraConfig.getDomainConfig = (): DomainConfig => ({
+      hostedZoneId: '123456',
+      accounts: []
     })
 
-    MiraConfig.getDomainAllowedPrincipals = (): any => ([{ env: { account: {} } }])
+    MiraConfig.getDomainAllowedPrincipals = (): Account[] => ([{
+      name: 'some-name',
+      profile: 'some-profile',
+      env: { account: '12345', region: 'eu-west-1' }
+    }])
 
-    MiraConfig.calculateSharedResourceName = (): any => ({})
+    MiraConfig.calculateSharedResourceName = (resource: string): string => `prefix-${resource}`
 
     expect(() => new Route53Manager(stack)).not.toThrowError()
 

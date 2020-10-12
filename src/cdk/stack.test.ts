@@ -20,11 +20,18 @@ jest.mock('@aws-cdk/core', () => ({
   }
 }))
 
+const getCallerIdentityFn = jest.fn().mockReturnValue({ UserId: 'USERID:profile' })
+const getUserFn = jest.fn()
 jest.mock('aws-sdk', () => ({
   ...jest.requireActual('aws-sdk'),
   IAM: jest.fn().mockReturnValue({
     getUser: () => ({
-      promise: jest.fn().mockReturnValue({ User: { UserName: 'test-user' } })
+      promise: getUserFn // jest.fn().mockReturnValue({ User: { UserName: 'test-user' } })
+    })
+  }),
+  STS: jest.fn().mockReturnValue({
+    getCallerIdentity: () => ({
+      promise: getCallerIdentityFn
     })
   })
 }))
@@ -39,6 +46,13 @@ MiraConfig.getEnvironment = jest.fn().mockReturnValue({
 })
 
 describe('MiraServiceStack', () => {
+  beforeEach(() => {
+    getUserFn.mockReset()
+    getUserFn.mockImplementation(() => {
+      return { User: { UserName: 'test-user' } }
+    })
+  })
+
   const app = new MiraApp()
 
   it('applyPolicies calls applyAspect', () => {
@@ -53,6 +67,19 @@ describe('MiraServiceStack', () => {
     // this "undefined" test is actually testing if there was no errors
     expect(await miraServiceStackInstance.initialize()).toEqual(undefined)
     expect(await miraServiceStackInstance.initialized).toBe(undefined)
+  })
+
+  it('falls back to STS when IAM getUser call fails', async () => {
+    getUserFn.mockReset()
+    getUserFn.mockImplementation(() => {
+      throw new Error('err')
+    })
+    const miraServiceStackInstance = new MiraServiceStack(app, 'env', 'sufix')
+    // Because the resolved promise doesn't return anything
+    // this "undefined" test is actually testing if there was no errors
+    expect(await miraServiceStackInstance.initialize()).toEqual(undefined)
+    expect(await miraServiceStackInstance.initialized).toBe(undefined)
+    expect(getCallerIdentityFn).toHaveBeenCalled()
   })
 })
 

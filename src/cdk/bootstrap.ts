@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import chalk from 'chalk'
 import { ParsedArgs } from 'minimist'
 import { spawn } from 'child_process'
@@ -14,6 +15,12 @@ import aws from 'aws-sdk'
 import CloudFormation, { StackEvent } from 'aws-sdk/clients/cloudformation'
 import ChangeDetector from '../change-detector'
 import ErrorLogger from '../error-logger'
+import { quickDeploy, removeAssetDirectories } from './deploy-buckets'
+
+type ValidAwsContruct = CloudFormation;
+
+const supportedCdkArgs = ['outputs-file', 'require-approval']
+
 /**
  * @class Responsible for beaming up bits to AWS.  Teleportation device not
  * included.
@@ -25,13 +32,25 @@ export class MiraBootstrap {
   env: string;
   profile: string;
   cdkCommand: string;
-  docsifyCommand: string
-  stackFile: string
-  errorLogger: ErrorLogger
+  docsifyCommand: string;
+  stackFile: string;
+  errorLogger: ErrorLogger;
 
   constructor () {
-    this.cdkCommand = path.join(require.resolve('aws-cdk'), '..', '..', 'bin', 'cdk')
-    this.docsifyCommand = path.join(require.resolve('docsify-cli'), '..', '..', 'bin', 'docsify')
+    this.cdkCommand = path.join(
+      require.resolve('aws-cdk'),
+      '..',
+      '..',
+      'bin',
+      'cdk'
+    )
+    this.docsifyCommand = path.join(
+      require.resolve('docsify-cli'),
+      '..',
+      '..',
+      'bin',
+      'docsify'
+    )
 
     this.app = new MiraApp()
     this.errorLogger = new ErrorLogger()
@@ -62,44 +81,57 @@ export class MiraBootstrap {
     }
 
     const additionalArgs = []
-    if (Object.keys(this.args).includes('outputs-file')) {
-      additionalArgs.push(`--outputs-file=${this.args['outputs-file']}`)
-      delete this.args['outputs-file']
-    }
+
+    supportedCdkArgs.forEach(attribute => {
+      if (Object.keys(this.args).includes(attribute)) {
+        additionalArgs.push(`--${attribute}=${this.args[attribute]}`)
+        delete this.args[attribute]
+      }
+    })
 
     if (Object.keys(this.args).includes('stackName')) {
       additionalArgs.push(this.args.stackName)
       delete this.args.stackName
     }
 
-    if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
+    if (
+      Object.prototype.hasOwnProperty.call(this.args, 'dry-run') ||
+      Object.prototype.hasOwnProperty.call(this.args, 's3-only')
+    ) {
+      removeAssetDirectories()
       cmd = 'synth'
     }
+
     const commandOptions = [
-      this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
+      this.cdkCommand,
       cmd,
-      '--app', this.getCDKArgs('app.js'),
+      '--app',
+      this.getCDKArgs('app.js'),
       envConfig.name ? `--env=${envConfig.name}` : '',
       this.env ? `--profile=${this.getProfile(this.env)}` : '',
       ...additionalArgs
     ]
-    const proc = this.spawn(
-      'node',
-      commandOptions, {
-        stdio: 'inherit',
-        env: {
-          NODE_ENV: 'dev',
-          ...process.env
-        }
-      })
-    await new Promise((resolve) => {
-      proc.on('exit', async (code) => {
+
+    const proc = this.spawn('node', commandOptions, {
+      stdio: 'inherit',
+      env: {
+        NODE_ENV: 'dev',
+        ...process.env
+      }
+    })
+    await new Promise((resolve, reject) => {
+      proc.on('exit', async code => {
         if (code !== 0) {
           await this.printExtractedNestedStackErrors()
+          reject(code)
+          return
         }
         resolve()
       })
     })
+    if (Object.prototype.hasOwnProperty.call(this.args, 's3-only')) {
+      await quickDeploy()
+    }
   }
 
   /**
@@ -109,8 +141,12 @@ export class MiraBootstrap {
   async deployCi (): Promise<void> {
     const permissionFilePath = MiraConfig.getPermissionsFilePath()
     if (!permissionFilePath) {
-      console.error('Permissions file path must be specified either in cicd config or as --file parameter.')
-      throw new Error('Permissions file path must be specified either in cicd config or as --file parameter.')
+      console.error(
+        'Permissions file path must be specified either in cicd config or as --file parameter.'
+      )
+      throw new Error(
+        'Permissions file path must be specified either in cicd config or as --file parameter.'
+      )
     }
 
     const ciTargetAccounts: Account[] = MiraConfig.getCICDAccounts()
@@ -123,43 +159,59 @@ export class MiraBootstrap {
       const commandOptions = [
         this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
         cmd,
-        '--app', this.getCDKArgs('app.js', true, account.name),
+        '--app',
+        this.getCDKArgs('app.js', true, account.name),
         account.name ? `--profile=${this.getProfile(account.name)}` : ''
       ]
-      console.log(chalk.cyan(`Starting deployment of CI ${account.name} permissions to Account: ${account.env.account} in ${account.env.region} with profile ${account.profile}.`))
-      const proc = this.spawn(
-        'node',
-        commandOptions, {
-          stdio: 'inherit',
-          env: {
-            ...process.env
-          }
-        })
-      await new Promise((resolve) => {
-        proc.on('exit', () => {
-          resolve()
-        })
-      })
-      console.log(chalk.green(`Done deploying CI ${account.name} permissions.`))
-    }
-
-    console.log(chalk.cyan(`Starting deployment of CI pipeline to Account: ${MiraConfig.getCICDConfig().account.env.account} in ${MiraConfig.getCICDConfig().account.env.region} with profile ${MiraConfig.getCICDConfig().account.profile}.`))
-
-    const commandOptions = [
-      this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
-      cmd,
-      '--app', this.getCDKArgs('ci-app.js'),
-      `--profile=${this.getProfile('cicd')}`
-    ]
-    const proc = this.spawn(
-      'node',
-      commandOptions, {
+      console.log(
+        chalk.cyan(
+          `Starting deployment of CI ${account.name} permissions to Account: ${account.env.account} in ${account.env.region} with profile ${account.profile}.`
+        )
+      )
+      const proc = this.spawn('node', commandOptions, {
         stdio: 'inherit',
         env: {
           ...process.env
         }
       })
-    await new Promise((resolve) => {
+      await new Promise((resolve, reject) => {
+        proc.on('exit', err => {
+          if (err) {
+            reject(err)
+            return
+          }
+          resolve()
+        })
+      })
+      console.log(
+        chalk.green(`Done deploying CI ${account.name} permissions.`)
+      )
+    }
+
+    console.log(
+      chalk.cyan(
+        `Starting deployment of CI pipeline to Account: ${
+          MiraConfig.getCICDConfig().account.env.account
+        } in ${MiraConfig.getCICDConfig().account.env.region} with profile ${
+          MiraConfig.getCICDConfig().account.profile
+        }.`
+      )
+    )
+
+    const commandOptions = [
+      this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
+      cmd,
+      '--app',
+      this.getCDKArgs('ci-app.js'),
+      `--profile=${this.getProfile('cicd')}`
+    ]
+    const proc = this.spawn('node', commandOptions, {
+      stdio: 'inherit',
+      env: {
+        ...process.env
+      }
+    })
+    await new Promise(resolve => {
       proc.on('exit', () => {
         resolve()
       })
@@ -177,14 +229,12 @@ export class MiraBootstrap {
       path.join(__dirname, '..', '..', '..', 'docs')
     ]
     try {
-      this.spawn(
-        'node',
-        commandOptions, {
-          stdio: 'inherit',
-          env: {
-            ...process.env
-          }
-        })
+      this.spawn('node', commandOptions, {
+        stdio: 'inherit',
+        env: {
+          ...process.env
+        }
+      })
     } catch (error) {
       console.error(error.message)
       process.exit(error.status)
@@ -195,6 +245,7 @@ export class MiraBootstrap {
    * TODO: check this functionality together with sample app that supports custom domain.
    */
   deployDomain (): void {
+    console.log('deploying domain')
     const envConfig = MiraConfig.getEnvironment(this.env)
     let cmd = 'deploy'
     if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {
@@ -204,19 +255,18 @@ export class MiraBootstrap {
     const commandOptions = [
       this.cdkCommand + (process.platform === 'win32' ? '.cmd' : ''),
       cmd,
-      '--app', this.getCDKArgs('domain.js'),
+      '--app',
+      this.getCDKArgs('domain.js'),
       `--env=${envConfig.name}`,
       `--profile=${this.getProfile(this.env)}`
     ]
     try {
-      this.spawn(
-        'node',
-        commandOptions, {
-          stdio: 'inherit',
-          env: {
-            ...process.env
-          }
-        })
+      this.spawn('node', commandOptions, {
+        stdio: 'inherit',
+        env: {
+          ...process.env
+        }
+      })
     } catch (error) {
       console.error(error.message)
       process.exit(error.status)
@@ -231,12 +281,29 @@ export class MiraBootstrap {
    */
   getCDKArgs (filename: string, isCi = false, env?: string): string {
     const resultedEnv = this.env || env
-    const q = process.platform === 'win32' ? '"' : '\''
-    const appPath = path.resolve(__dirname, filename)
-    let appArg = `${q}node "${appPath}" `
+    const q = process.platform === 'win32' ? '"' : "'"
+    let appPath = path.resolve(__dirname, filename)
+
+    if (fs.existsSync('node_modules/mira')) {
+      if (fs.lstatSync('node_modules/mira/dist').isSymbolicLink()) {
+        // Mira has been locally linked.
+        try {
+          fs.mkdirSync('node_modules/mira-bootstrap')
+        } catch (e) {
+          // NOOP
+        }
+        fs.writeFileSync(
+          `node_modules/mira-bootstrap/bootstrap-${filename}`,
+          `require('mira/dist/src/cdk/${filename}')`,
+          'utf8'
+        )
+        appPath = `node_modules/mira-bootstrap/bootstrap-${filename}`
+      }
+    }
+    let appArg = `${q}node --preserve-symlinks "${appPath}" `
     // Still inside the quotes, explode the args.
     // appArg += this.getArgs().join(' ')
-    appArg += ` --file=${this.stackFile}`
+    appArg += !isCi && this.stackFile ? ` --file=${this.stackFile}` : ''
     appArg += resultedEnv ? ` --env=${resultedEnv}` : ''
     appArg += isCi ? ` --file=${MiraConfig.getPermissionsFilePath()}` : ''
     appArg += q // End quote.
@@ -253,7 +320,7 @@ export class MiraBootstrap {
 
     for (const key of Object.keys(args)) {
       if (args[key]?.includes && args[key].includes(' ')) {
-        const q = process.platform !== 'win32' ? '\'' : '"'
+        const q = process.platform !== 'win32' ? "'" : '"'
         args[key] = q + args[key] + q
       } else if (typeof args[key] === 'boolean') {
         newArgs.push(`--${key}`)
@@ -268,7 +335,7 @@ export class MiraBootstrap {
   /**
    * Gets the profile given the env.
    */
-  getProfile (environment: string): string|void {
+  getProfile (environment: string): string | void {
     // if we are in Codebuild environment, return 'client' which is the one set by assume-role
     if (process.env.CODEBUILD_CI) {
       return 'client'
@@ -321,8 +388,10 @@ export class MiraBootstrap {
         break
       case 'deploy':
         if (!this.args.file) {
-          console.warn(chalk.red('Error Initializing'), 'Must supply' +
-            ' a --file=<stackFile> argument.')
+          console.warn(
+            chalk.red('Error Initializing'),
+            'Must supply' + ' a --file=<stackFile> argument.'
+          )
           return
         }
         if (!JsonValidation.validateConfig(rawConfig)) {
@@ -334,8 +403,10 @@ export class MiraBootstrap {
         // Check for file changes
         if (filesChanged || this.args.force) {
           if (!this.args.file) {
-            console.warn(chalk.red('Error Initializing'), 'Must supply' +
-              ' a --file=<stackFile> argument.')
+            console.warn(
+              chalk.red('Error Initializing'),
+              'Must supply' + ' a --file=<stackFile> argument.'
+            )
             return
           }
           transpiledStackFile = await this.transpile()
@@ -344,19 +415,25 @@ export class MiraBootstrap {
             // take a new snapshot because file changed.
             await cd.takeSnapshot(cd.defaultSnapshotFilePath)
           }
-          if ((await this.areStackFilesValid())) {
-            console.info(chalk.cyan('Deploying Stack:'),
-              `(via ${chalk.grey(this.stackFile)})`)
+          if (await this.areStackFilesValid()) {
+            console.info(
+              chalk.cyan('Deploying Stack:'),
+              `(via ${chalk.grey(this.stackFile)})`
+            )
             this.deploy()
           }
         } else {
-          console.info(chalk.yellow('No file changed after last deploy. Skipping.'))
+          console.info(
+            chalk.yellow('No file changed after last deploy. Skipping.')
+          )
         }
         break
       case 'undeploy':
         if (!this.args.file) {
-          console.warn(chalk.red('Error Initializing'), 'Must supply' +
-            ' a --file=<stackFile> argument.')
+          console.warn(
+            chalk.red('Error Initializing'),
+            'Must supply' + ' a --file=<stackFile> argument.'
+          )
           return
         }
         this.stackFile = this.args.file
@@ -365,18 +442,21 @@ export class MiraBootstrap {
           this.stackFile = transpiledStackFile
         }
 
-        if ((await this.areStackFilesValid())) {
-          console.info(chalk.cyan('Undeploying Stack:'),
-            `(via ${chalk.grey(this.stackFile)})`)
+        if (await this.areStackFilesValid()) {
+          console.info(
+            chalk.cyan('Undeploying Stack:'),
+            `(via ${chalk.grey(this.stackFile)})`
+          )
           this.undeploy()
         } else {
-          console.info('If you want to undeploy a stack not contained' +
-            ' in your local filesystem, please use the AWS console' +
-            '  directly.')
+          console.info(
+            'If you want to undeploy a stack not contained' +
+              ' in your local filesystem, please use the AWS console' +
+              '  directly.'
+          )
         }
         break
       case 'cicd':
-
         if (!JsonValidation.validateConfig(rawConfig)) {
           console.warn(chalk.red('Error Initializing'), 'Invalid config file.')
           return
@@ -398,23 +478,48 @@ export class MiraBootstrap {
   /**
    * Shows help for the CDK.
    */
-  showHelp (): any {
+  showHelp (): ParsedArgs {
     return yargs // eslint-disable-line
       .scriptName('npx mira')
       .usage('Usage: npx mira COMMAND')
-      .option('profile', { type: 'string', alias: 'p', desc: 'AWS profile name used for AWS CLI' })
-      .command('deploy', 'Deploys given stack', yargs => yargs
-        .option('file', { type: 'string', alias: 'f', desc: 'REQUIRED: Path to your stack file', requiresArg: true }))
-      .command('undeploy', 'Un-Deploys given stack', yargs => yargs
-        .option('file', { type: 'string', alias: 'f', desc: 'REQUIRED: Path to your stack file', requiresArg: true }))
-      .command('cicd', 'Deploys CI/CD pipeline', yargs => yargs
-        .option('file', { type: 'string', aliast: 'f', desc: 'Path to permissions stack file.' })
-        .option('envVar', { type: 'string', desc: 'Environment variable passed into the code build' }))
+      .option('profile', {
+        type: 'string',
+        alias: 'p',
+        desc: 'AWS profile name used for AWS CLI'
+      })
+      .command('deploy', 'Deploys given stack', yargs =>
+        yargs.option('file', {
+          type: 'string',
+          alias: 'f',
+          desc: 'REQUIRED: Path to your stack file',
+          requiresArg: true
+        })
+      )
+      .command('undeploy', 'Un-Deploys given stack', yargs =>
+        yargs.option('file', {
+          type: 'string',
+          alias: 'f',
+          desc: 'REQUIRED: Path to your stack file',
+          requiresArg: true
+        })
+      )
+      .command('cicd', 'Deploys CI/CD pipeline', yargs =>
+        yargs
+          .option('file', {
+            type: 'string',
+            aliast: 'f',
+            desc: 'Path to permissions stack file.'
+          })
+          .option('envVar', {
+            type: 'string',
+            desc: 'Environment variable passed into the code build'
+          })
+      )
       .command('docs', 'Starts local web server with documentation')
       .command('clean', 'Removes error log files')
+      .command('domain', 'Deploys Domain Manager')
       .help()
-      .demandCommand()
-      .argv
+      .demandCommand().argv
   }
 
   /**
@@ -432,7 +537,7 @@ export class MiraBootstrap {
    * @param fn
    * @param params
    */
-  useDevConfig (fn: Function, params: any): any {
+  useDevConfig<R, Z> (fn: (args: R) => Z, params: [R]): Z {
     const tmpEnv = process.env.NODE_ENV || 'default'
     process.env.NODE_ENV = 'dev'
     const rsp = fn.apply(this, params)
@@ -441,22 +546,50 @@ export class MiraBootstrap {
   }
 
   getServiceStackName (account: Account): string {
-    const tmpConfig = configModule.util.loadFileConfigs(path.join(process.cwd(), 'config'))
-    return `${MiraApp.getBaseStackNameFromParams(tmpConfig.app.prefix, tmpConfig.app.name, 'Service')}-${account.name}`
+    const tmpConfig = configModule.util.loadFileConfigs(
+      path.join(process.cwd(), 'config')
+    )
+    return `${MiraApp.getBaseStackNameFromParams(
+      tmpConfig.app.prefix,
+      tmpConfig.app.name,
+      'Service'
+    )}-${account.name}`
   }
 
-  getAwsSdkConstruct (construct: any, account: Account): any {
-    const credentials = new aws.SharedIniFileCredentials({ profile: this.getProfile(this.env) || '' })
+  static getServiceStackName (account: Account): string {
+    const tmpConfig = configModule.util.loadFileConfigs(
+      path.join(process.cwd(), 'config')
+    )
+    return `${MiraApp.getBaseStackNameFromParams(
+      tmpConfig.app.prefix,
+      tmpConfig.app.name,
+      'Service'
+    )}-${account.name}`
+  }
+
+  getAwsSdkConstruct (construct: string, account: Account): ValidAwsContruct {
+    const credentials = new aws.SharedIniFileCredentials({
+      profile: this.getProfile(this.env) || ''
+    })
     aws.config.credentials = credentials
     // eslint-disable-next-line
     // @ts-ignore
     return new aws[construct]({ region: account.env.region })
   }
 
-  async getFirstFailedNestedStackName (account: Account, stackName: string): Promise<string> {
+  async getFirstFailedNestedStackName (
+    account: Account,
+    stackName: string
+  ): Promise<string | undefined> {
     const cloudformation = this.getAwsSdkConstruct('CloudFormation', account)
-    const events = await cloudformation.describeStackEvents({ StackName: stackName }).promise()
-    return events.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')[0]?.PhysicalResourceId
+    const events = await cloudformation
+      .describeStackEvents({ StackName: stackName })
+      .promise()
+    return events.StackEvents?.filter(
+      (event: StackEvent) =>
+        event.ResourceStatus === 'UPDATE_FAILED' ||
+        event.ResourceStatus === 'CREATE_FAILED'
+    )[0]?.PhysicalResourceId
   }
 
   async extractNestedStackError (): Promise<StackEvent[]> {
@@ -467,18 +600,34 @@ export class MiraBootstrap {
 
     let events
     try {
-      const nestedStackName = await this.getFirstFailedNestedStackName(account, stackName)
-      const cloudformation = this.getAwsSdkConstruct('CloudFormation', account) as CloudFormation
-      events = await cloudformation.describeStackEvents({ StackName: nestedStackName }).promise()
+      const nestedStackName = await this.getFirstFailedNestedStackName(
+        account,
+        stackName
+      )
+      const cloudformation = this.getAwsSdkConstruct(
+        'CloudFormation',
+        account
+      ) as CloudFormation
+      events = await cloudformation
+        .describeStackEvents({ StackName: nestedStackName })
+        .promise()
     } catch (e) {
-      console.log(chalk.red('Error, while getting error message from cloudformation. Seems something is wrong with your configuration.'))
+      console.log(
+        chalk.red(
+          'Error, while getting error message from cloudformation. Seems something is wrong with your configuration.'
+        )
+      )
     }
-    const output = events?.StackEvents?.filter((event: StackEvent) => event.ResourceStatus === 'UPDATE_FAILED' || event.ResourceStatus === 'CREATE_FAILED')
+    const output = events?.StackEvents?.filter(
+      (event: StackEvent) =>
+        event.ResourceStatus === 'UPDATE_FAILED' ||
+        event.ResourceStatus === 'CREATE_FAILED'
+    )
     return output || []
   }
 
   filterStackErrorMessages (errors: StackEvent[]): StackEvent[] {
-    const output = errors.filter((error) => {
+    const output = errors.filter(error => {
       return error.ResourceStatusReason !== 'Resource creation cancelled'
     })
     return output
@@ -488,24 +637,36 @@ export class MiraBootstrap {
     return `\n* ${item.ResourceStatus} - ${item.LogicalResourceId}\nReason: ${item.ResourceStatusReason}\nTime: ${item.Timestamp}\n`
   }
 
-  async printExtractedNestedStackErrors (): Promise<any> {
+  async printExtractedNestedStackErrors (): Promise<void> {
     const printCarets = (nb: number): string => {
       return '^'.repeat(nb)
     }
     const failedResources = await this.extractNestedStackError()
     if (Array.isArray(failedResources)) {
-      console.log(chalk.red('\n\nYour app failed deploying, one of your nested stacks have failed to create or update resources. See the list of failed resources below:'))
+      console.log(
+        chalk.red(
+          '\n\nYour app failed deploying, one of your nested stacks have failed to create or update resources. See the list of failed resources below:'
+        )
+      )
       const filteredMessages = this.filterStackErrorMessages(failedResources)
-      filteredMessages.map((errorMessage) => {
+      filteredMessages.map(errorMessage => {
         console.log(chalk.red(this.formatNestedStackError(errorMessage)))
       })
-      this.errorLogger.flushMessages(filteredMessages.map(m => this.formatNestedStackError(m)))
+      this.errorLogger.flushMessages(
+        filteredMessages.map(m => this.formatNestedStackError(m))
+      )
 
-      console.log(chalk.red(`\n\n${printCarets(100)}\nAnalyze the list above, to find why your stack failed deployment.`))
+      console.log(
+        chalk.red(
+          `\n\n${printCarets(
+            100
+          )}\nAnalyze the list above, to find why your stack failed deployment.`
+        )
+      )
     }
   }
 
-  async transpile (): Promise<string|undefined> {
+  async transpile (): Promise<string | undefined> {
     if (this.stackFile.match(/.ts$/)) {
       const T = new Transpiler(this.stackFile)
       const newFile = await T.run()
