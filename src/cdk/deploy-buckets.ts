@@ -8,14 +8,14 @@ import fs from 'fs'
 import colors from 'colors/safe'
 import cp from 'child_process'
 import config from 'config'
-import { assumeRole } from '../assume-role'
+import { assumeRole, getRoleArn } from '../assume-role'
+import { getInstanceResourcesByType } from '../sdk/cloudformation'
 import glob from 'glob'
 import { MiraApp } from './app'
 import { MiraConfig, Account } from '../config/mira-config'
 import { PromiseResult } from 'aws-sdk/lib/request'
 import { Bucket } from 'aws-sdk/clients/s3'
 let cdkFiles = fs.existsSync('cdk.out') ? fs.readdirSync('cdk.out') : []
-const { getBaseStackNameFromParams } = MiraApp
 let miraS3: AWS.S3
 
 interface LooseObject {
@@ -142,36 +142,6 @@ export const getEnvironment = (): Account => {
 }
 
 /**
- * Given a provided profile, reads the users local ~/.aws/config file and
- * @param {*} profile
- */
-export const getRoleArn = (profile: string): string => {
-  const cwd = process.cwd()
-  process.chdir(process.env.HOME || '')
-  if (!fs.existsSync('.aws/config')) {
-    // TODO: Throw an error?
-    process.chdir(cwd)
-    throw new Error('Role not found')
-  }
-  const lines = fs.readFileSync('.aws/config', 'utf8').split(/\n/g)
-  process.chdir(cwd)
-  const idx = lines.findIndex((line: string) => {
-    const regexp = new RegExp(`\\[profile ${profile}`)
-    return !!regexp.exec(line)
-  })
-  if (idx === -1) {
-    // TODO: Throw an error?
-    throw new Error('Role not found')
-  }
-  const roleLine = lines.slice(idx).find((line: string) => !!line.match(/^\s*role_arn\s*=/))
-  if (!roleLine) {
-    // TODO: Throw an error if roleLine is null?
-    throw new Error('Role not found')
-  }
-  return roleLine.split(/=/).slice(1).join('=').trim()
-}
-
-/**
  * Gets the S3 object.
  */
 export const getS3 = async (): Promise<AWS.S3> => {
@@ -226,15 +196,6 @@ export const getSiteBuckets = async (): Promise<LooseObject> => {
     }
   }
   return siteBuckets
-}
-
-/**
- * Gets the stack name.
- */
-export const getStackName = (): string => {
-  const stackName = getBaseStackNameFromParams(config.get('app.prefix'),
-    config.get('app.name'), 'Service')
-  return stackName
 }
 
 /**
@@ -296,6 +257,16 @@ export const quickDeploy = async (): Promise<void> => {
         }
 
         console.info(colors.green('Done Updating Bucket'))
+
+        const stackResources = await getInstanceResourcesByType()
+        for (const stackName in stackResources) {
+          if (Object.keys(stackResources[stackName]).indexOf('AWS::CloudFront::Distribution') >= 0) {
+            console.warn(colors.yellow('Deployment Notice'),
+              'Your stack includes a CloudFront.  You may need to refresh your' +
+              ' distribution\'s cache.')
+            break
+          }
+        }
       }
     }
   }
