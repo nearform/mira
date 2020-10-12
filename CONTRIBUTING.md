@@ -61,7 +61,7 @@ git commit -m '1.1.0'
 git push -u origin HEAD
 ```
 
-Open a Pull Request for this new branch and wait for approval. Once approved, use a **Squash Merge** with the commit message **`1.1.0`**
+Open a Pull Request for this new branch and wait for approval. Once approved, use a **Merge Commit** with the commit message **`1.1.0`**.  If you do not use a merge commit, you will likely encounter issues when merging `master` into `release`.
 
 ℹ️ _The commit message represents the version number at that point in time. Setting this to just the version number helps track down these specific commits. Note: This does not follow the [Conventional Commits] style, but does align with the `npm version` style_.
 
