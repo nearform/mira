@@ -66,7 +66,7 @@ Open a Pull Request for this new branch and wait for approval. Once approved, us
 ℹ️ _The commit message represents the version number at that point in time. Setting this to just the version number helps track down these specific commits. Note: This does not follow the [Conventional Commits] style, but does align with the `npm version` style_.
 
 ### 2. PR the changes to the release branch 
-Pull Request the changes on `master` to the `release` branch, and wait for approval. Once approved, use a **Squash Merge** with the commit message **`1.1.0`**
+Pull Request the changes on `master` to the `release` branch, and wait for approval. Once approved, use a **Merge Commit** with the commit message **`1.1.0`**
 
 ### 3. Tag the Package Version Commit
 
