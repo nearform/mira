@@ -18,10 +18,10 @@ describe('error logger', () => {
         // do nothing
       }
     })
-    test('should not run if in codebuild', () => {
+    test('should not run if in codebuild', async () => {
       process.env.CODEBUILD_BUILD_ID = 'a-codebuild-id'
       const logger = new ErrorLogger()
-      logger.flushMessages([
+      await logger.flushMessages([
         'message1',
         'message2'
       ])
@@ -29,9 +29,9 @@ describe('error logger', () => {
       delete process.env.CODEBUILD_BUILD_ID
     })
 
-    test('should not run normally', () => {
+    test('should not run normally', async () => {
       const logger = new ErrorLogger()
-      logger.flushMessages([
+      await logger.flushMessages([
         'message1',
         'message2'
       ])
