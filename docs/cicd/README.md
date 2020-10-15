@@ -81,12 +81,14 @@ Then, modify your `cicd` section in the config file (`default.json`) and create/
       {
         "target": "staging",
         "withDomain": false,
-        "requireManualApproval": false
+        "requireManualApproval": false,
+        "privileged": true
       },
       {
         "target": "production",
         "withDomain": false,
-        "requireManualApproval": true
+        "requireManualApproval": true,
+        "privileged": true
       }
     ]
   }
