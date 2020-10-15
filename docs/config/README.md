@@ -40,12 +40,14 @@ Let's take a look at a sample config file.
       {
         "target": "staging",
         "withDomain": false,
-        "requireManualApproval": false
+        "requireManualApproval": false,
+        "privileged": true
       },
       {
         "target": "production",
         "withDomain": false,
-        "requireManualApproval": true
+        "requireManualApproval": true,
+        "privileged": false
       }
     ]
   },
@@ -116,6 +118,8 @@ Stage is described by 3 properties:
     * `target` - Name of the account used as a target account for the application deployment (e.g. staging).
     * `withDomain` - A boolean that specifies if the application supports a custom domain. __NB domain usage to follow in upcoming releases.__.
     * `requireManualApproval` - A boolean that specifies if manual approval is needed in the pipeline before continuing deployment.
+    * `privileged` - A boolean that specifies if the pipeline should support the `privileged` environment value. 
+                This value should be set to `true` if the `buildfile.yaml` requires to execute some docker actions.
 
 ## Domain Configuration
 
