@@ -1,4 +1,5 @@
 const assert = require('assert')
+const chalk = require('chalk')
 const minimist = require('minimist')
 const args = minimist(process.argv.slice(2))
 const cp = require('child_process')
@@ -93,13 +94,27 @@ const symlinkDependencies = (pkgDir) => {
     try { fs.mkdirSync(`${pkgDir}/node_modules/mira/node_modules`) } catch (err) {
         // NOOP
     }
-    const dependencies = fs.readdirSync(__dirname + '/../node_modules/')
-    dependencies.forEach((dep) => {
-        if (excludeList.includes(dep)) {
+    const pkg = JSON.parse(fs.readFileSync(`${__dirname}/../package.json`, 'utf8'))
+    const deps = Object.keys(Object.assign({}, pkg.dependencies, pkg.devDependencies))
+    // const dependencies = fs.readdirSync(__dirname + '/../node_modules/')
+    console.info(chalk.cyan('Mira Local'), 'Symlinking deps')
+    deps.forEach((dep) => {
+        // HACK: Using dep.split is basically like a wildcard, but this usage is unclear.
+        if (excludeList.includes(dep.split(/\//g).shift()) && fs.existsSync(`${pkgDir}/node_modules/${dep}`)) {
+            if (args['verbose'] !== undefined) {
+                console.info(chalk.grey('Skipping dependency'), dep)
+            }
             return
         }
-        fs.symlinkSync(`${__dirname}/../node_modules/${dep}`,
-            `${pkgDir}/node_modules/mira/node_modules/${dep}`)
+        if (args['verbose'] !== undefined) {
+            console.info(chalk.magenta('Symlinking dependency'), dep)
+        }
+        try {
+            fs.symlinkSync(`${__dirname}/../node_modules/${dep}`,
+                `${pkgDir}/node_modules/mira/node_modules/${dep}`)
+        } catch(e) {
+            // console.info('An error occurred while symlinking.', e)
+        }
         try {
             fs.symlinkSync(`${__dirname}/../node_modules/${dep}`,
                 `${pkgDir}/node_modules/${dep}`)
@@ -107,6 +122,7 @@ const symlinkDependencies = (pkgDir) => {
             // NOOP
         }
     })
+    console.info(chalk.cyan('Mira Local'), chalk.green('Done'), 'symlinking deps')
 }
 
 /**
