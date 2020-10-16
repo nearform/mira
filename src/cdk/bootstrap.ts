@@ -16,6 +16,7 @@ import CloudFormation, { StackEvent } from 'aws-sdk/clients/cloudformation'
 import ChangeDetector from '../change-detector'
 import ErrorLogger from '../error-logger'
 import { quickDeploy, removeAssetDirectories } from './deploy-buckets'
+import MiraVersion from '../version'
 
 type ValidAwsContruct = CloudFormation;
 
@@ -367,6 +368,7 @@ export class MiraBootstrap {
    * Function being called when CLI is invoked.
    */
   async initialize (): Promise<void> {
+    MiraVersion.checkApplicationCDKVersion()
     this.args = this.showHelp()
 
     this.env = this.args.env
