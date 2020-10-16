@@ -2,7 +2,7 @@ import { Construct, Stack } from '@aws-cdk/core'
 import { Role, AccountPrincipal, PolicyStatement } from '@aws-cdk/aws-iam'
 import { MiraApp } from '../../../app'
 import { MiraConfig } from '../../../../config/mira-config'
-import { getBaseStackName, getDeployProjectRoleName } from '../../config/utils'
+import { getDeployProjectRoleName } from '../../config/utils'
 
 export interface DeploymentPermissionsProps {
   env: string
@@ -12,7 +12,7 @@ export class DeploymentPermissions extends Stack {
   public role: Role
 
   constructor (parent: Construct, props: DeploymentPermissionsProps = { env: 'dev' }) {
-    const name = getBaseStackName('CICDPermissions')
+    const name = `${MiraConfig.getBaseStackName('CICDPermissions')}-${props.env}`
     const account = MiraConfig.getEnvironment(props.env)
     super(parent, name, { env: account.env })
     const baseProject = MiraApp.getBaseStackName()
