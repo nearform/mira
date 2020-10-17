@@ -9,9 +9,7 @@ import path from 'path'
 import { MiraStack } from '../../../stack'
 export class Route53Manager extends MiraStack {
   constructor (parent: Construct) {
-    const id = MiraConfig.getBaseStackName('Route53Manager')
-    super(parent, id)
-    const account = MiraConfig.getEnvironment()
+    super(parent, Route53Manager.name)
     const { hostedZoneId } = MiraConfig.getDomainConfig()
     if (!hostedZoneId) {
       throw new Error('Cannot find hostedZoneId in config.')
@@ -21,7 +19,7 @@ export class Route53Manager extends MiraStack {
 
     const domainSubscriptionTopic = new Topic(this, 'DomainSubscriptionTopic', {
       displayName: 'Domain Subscription Topic',
-      topicName: MiraConfig.getBaseStackName(`${account.name}-DomainSubscriptionTopic`)
+      topicName: MiraConfig.calculateSharedResourceName(this.name, 'sns', 'DomainSubscriptionTopic')
     })
 
     domainSubscriptionTopic.addToResourcePolicy(new PolicyStatement({
@@ -35,7 +33,11 @@ export class Route53Manager extends MiraStack {
       follow: FollowMode.ALWAYS
     })
 
-    const permissionsBoundary = ManagedPolicy.fromManagedPolicyName(this, 'Route53PermissionsBoundary', MiraConfig.calculateSharedResourceName('Route53ManagerPolicyBoundary'))
+    const permissionsBoundary = ManagedPolicy.fromManagedPolicyName(
+      this,
+      'Route53PermissionsBoundary',
+      MiraConfig.calculateSharedResourceName(this.name, 'policy', 'Route53ManagerPolicyBoundary')
+    )
 
     const DomainManagerRole = new Role(this, 'Route53ManagerRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
@@ -81,23 +83,23 @@ export class Route53Manager extends MiraStack {
         .getDomainAllowedPrincipals()
         .map(account => new AccountPrincipal(account.env.account))
     )
-    const CrossAccountDomainManagerRole = new Role(this, 'CrossAccountDomainManagerRole', {
+    const crossAccountDomainManagerRole = new Role(this, 'CrossAccountDomainManagerRole', {
       assumedBy: allowedCompositePrincipals,
-      roleName: MiraConfig.getBaseStackName('DomainManager-Role'),
+      roleName: MiraConfig.calculateSharedResourceName(this.name, 'role', 'DomainManager'),
       permissionsBoundary
     })
-    CrossAccountDomainManagerRole.addToPolicy(new PolicyStatement({
+    crossAccountDomainManagerRole.addToPolicy(new PolicyStatement({
       effect: Effect.ALLOW,
       resources: [`arn:aws:route53:::hostedzone/${hostedZoneId}`],
       actions: ['route53:ChangeResourceRecordSets']
     }))
-    CrossAccountDomainManagerRole.addToPolicy(new PolicyStatement({
+    crossAccountDomainManagerRole.addToPolicy(new PolicyStatement({
       effect: Effect.ALLOW,
       resources: ['*'],
       actions: ['route53:GetChange']
     }))
     new CfnOutput(this, 'CrossAccountDomainManagerRoleArn', {
-      value: CrossAccountDomainManagerRole.roleArn
+      value: crossAccountDomainManagerRole.roleArn
     })
   }
 }

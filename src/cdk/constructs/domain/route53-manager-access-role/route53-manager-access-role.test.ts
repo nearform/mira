@@ -35,7 +35,7 @@ describe('Route53ManagerAccessRoleStack', () => {
       accounts: []
     })
 
-    MiraConfig.calculateSharedResourceName = (): string => 'value'
+    MiraConfig.calculateSharedResourceName = (stackName: string, resourceType: string, resourceName: string): string => `prefix-${stackName}-${resourceType}-${resourceName}`
 
     const res = await new Route53ManagerAccessRoleStack(stack)
 

@@ -100,7 +100,7 @@ describe('Route53Manager', () => {
       env: { account: '12345', region: 'eu-west-1' }
     }])
 
-    MiraConfig.calculateSharedResourceName = (resource: string): string => `prefix-${resource}`
+    MiraConfig.calculateSharedResourceName = (stackName: string, resourceType: string, resourceName: string): string => `prefix-${stackName}-${resourceType}-${resourceName}`
 
     expect(() => new Route53Manager(stack)).not.toThrowError()
 

@@ -228,10 +228,14 @@ class MiraConfigClass {
     return output
   }
 
-  public calculateSharedResourceName (resource: string): string {
+  /**
+   * Creates name for resource type and resource name in the following format
+   * <prefix>-<appName>-<env>-<stackName>-<resourceType>-<resourceName>
+   */
+  public calculateSharedResourceName (stackName: string, resourceType: string, resourceName: string): string {
     const env = this.getEnvironment()
     const prefix = this.getBaseStackName()
-    return `${prefix}-${env.name}-${resource}`
+    return `${prefix}-${env.name}-${stackName}-${resourceType}-${resourceName}`
   }
 
   private getFullCiProps (name: string): CicdConfig {
