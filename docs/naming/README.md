@@ -86,7 +86,7 @@ It is important to look up resource names under a few conditions:
 * At build-time, you want to look up a `Construct` object by a friendly name for use in constructing other `Construct`'s
 
 Mira does this for you by containing a directory of resources at build-time on
-`MiraNames.resourcesByType`.  If you had some SQS queue with the following name:
+`MiraNames.resourcesByType`.  If you had an SQS queue with the following name:
 
 `dev-somePrefix-someApp-someStackName-sqs-myQueue`
 
