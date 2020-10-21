@@ -162,8 +162,11 @@ export class MiraVersion {
      * any version range operators used, throws an error.
      */
     getLocalMiraCDKVersion (): string|boolean {
-      const pkg = JSON.parse(fs.readFileSync(`${__dirname}/../../package.json`, 'utf8'))
       try {
+        if (!fs.existsSync(`${__dirname}/../../package.json`)) {
+          return false
+        }
+        const pkg = JSON.parse(fs.readFileSync(`${__dirname}/../../package.json`, 'utf8'))
         const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies)
         const cdkVersion = deps['aws-cdk']
         this.checkDependency(cdkVersion)
