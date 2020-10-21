@@ -13,9 +13,14 @@ const args = minimist(process.argv.slice(2))
  */
 export class MiraVersion {
     static instance: MiraVersion
+    cdkVersion: string
     constructor () {
       if (!MiraVersion.instance) {
         MiraVersion.instance = this
+      }
+      const cdkVersion = this.getLocalMiraCDKVersion()
+      if (typeof cdkVersion === 'string') {
+        this.cdkVersion = cdkVersion
       }
     }
 
@@ -28,7 +33,7 @@ export class MiraVersion {
         return false
       }
       const cdkVersion = pkg.dependencies[dep]
-      const miraVersion = this.getLocalMiraCDKVersion()
+      const miraVersion = this.cdkVersion
       if (typeof miraVersion !== 'string') {
         throw new Error('Mira contains CDK version issues.')
       }
@@ -55,13 +60,14 @@ export class MiraVersion {
       const pkgFile = FileHelpers.getPackageDirectory() + '/package.json'
       const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'))
 
+      const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies)
       let madeChange = false
-      for (const dep in pkg.dependencies) {
+      for (const dep in deps) {
         const newChange = this.checkApplicationDependencyCDKVersion(pkg, dep)
         madeChange = madeChange || newChange
       }
       if (autoFix && madeChange) {
-        console.info(chalk.magenta('Patching'), 'package.json to match Mira CDK version: ', this.getLocalMiraCDKVersion())
+        console.info(chalk.magenta('Patching'), 'package.json to match Mira CDK version: ', this.cdkVersion)
         fs.writeFileSync(pkgFile, JSON.stringify(pkg, null, 2))
         console.info(chalk.green('Success'), 'Patched package.json, please re-run `npm install`.')
         process.exit()
