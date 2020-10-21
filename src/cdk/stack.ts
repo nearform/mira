@@ -188,7 +188,7 @@ export class MiraStack extends NestedStack implements ExportOutputs {
       const name = nameParts.length === 1 ? nameParts[0] : nameParts[1]
 
       const id = `${baseName}${name}Parameter`
-      const parameterName = `/${MiraApp.getStackName()}/${baseName}/${name}`
+      const parameterName = `/${MiraConfig.calculateSharedResourceName('param')}/${baseName}/${name}`
 
       return { id, parameterName }
     }
