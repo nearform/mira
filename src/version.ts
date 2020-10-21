@@ -57,7 +57,8 @@ export class MiraVersion {
 
       let madeChange = false
       for (const dep in pkg.dependencies) {
-        madeChange = madeChange || this.checkApplicationDependencyCDKVersion(pkg, dep)
+        const newChange = this.checkApplicationDependencyCDKVersion(pkg, dep)
+        madeChange = madeChange || newChange
       }
       if (autoFix && madeChange) {
         console.info(chalk.magenta('Patching'), 'package.json to match Mira CDK version: ', this.getLocalMiraCDKVersion())
