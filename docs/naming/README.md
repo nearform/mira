@@ -1,4 +1,4 @@
-# Naming
+# Resource Naming
 
 One of the important problems Mira solves is the naming of resources.  If you
 wanted to organize an application ecosystem within an AWS account you might
