@@ -95,7 +95,8 @@ const symlinkDependencies = (pkgDir) => {
         // NOOP
     }
     const pkg = JSON.parse(fs.readFileSync(`${__dirname}/../package.json`, 'utf8'))
-    const deps = Object.keys(Object.assign({}, pkg.dependencies, pkg.devDependencies))
+    const nodeModules = fs.readdirSync(`${__dirname}/../node_modules`)
+    const deps = Object.keys(Object.assign({}, pkg.dependencies, pkg.devDependencies)).concat(nodeModules)
     // const dependencies = fs.readdirSync(__dirname + '/../node_modules/')
     console.info(chalk.cyan('Mira Local'), 'Symlinking deps')
     deps.forEach((dep) => {
