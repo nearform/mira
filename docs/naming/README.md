@@ -19,7 +19,7 @@ This section goes into each part of the name in detail.
 
 ## Env
 
-Mira handles each environment with a separte config file.  See the [config](/config/)
+Mira handles each environment with a separate config file.  See the [Configuration](/config/)
 section for more information.  The config that is used is determined by the
 environment.  The environment name winds up being used within the resource
 names deployed by Mira:
