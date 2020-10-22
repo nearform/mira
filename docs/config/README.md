@@ -51,6 +51,15 @@ Let's take a look at a sample config file.
       }
     ]
   },
+  "baseDomain": "nf-mira.com",
+  "domain: {
+    "hostedZoneId": "Z01339854Z6NRG0NI7SG",
+    "accounts": [
+      "staging",
+      "production",
+      "domain"
+    ]
+  },
   "accounts": {
       "cicd": {
         "env": {
@@ -64,14 +73,25 @@ Let's take a look at a sample config file.
           "account": "ACCOUNT_NUMER",
           "region": "REGION"
         },
-        "profile": "mira-dev"
+        "profile": "mira-dev",
+        "withDomain": true,
+        "webAppUrl": "staging.nf-mira.com"
       },
       "production": {
         "env": {
           "account": "ACCOUNT_NUMER",
           "region": "REGION"
         },
-        "profile": "mira-prod"
+        "profile": "mira-prod",
+        "withDomain": true,
+        "webAppUrl": "staging.nf-mira.com"
+      },
+      "domain": {
+        "env": {
+          "account": "ACCOUNT_NUMER",
+          "region": "REGION"
+        },
+        "profile": "mira-domain"
       }
     }
 }
@@ -91,7 +111,7 @@ The example above generates `John-SampleApp` as the prefix for stacks, roles, pi
 
 ### Accounts Section
 The accounts section of the config file is a collection of account objects that can be used to deploy apps and run cicd. The accounts also represent environments.
-We define three accounts in the sample config file above: `staging`, `production`, `cicd`, each with different account numbers.
+We define four accounts in the sample config file above: `staging`, `production`, `cicd`, `domain` each with different account numbers.
 
 The `staging` account may represent a developer's personal account where they can test all Mira deployments. It uses the default profile defined in the `~/.aws` directory or the one passed in as `--profile` parameter in the CLI command.
 
@@ -125,8 +145,13 @@ Stage is described by 3 properties:
 
 Domain management components (Certificate, Route53 and so on) are deployed on the `Domain` account. It uses `Z1234567890` as the Hosted Zone ID.
 
-NB Example domain usage to follow in upcoming releases.
+The `domain` section specifies the base domain settings for the application:
+* `hostedZoneId`: the id of the hostedZone where the CNAME records are added
+* `accounts`: list of accounts that should have access to the domain manager
 
+The `accounts` config must include a `domain` account config. Also, to enable domain deployment in an account the following two properties need to be added to the account config:
+* `withDomain`: boolean
+* `webAppUrl`: the domain name to be used for deploying the application
 
 ## Cost Center Tag
 
