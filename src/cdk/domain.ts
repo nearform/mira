@@ -1,17 +1,18 @@
 import * as cdk from '@aws-cdk/core'
-import { CertificateManager } from './constructs/domain/certificate-manager'
-import { Route53Manager } from './constructs/domain/route53-manager'
-import { Route53ManagerAccessRoleStack } from './constructs/domain/route53-manager-access-role'
+
 import { MiraConfig } from '../config/mira-config'
 import chalk from 'chalk'
 import minimist from 'minimist'
 
 import { MiraApp } from './app'
+import { CertificateManager } from './constructs/domain-manager/resource/certificate-manager'
+import { Route53Manager } from './constructs/domain-manager/resource/route53-manager'
+import { Route53ManagerAccessRole } from './constructs/domain-manager/resource/route53-manager-access-role'
 
 const args = minimist(process.argv)
 
 /**
- * Main Mira class.  Bootstraps CDK and loads in Stacks per user input.
+ * Main Mira class. Bootstraps CDK and loads in Stacks per user input.
  */
 export class MiraDomainApp extends MiraApp {
   constructor () {
@@ -30,7 +31,7 @@ export class MiraDomainApp extends MiraApp {
 
     new CertificateManager(stack)
     new Route53Manager(stack)
-    new Route53ManagerAccessRoleStack(stack)
+    new Route53ManagerAccessRole(stack)
     if (!Object.prototype.hasOwnProperty.call(args, 'dry-run')) {
       this.cdkApp.synth()
     }

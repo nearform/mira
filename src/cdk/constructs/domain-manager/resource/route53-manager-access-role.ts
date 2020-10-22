@@ -7,16 +7,18 @@ import {
 import { MiraConfig } from '../../../../config/mira-config'
 import { MiraStack } from '../../../stack'
 
-export class Route53ManagerAccessRoleStack extends MiraStack {
+export const ROUTE53_MANAGER_POLICY_BOUNDARY = 'Route53ManagerPolicyBoundary'
+
+export class Route53ManagerAccessRole extends MiraStack {
   constructor (parent: Construct) {
-    super(parent, Route53ManagerAccessRoleStack.name)
+    super(parent, Route53ManagerAccessRole.name)
     const { hostedZoneId } = MiraConfig.getDomainConfig()
     if (!hostedZoneId) {
       throw new Error('Cannot find hostedZoneId in config.')
     }
     new ManagedPolicy(this, 'permissionBoundaryPolicy',
       {
-        managedPolicyName: MiraConfig.calculateSharedResourceName('Route53ManagerPolicyBoundary'),
+        managedPolicyName: MiraConfig.getBaseStackName('Route53ManagerPolicyBoundary'),
         description: 'Boundary that defines what action can be performed by the Route53Manager stack resources',
         statements: [
           new PolicyStatement({
