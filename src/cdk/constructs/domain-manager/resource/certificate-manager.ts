@@ -16,6 +16,7 @@ export class CertificateManager extends MiraStack {
   constructor (parent: Construct) {
     super(parent, 'CertificateManager')
     const account = MiraConfig.getEnvironment()
+    const domainAccount = MiraConfig.getEnvironment('domain')
     const { hostedZoneId } = MiraConfig.getDomainConfig()
 
     if (!hostedZoneId) {
@@ -37,7 +38,7 @@ export class CertificateManager extends MiraStack {
 
     certificateManagerRole.addToPolicy(new PolicyStatement({
       effect: Effect.ALLOW,
-      resources: [`arn:aws:iam::${account.env.account}:role/${MiraConfig.getBaseStackName('CrossAccountDomainManagerRole')}`],
+      resources: [`arn:aws:iam::${domainAccount.env.account}:role/${MiraConfig.getBaseStackName('CrossAccountDomainManagerRole')}`],
       actions: ['sts:AssumeRole']
     }))
 

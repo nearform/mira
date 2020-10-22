@@ -40,6 +40,6 @@ export class CustomCertificate extends Construct {
       resourceType: 'Custom::Certificate'
     })
 
-    this.certificateArn = this.certificate.getAttString('arn')
+    this.certificateArn = this.certificate.getAttString('Arn')
   }
 }
