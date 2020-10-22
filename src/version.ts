@@ -28,7 +28,7 @@ export class MiraVersion {
      * Checks a particular dependency CDK version.
      */
     /* eslint-disable-next-line */
-    checkApplicationDependencyCDKVersion (pkg: any, pkgDeps: object, dep: string, autoFix = true): boolean {
+    checkApplicationDependencyCDKVersion (pkg: any, pkgDeps: {[key: string]: string}, dep: string, autoFix = true): boolean {
       if (!dep.startsWith('@aws-cdk') && !dep.startsWith('aws-cdk')) {
         return false
       }
