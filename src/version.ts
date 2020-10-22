@@ -28,11 +28,11 @@ export class MiraVersion {
      * Checks a particular dependency CDK version.
      */
     /* eslint-disable-next-line */
-    checkApplicationDependencyCDKVersion (pkg: any, dep: string, autoFix = true): boolean {
+    checkApplicationDependencyCDKVersion (pkg: any, pkgDeps: object, dep: string, autoFix = true): boolean {
       if (!dep.startsWith('@aws-cdk') && !dep.startsWith('aws-cdk')) {
         return false
       }
-      const cdkVersion = pkg.dependencies[dep]
+      const cdkVersion = pkgDeps[dep]
       const miraVersion = this.cdkVersion
       if (typeof miraVersion !== 'string') {
         throw new Error('Mira contains CDK version issues.')
@@ -44,7 +44,7 @@ export class MiraVersion {
                 `\n\t${pkg.name} is ${cdkVersion}` +
                 `\n\tMira is ${miraVersion}`)
         if (autoFix) {
-          pkg.dependencies[dep] = miraVersion
+          pkgDeps[dep] = miraVersion
           return true
         }
       }
@@ -63,7 +63,9 @@ export class MiraVersion {
       const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies)
       let madeChange = false
       for (const dep in deps) {
-        const newChange = this.checkApplicationDependencyCDKVersion(pkg, dep)
+        let newChange = this.checkApplicationDependencyCDKVersion(pkg, pkg.dependencies, dep)
+        madeChange = madeChange || newChange
+        newChange = this.checkApplicationDependencyCDKVersion(pkg, pkg.devDependencies, dep)
         madeChange = madeChange || newChange
       }
       if (autoFix && madeChange) {
