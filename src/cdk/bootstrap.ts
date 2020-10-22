@@ -36,7 +36,6 @@ export class MiraBootstrap {
   stackFile: string;
   errorLogger: ErrorLogger;
 
-  
   constructor () {
     this.cdkCommand = path.join(
       require.resolve('aws-cdk'),
