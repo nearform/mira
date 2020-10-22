@@ -98,13 +98,6 @@ export class MiraApp {
     return args.file.split(',')
   }
 
-  /**
-   * Gets the stack name from CLI.
-   */
-  static getStackName (): string {
-    return args.stack || 'default'
-  }
-
   static getBaseStackName (suffix?: string): string {
     return getBaseStackName(suffix)
   }

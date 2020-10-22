@@ -172,7 +172,8 @@ export class MiraBootstrap {
       const proc = this.spawn('node', commandOptions, {
         stdio: 'inherit',
         env: {
-          ...process.env
+          ...process.env,
+          NODE_ENV: account.name
         }
       })
       await new Promise((resolve, reject) => {
