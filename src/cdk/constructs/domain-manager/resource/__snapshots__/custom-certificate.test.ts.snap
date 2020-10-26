@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomCertificate renders output correctly 1`] = `
+Object {
+  "Resources": Object {
+    "CustomCertificateResourceCustomCertificateA17D7D34": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "Domain": "test.example.com",
+        "Route53Role": "arn:aws:iam::domain:role/John-MyGreatApp-CrossAccountDomainManagerRole",
+        "ServiceToken": "arn:aws:sns:eu-west-1:account1:John-MyGreatApp-CertificateSubscriptionTopic",
+      },
+      "Type": "Custom::Certificate",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+}
+`;

@@ -14,7 +14,7 @@ export class Route53ManagerAccessRole extends MiraStack {
     super(parent, Route53ManagerAccessRole.name)
     const { hostedZoneId } = MiraConfig.getDomainConfig()
     if (!hostedZoneId) {
-      throw new Error('Cannot find hostedZoneId in config.')
+      throw new Error('"hostedZoneId" is required in "domain" config')
     }
     new ManagedPolicy(this, 'permissionBoundaryPolicy',
       {

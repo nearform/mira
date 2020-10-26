@@ -17,7 +17,7 @@ export class CustomCertificate extends Construct {
   certificateArn: string
 
   constructor (parent: Construct, props: CustomCertificateProps) {
-    super(parent, 'CustomCertificateResouce')
+    super(parent, 'CustomCertificateResource')
 
     const topicName = MiraConfig.getBaseStackName(CERTIFICATE_SUBSCRIPTION_TOPIC)
     const accountConfig = MiraConfig.getEnvironment()

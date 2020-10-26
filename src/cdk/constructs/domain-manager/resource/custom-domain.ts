@@ -16,7 +16,7 @@ export class CustomDomain extends Construct {
   domain: CustomResource
 
   constructor (parent: Construct, props: CustomDomainProps) {
-    super(parent, 'CustomDomainResouce')
+    super(parent, 'CustomDomainResource')
 
     const topicName = MiraConfig.getBaseStackName(DOMAIN_SUBSCRIPTION_TOPIC)
     const domainAccountConfig = MiraConfig.getEnvironment('domain')

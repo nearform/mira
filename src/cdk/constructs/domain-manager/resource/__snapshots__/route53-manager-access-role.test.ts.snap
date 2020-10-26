@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Route53ManagerAccessRole renders output correctly 1`] = `
+Object {
+  "Resources": Object {
+    "permissionBoundaryPolicyB4A5FF11": Object {
+      "Properties": Object {
+        "Description": "Boundary that defines what action can be performed by the Route53Manager stack resources",
+        "ManagedPolicyName": "John-MyGreatApp-Route53ManagerPolicyBoundary",
+        "Path": "/",
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "route53:GetChange",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "route53:ChangeResourceRecordSets",
+                "route53:ListResourceRecordSets",
+              ],
+              "Effect": "Allow",
+              "Resource": "arn:aws:route53:::hostedzone/Z123456789",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::ManagedPolicy",
+    },
+  },
+}
+`;

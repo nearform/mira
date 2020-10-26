@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomDomain renders output correctly 1`] = `
+Object {
+  "Resources": Object {
+    "CustomDomainResourceCustomDomain51E2934C": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ServiceToken": "arn:aws:sns:eu-west-1:domain:John-MyGreatApp-DomainSubscriptionTopic",
+        "Source": "source-url",
+        "Target": "target-url",
+      },
+      "Type": "Custom::Domain",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+}
+`;
