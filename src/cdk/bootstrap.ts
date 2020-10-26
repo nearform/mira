@@ -36,7 +36,6 @@ export class MiraBootstrap {
   stackFile: string;
   errorLogger: ErrorLogger;
 
-  
   constructor () {
     this.cdkCommand = path.join(
       require.resolve('aws-cdk'),
@@ -123,6 +122,7 @@ export class MiraBootstrap {
     await new Promise((resolve, reject) => {
       proc.on('exit', async code => {
         if (code !== 0) {
+          console.error('Deploy Stack Failed. Dumping Error message')
           await this.printExtractedNestedStackErrors()
           reject(code)
           return
@@ -179,6 +179,7 @@ export class MiraBootstrap {
       await new Promise((resolve, reject) => {
         proc.on('exit', err => {
           if (err) {
+            console.error(`Deploy CI Permission failed for account '${account.name}'`)
             reject(err)
             return
           }
@@ -214,6 +215,7 @@ export class MiraBootstrap {
     await new Promise((resolve, reject) => {
       proc.on('exit', err => {
         if (err) {
+          console.error('Deploy CI pipeline failed')
           reject(err)
           return
         }
