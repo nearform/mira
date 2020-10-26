@@ -46,7 +46,7 @@ A simple config for domain management looks as the following
   "accounts": {
     "dev": {
       "env": {
-        "account": "APPLICATION-ACCOUNT-ID",
+        "account": "DEV-ACCOUNT-ID",
         "region": "ACCOUNT-REGION"
       },
       "profile": "mira-dev",
@@ -55,7 +55,7 @@ A simple config for domain management looks as the following
     },
     "staging": {
       "env": {
-        "account": "APPLICATION-ACCOUNT-ID",
+        "account": "STAGING-ACCOUNT-ID",
         "region": "ACCOUNT-REGION"
       },
       "profile": "mira-staging",
@@ -72,6 +72,8 @@ A simple config for domain management looks as the following
   }
 }
 ```
+> `"HOSTED-ZONE-ID"`, `"DEV-ACCOUNT-ID"`, `"STAGING-ACCOUNT-ID"`, `"ACCOUNT-REGION"` and `"DOMAIN-ACCOUNT-ID"` values are placeholder values and must be change to valid AWS account and region values.
+
 This example configures 3 accounts: a `default` account for development, a `staging` account for staging environment and the `domain` account where the domain name and hosted zone lives.
 
 ### 2. Deploy Route53 Manager to `domain` account
