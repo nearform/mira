@@ -60,12 +60,13 @@ export class MiraVersion {
       const pkgFile = FileHelpers.getPackageDirectory() + '/package.json'
       const pkg = JSON.parse(fs.readFileSync(pkgFile, 'utf8'))
 
-      const deps = Object.assign({}, pkg.dependencies, pkg.devDependencies)
       let madeChange = false
-      for (const dep in deps) {
-        let newChange = this.checkApplicationDependencyCDKVersion(pkg, pkg.dependencies, dep)
+      for (const dep in pkg.dependencies) {
+        const newChange = this.checkApplicationDependencyCDKVersion(pkg, pkg.dependencies, dep)
         madeChange = madeChange || newChange
-        newChange = this.checkApplicationDependencyCDKVersion(pkg, pkg.devDependencies, dep)
+      }
+      for (const dep in pkg.devDependencies) {
+        const newChange = this.checkApplicationDependencyCDKVersion(pkg, pkg.devDependencies, dep)
         madeChange = madeChange || newChange
       }
       if (autoFix && madeChange) {
