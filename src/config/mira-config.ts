@@ -48,12 +48,14 @@ export interface Stage {
   readonly target: string
   readonly withDomain?: boolean
   readonly requireManualApproval: boolean
+  readonly privileged: boolean
 }
 
 export interface CiProps {
   readonly target: string
   readonly withDomain?: string
   readonly requireManualApproval?: boolean
+  readonly privileged?: boolean
   readonly account: Account
 }
 
@@ -67,8 +69,8 @@ interface CicdConfig {
   readonly codeCommitUserPublicKey?: string
   readonly buildspecFile: string
   readonly accounts: string[]
-  readonly repositoryOwner: string
-  readonly repositoryName: string
+  readonly repositoryOwner?: string
+  readonly repositoryName?: string
 }
 
 export interface DomainConfig {
@@ -194,14 +196,19 @@ class MiraConfigClass {
 
   public getCICDConfig (): CicdConfig {
     const output = this.getFullCiProps(CONFIG_KEYS.CICD)
-    const {
-      name,
-      owner
-    } = parseGitUrl(output.repositoryUrl)
+    const githubValues: { repositoryName?: string, repositoryOwner?: string } = {}
+    if (output.provider !== 'codecommit') {
+      const {
+        name,
+        owner
+      } = parseGitUrl(output.repositoryUrl)
+      githubValues.repositoryName = name
+      githubValues.repositoryOwner = owner
+    }
+
     return {
       ...output,
-      repositoryName: name,
-      repositoryOwner: owner
+      ...githubValues
     }
   }
 

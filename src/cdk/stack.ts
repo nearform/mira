@@ -168,8 +168,8 @@ export class MiraStack extends MiraObject {
     const baseName = nameParts.length === 1 ? this.name : nameParts[0]
     const name = nameParts.length === 1 ? nameParts[0] : nameParts[1]
 
-    const id = `${baseName}${name}Parameter`
-    const parameterName = `/${this.getResourceName()}/${baseName}/${name}`
+      const id = `${baseName}${name}Parameter`
+      const parameterName = `/${MiraConfig.calculateSharedResourceName('param')}/${baseName}/${name}`
 
     return { id, parameterName }
   }

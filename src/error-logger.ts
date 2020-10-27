@@ -34,13 +34,13 @@ export default class ErrorLogger {
   /**
    * Flush messages to the output stream.
    */
-  flushMessages (messages: string[]): void {
+  async flushMessages (messages: string[]): Promise<void> {
     // do not run if in AWS CodeBuild
     if (undefined === process.env.CODEBUILD_BUILD_ID) {
       const ws = fs.createWriteStream(this.file)
-      messages.map((message) => {
-        ws.write(message)
-      })
+      for (const message of messages) {
+        await new Promise((resolve) => (ws.write(message, resolve)))
+      }
       ws.close()
     }
   }

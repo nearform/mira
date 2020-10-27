@@ -43,7 +43,7 @@ export class MiraDomainApp extends MiraApp {
   }
 }
 
-if (args.stack) {
+if (args._.filter((arg: string) => arg.match(/domain.js$/)).length > 0) {
   // Ensure we're within a CDK deploy context.
   console.info(`>>> ${chalk
     .yellow('Initializing CDK for DomainManager')}:\n    ${chalk.grey(args.stack)}`)

@@ -137,7 +137,10 @@ export class Cicd extends Stack {
         description: 'Project repository'
       })
       new CfnOutput(this, 'RepositoryName', {
-        value: MiraConfig.calculateRepositoryName()
+        value: repository.repositoryName
+      })
+      new CfnOutput(this, 'RepositoryArn', {
+        value: repository.repositoryArn
       })
 
       technicalUser.addToPolicy(new PolicyStatement({
@@ -163,6 +166,9 @@ export class Cicd extends Stack {
       })
     } else if (gitHubTokenSecretArn) {
       const oAuthToken = Secret.fromSecretArn(this, 'GitHubToken', gitHubTokenSecretArn)
+      if (!repositoryOwner || !repositoryName) {
+        throw new Error('Repository owner and name are required to use a github repository.')
+      }
       action = new GitHubSourceAction({
         actionName: 'Source',
         branch: branchName,
@@ -225,7 +231,10 @@ export class Cicd extends Stack {
       buildSpec: BuildSpec.fromSourceFilename(buildspecFile),
       encryptionKey: this.pipeline.artifactBucket.encryptionKey,
       environmentVariables: projectEnvVariables,
-      role
+      role,
+      environment: {
+        privileged: conf.privileged || false
+      }
     })
 
     if (conf.requireManualApproval) {
