@@ -12,6 +12,20 @@ The domain manager is built up from two main components that are deployed to dif
 * The **Certificate Manager** is deployed to an application account and manages ACM certificates.
 * The **Route53 Manager** is deployed to the domain account and manages records in a hosted zone.
 
+### Certificate manager
+
+The certificate manager construct creates an SNS topic (called `CertificateSubscriptionTopic`) to which messages are pushed during the application Cloudformation stack deployment via the `CustomCertificate` construct. The message contains two parameters:
+* **Domain** The domain name the certificate is requested for
+* **Region** The region in which the certificate should be requested. The region is not required and uses the **`us-east-1`** region as AWS requires to be in this region to be able to use with a Cloudfront distribution.
+
+These messages are picked up by a Lambda function also created by the Certificate Manager construct and based on the parameters it requests and validates a certificate.
+
+### Route53 Manager
+
+The Route53 manager construct also creates an SNS topic (called `DomainSubscriptionTopic`) to which message are pushed during  the application Cloudformation stack deployment via the `CustomDomain` construct. The message contains two parameters:
+* **Source** the source value for a CNAME entry in the hosted zone
+* **Target** the target value for a CNAME entry in the hosted zone
+
 ![domain-manager-architecture]
 
 There is one special account called `domain` account. This account contains the domain name and responsible to manage records in a hosted zone for that domain. This domain account has a `CrossAccountDomainManager` role that has permission to change record sets in a hosted zone. This role can be assumed by the other accounts when enabled in the config. The Route53 Manager has also restricted access to resources and has access only to the manage Route53 resources.
