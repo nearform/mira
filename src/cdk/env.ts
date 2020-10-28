@@ -14,6 +14,8 @@ const args = minimist(process.argv.slice(2))
  */
 export default class MiraEnv {
     env: Account
+    /* eslint-disable-next-line */
+    args: any
     static instance: MiraEnv
     constructor () {
       this.initialize()
@@ -28,6 +30,7 @@ export default class MiraEnv {
     initialize (): void {
       this.parseFile()
       this.parseEnv()
+      this.args = args
     }
 
     /**
