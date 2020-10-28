@@ -12,6 +12,8 @@ const args = minimist(process.argv)
 export interface Config {
   app: App
   dev: Dev
+  /* eslint-disable-next-line */
+  [x: string]: any
   accounts: {
     [x: string]: Account
   }

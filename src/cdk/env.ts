@@ -22,6 +22,7 @@ export default class MiraEnv {
         console.warn('MiraEnv was instantiated twice outside a testing environment' +
               '.  This will likely cause unknown behavior.')
       }
+      this.initialize()
     }
 
     initialize (): void {
@@ -48,11 +49,13 @@ export default class MiraEnv {
      * Parses the file variable.
      */
     parseFile (): string {
-      if (!args.file) {
+      if (!args.file && process.env.NODE_ENV !== 'test') {
         console.warn('You must specify a --file argument when using the ' +
                 'deploy or undeploy command within mira.')
         // TODO: Specify exit code.
         process.exit(1)
+      } else if (!args.file && process.env.NODE_ENV === 'test') {
+        args.file = ''
       }
       if (Array.isArray(args.file)) {
         return args.file

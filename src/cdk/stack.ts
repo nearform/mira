@@ -30,21 +30,25 @@ interface MiraStackProps {
 
 export class MiraStack extends MiraObject {
   static topLevelStacks: LooseObject
-  parent?: MiraStack
+  parent?: Construct
   stack: cdk.Stack
   props: MiraStackProps
-  constructor(name?: string, parent?: MiraStack, existingStack?: cdk.Stack, props?: MiraStackProps) {
-    if (!name) {
+  constructor (parentOrName?: Construct|string, name?: string, existingStack?: cdk.Stack, props?: MiraStackProps) {
+    if (typeof parentOrName !== 'string' && !name) {
       name = 'DefaultStack'
       console.warn('No stack name provided, prefer a named stack.  Defaulting ' +
         'to name \'DefaultStack\'')
+    } else if (!name && typeof parentOrName === 'string') {
+      name = parentOrName
     }
-    super(name, 'stack')
+    super(name as string, 'stack')
+    if (!parentOrName && typeof parentOrName !== 'string') {
+      this.parent = MiraApp.instance.cdkApp
+    }
     this.props = props || {}
     if (existingStack) {
       this.stack = existingStack
     }
-    this.parent = parent
   }
 
   /**
@@ -59,7 +63,7 @@ export class MiraStack extends MiraObject {
       value: value
     })
 
-    if (shouldExport && this.parent && this.parent.stack) {
+    if (shouldExport && this.parent && this.parent instanceof MiraStack) {
       new CfnOutput(this.parent.stack, exportName, {
         value: value
       })
@@ -92,7 +96,8 @@ export class MiraStack extends MiraObject {
   /**
    * Bootstraps some external stack.
    */
-  static bootstrap(stack: cdk.Stack) {
+  /* eslint-disable-next-line */
+  static bootstrap (stack: cdk.Stack): Promise<any> {
     const obj = new MiraStack(stack.stackName, undefined, stack)
     return obj.initialized
   }
@@ -133,7 +138,7 @@ export class MiraStack extends MiraObject {
 
   async initialize (): Promise<void> {
     const account: Account = this.getEnv().env
-    if (!this.stack && this.parent) {
+    if (!this.stack && this.parent && this.parent instanceof MiraStack) {
       this.stack = new NestedStack(this.parent.stack, this.getResourceName())
     } else if (!this.stack) {
       this.stack = new cdk.Stack(MiraApp.instance.cdkApp, this.getResourceName(), {
@@ -168,8 +173,8 @@ export class MiraStack extends MiraObject {
     const baseName = nameParts.length === 1 ? this.name : nameParts[0]
     const name = nameParts.length === 1 ? nameParts[0] : nameParts[1]
 
-      const id = `${baseName}${name}Parameter`
-      const parameterName = `/${MiraConfig.calculateSharedResourceName('param')}/${baseName}/${name}`
+    const id = `${baseName}${name}Parameter`
+    const parameterName = `/${MiraConfig.calculateSharedResourceName('param')}/${baseName}/${name}`
 
     return { id, parameterName }
   }

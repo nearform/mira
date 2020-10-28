@@ -19,7 +19,7 @@ interface Prototypable {
   prototype: Stack
 }
 
-export type MiraValidStack = typeof MiraStack & typeof cdk.Stack & typeof Function
+export type MiraValidStack = typeof MiraStack | typeof cdk.Stack | typeof Function
 type MiraStackList = Array<MiraValidStack>
 
 /**
@@ -58,7 +58,7 @@ export class MiraApp {
 
     const stackImport = await import(stackFile)
     if (!stackImport.default || !(stackImport.prototype instanceof cdk.Stack)) {
-      for (let key in stackImport) {
+      for (const key in stackImport) {
         if (typeof stackImport[key] === 'function' && stackImport[key].prototype instanceof Stack) {
           return stackImport[key]
         }
@@ -127,17 +127,20 @@ export class MiraApp {
       const initializationList = []
 
       for (const idx in Stacks) {
-        if (Stacks[idx] instanceof MiraStack) {
-          const stack = new Stacks[idx]()
+        if (Stacks[idx].prototype instanceof MiraStack) {
+          const StackType = (Stacks[idx] as unknown) as typeof MiraStack
+          const stack = new StackType()
           if (!stack.props.disablePolicies) {
             stack.applyPolicies(stack.props.approvedWildcardActions)
           }
           initializationList.push(stack.initialized)
         } else if (Stacks[idx].prototype instanceof cdk.Stack) {
-          const stack = new (Stacks[idx])(this.cdkApp, Stacks[idx].name)
+          const StackType = (Stacks[idx] as unknown) as typeof cdk.Stack
+          const stack = new StackType(this.cdkApp, Stacks[idx].name)
           initializationList.push(MiraStack.bootstrap(stack))
         } else if (typeof Stacks[idx] === 'function') {
-          Stacks[idx]()
+          const StackType = (Stacks[idx] as unknown) as typeof Function
+          StackType()
         }
       }
 

@@ -62,7 +62,7 @@ describe('CertificateManager', () => {
   })
   it('Throw if hostedZoneId is not in domain config', async () => {
     const stack = new Stack(
-      new App(),
+      MiraApp.instance.cdkApp,
       MiraConfig.getBaseStackName('CertificateManager'),
       {}
     )
@@ -86,7 +86,7 @@ describe('CertificateManager', () => {
 
   it('call all functions correctly', async () => {
     const stack = new Stack(
-      new App(),
+      MiraApp.instance.cdkApp,
       MiraConfig.getBaseStackName('CertificateManager'),
       {}
     )
@@ -116,6 +116,7 @@ describe('CertificateManager', () => {
       }
     ]
 
+    expect(() => new CertificateManager()).not.toThrowError()
 
     expect(AccountPrincipal).toBeCalledTimes(1)
     expect(AssetCode).toBeCalledTimes(1)
