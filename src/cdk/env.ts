@@ -16,13 +16,13 @@ export default class MiraEnv {
     env: Account
     static instance: MiraEnv
     constructor () {
+      this.initialize()
       if (!MiraEnv.instance) {
         MiraEnv.instance = this
-      } else if (args.env !== 'test') {
+      } if (args.env !== 'test') {
         console.warn('MiraEnv was instantiated twice outside a testing environment' +
               '.  This will likely cause unknown behavior.')
       }
-      this.initialize()
     }
 
     initialize (): void {
