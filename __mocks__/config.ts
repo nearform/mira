@@ -34,6 +34,13 @@ const config: Record<string, unknown> = {
     },
     profile: true
   },
+  'accounts.dev': {
+    env: {
+      account: 'ACCOUNT_NUMER',
+      region: 'REGION'
+    },
+    profile: true
+  },
   'accounts.staging': {
     env: {
       account: 'ACCOUNT_NUMER',
