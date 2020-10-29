@@ -1,13 +1,9 @@
 import * as cdk from '@aws-cdk/core'
 import chalk from 'chalk'
-import config from 'config'
 import { MiraServiceStack, MiraStack } from './stack'
 import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
 import * as path from 'path'
-import {
-  getBaseStackNameFromParams
-} from './constructs/config/utils'
 import { MiraConfig } from '../config/mira-config'
 // eslint-disable-next-line
 const minimist = require("minimist");
@@ -113,7 +109,7 @@ export class MiraApp {
     name: string,
     suffix?: string
   ): string {
-    return getBaseStackNameFromParams(prefix, name, suffix)
+    return MiraConfig.getBaseStackNameFromParams(prefix, name, suffix)
   }
 
   /**
@@ -183,8 +179,7 @@ export class MiraApp {
  * Gets the stack name.
  */
 export const getStackName = (): string => {
-  const stackName = getBaseStackNameFromParams(config.get('app.prefix'),
-    config.get('app.name'), 'Service')
+  const stackName = MiraConfig.getBaseStackName('Service')
   return stackName
 }
 

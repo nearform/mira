@@ -278,6 +278,18 @@ class MiraConfigClass {
   public getDeployProjectRoleName (environment: string): string {
     return `${this.getBaseStackName()}-DeployProjectRole-${environment}`
   }
+
+  public getBaseStackNameFromParams (prefix: string, name: string, suffix? : string): string {
+    const pieces = [
+      prefix,
+      name,
+      suffix
+    ]
+    const output = pieces
+      .filter((p) => p)
+      .map((p) => pascalCase(p as string))
+    return output.join('-')
+  }
 }
 
 export const MiraConfig = new MiraConfigClass()
