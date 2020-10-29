@@ -32,7 +32,7 @@ const config: Record<string, unknown> = {
       account: 'ACCOUNT_NUMER',
       region: 'REGION'
     },
-    profile: 'mira-dev'
+    profile: true
   },
   'accounts.staging': {
     env: {
@@ -62,6 +62,14 @@ const configMock: IConfig = {
         },
         accounts: {
           default: {
+            name: 'hello',
+            profile: 'mira-dev',
+            env: {
+              account: '101259067028',
+              region: 'eu-west-1'
+            }
+          },
+          test: {
             name: 'hello',
             profile: 'mira-dev',
             env: {

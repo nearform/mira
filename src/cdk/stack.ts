@@ -75,6 +75,7 @@ export class MiraStack extends MiraObject {
    */
   async addTags (): Promise<void> {
     const createdBy = await this.getUser()
+    console.log(createdBy, '#####')
 
     Tags.of(this.stack).add('StackName', this.getResourceName())
     Tags.of(this.stack).add('CreatedBy', createdBy)

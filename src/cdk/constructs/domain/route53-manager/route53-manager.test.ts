@@ -13,6 +13,7 @@ import { SnsEventSource } from '@aws-cdk/aws-lambda-event-sources'
 
 import { DomainConfig, MiraConfig, Account } from '../../../../config/mira-config'
 import { Route53Manager } from '.'
+import { MiraApp } from '../../../app'
 
 jest.mock('@aws-cdk/core', () => ({
   ...jest.requireActual('@aws-cdk/core'),
@@ -56,9 +57,13 @@ jest.mock('@aws-cdk/aws-lambda', () => ({
 }))
 
 describe('Route53Manager', () => {
+  beforeEach(() => {
+    new MiraApp()
+    MiraApp.instance.initializeApp()
+  })
   it('Throw if hostedZoneId is not in domain config', async () => {
     const stack = new Stack(
-      new App(),
+      MiraApp.instance.cdkApp,
       MiraConfig.getBaseStackName('CertificateManager'),
       {}
     )
@@ -79,7 +84,7 @@ describe('Route53Manager', () => {
 
   it('call all functions correctly', async () => {
     const stack = new Stack(
-      new App(),
+      MiraApp.instance.cdkApp,
       MiraConfig.getBaseStackName('CertificateManager'),
       {}
     )
