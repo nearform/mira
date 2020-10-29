@@ -274,6 +274,10 @@ class MiraConfigClass {
 
     return ''
   }
+
+  public getDeployProjectRoleName (environment: string): string {
+    return `${this.getBaseStackName()}-DeployProjectRole-${environment}`
+  }
 }
 
 export const MiraConfig = new MiraConfigClass()

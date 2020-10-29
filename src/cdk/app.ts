@@ -6,7 +6,6 @@ import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
 import * as path from 'path'
 import {
-  getBaseStackName,
   getBaseStackNameFromParams
 } from './constructs/config/utils'
 import { MiraConfig } from '../config/mira-config'
@@ -106,7 +105,7 @@ export class MiraApp {
   }
 
   static getBaseStackName (suffix?: string): string {
-    return getBaseStackName(suffix)
+    return MiraConfig.getBaseStackName(suffix)
   }
 
   static getBaseStackNameFromParams (

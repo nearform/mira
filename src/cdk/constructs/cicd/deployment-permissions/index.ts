@@ -2,7 +2,6 @@ import { Construct, Stack } from '@aws-cdk/core'
 import { Role, AccountPrincipal, PolicyStatement } from '@aws-cdk/aws-iam'
 import { MiraApp } from '../../../app'
 import { MiraConfig } from '../../../../config/mira-config'
-import { getDeployProjectRoleName } from '../../config/utils'
 
 export interface DeploymentPermissionsProps {
   env: string
@@ -18,7 +17,7 @@ export class DeploymentPermissions extends Stack {
     const baseProject = MiraApp.getBaseStackName()
     this.role = new Role(this, `DeployProjectRole-${account.name}`, {
       assumedBy: new AccountPrincipal(MiraConfig.getCICDConfig().account.env.account),
-      roleName: getDeployProjectRoleName(account.name)
+      roleName: MiraConfig.getDeployProjectRoleName(account.name)
     })
     // Policy statements needed for CDK to deploy any template.
     this.role.addToPolicy(new PolicyStatement({

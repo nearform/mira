@@ -19,7 +19,6 @@ import { pascalCase } from 'change-case'
 
 import { MiraConfig } from '../../../config/mira-config'
 import { AutoDeleteBucket } from '../auto-delete-bucket'
-import { getBaseStackName, getDeployProjectRoleName } from '../config/utils'
 
 export interface PipelineEnvironmentVariable {
   key: string
@@ -195,7 +194,7 @@ export class Cicd extends Stack {
         }
       }
     } = conf
-    const prefix = `${getBaseStackName()}-${pascalCase(name)}`
+    const prefix = `${MiraConfig.getBaseStackName(pascalCase(name))}`
 
     const deployProjectRoleName = `${prefix}-CodebuildRole`
     const role = new Role(this, deployProjectRoleName, {
@@ -214,7 +213,7 @@ export class Cicd extends Stack {
     }))
     const { buildspecFile } = MiraConfig.getCICDConfig()
     const projectEnvVariables: CommonProjectProps['environmentVariables'] = {
-      ROLE_NAME: { type: BuildEnvironmentVariableType.PLAINTEXT, value: getDeployProjectRoleName(name) },
+      ROLE_NAME: { type: BuildEnvironmentVariableType.PLAINTEXT, value: MiraConfig.getDeployProjectRoleName(name) },
       ROLE_ARN: { type: BuildEnvironmentVariableType.PLAINTEXT, value: this.getDeployRoleArn(name, account) },
       ACCOUNT_NUMBER: { type: BuildEnvironmentVariableType.PLAINTEXT, value: account },
       REGION: { type: BuildEnvironmentVariableType.PLAINTEXT, value: region },
@@ -227,7 +226,8 @@ export class Cicd extends Stack {
 
       }
     })
-    const project = new PipelineProject(this, `${getBaseStackName()}-${name}Deploy`, {
+    const stageName = MiraConfig.getBaseStackName(name + 'Deploy')
+    const project = new PipelineProject(this, stageName, {
       buildSpec: BuildSpec.fromSourceFilename(buildspecFile),
       encryptionKey: this.pipeline.artifactBucket.encryptionKey,
       environmentVariables: projectEnvVariables,
@@ -249,16 +249,16 @@ export class Cicd extends Stack {
     this.pipeline.addStage({
       actions: [
         new CodeBuildAction({
-          actionName: `${getBaseStackName()}-${name}Deploy`,
+          actionName: stageName,
           input,
           project
         })
       ],
-      stageName: `${getBaseStackName()}-${name}Deploy`
+      stageName
     })
   }
 
   private getDeployRoleArn (environment: string, account: string): string {
-    return `arn:aws:iam::${account}:role/${getDeployProjectRoleName(environment)}`
+    return `arn:aws:iam::${account}:role/${MiraConfig.getDeployProjectRoleName(environment)}`
   }
 }
