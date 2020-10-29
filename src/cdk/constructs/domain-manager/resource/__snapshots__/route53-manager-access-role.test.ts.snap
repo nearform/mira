@@ -6,7 +6,7 @@ Object {
     "permissionBoundaryPolicyB4A5FF11": Object {
       "Properties": Object {
         "Description": "Boundary that defines what action can be performed by the Route53Manager stack resources",
-        "ManagedPolicyName": "John-MyGreatApp-Route53ManagerPolicyBoundary",
+        "ManagedPolicyName": "John-MyGreatApp-account1-Route53ManagerPolicyBoundary",
         "Path": "/",
         "PolicyDocument": Object {
           "Statement": Array [

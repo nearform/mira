@@ -45,7 +45,7 @@ export class CertificateManager extends MiraStack {
     // Create SNS topic
     const certificateSubscriptionTopic = new Topic(this, CERTIFICATE_SUBSCRIPTION_TOPIC, {
       displayName: 'Certificate Subscription Topic',
-      topicName: MiraConfig.getBaseStackName(CERTIFICATE_SUBSCRIPTION_TOPIC)
+      topicName: MiraConfig.calculateSharedResourceName(CERTIFICATE_SUBSCRIPTION_TOPIC)
     })
 
     // Allow account to publish message to topic

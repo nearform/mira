@@ -98,7 +98,7 @@ Object {
     "CertificateSubscriptionTopic416ACB99": Object {
       "Properties": Object {
         "DisplayName": "Certificate Subscription Topic",
-        "TopicName": "John-MyGreatApp-CertificateSubscriptionTopic",
+        "TopicName": "John-MyGreatApp-account1-CertificateSubscriptionTopic",
       },
       "Type": "AWS::SNS::Topic",
     },

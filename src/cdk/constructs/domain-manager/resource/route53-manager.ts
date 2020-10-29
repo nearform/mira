@@ -27,7 +27,7 @@ export class Route53Manager extends MiraStack {
     const permissionsBoundary = ManagedPolicy.fromManagedPolicyName(
       this,
       'Route53ManagerPermissionsBoundary',
-      MiraConfig.getBaseStackName(ROUTE53_MANAGER_POLICY_BOUNDARY)
+      MiraConfig.calculateSharedResourceName(ROUTE53_MANAGER_POLICY_BOUNDARY)
     )
 
     const route53ManagerRole = new Role(this, 'Route53ManagerRole', {
@@ -90,7 +90,7 @@ export class Route53Manager extends MiraStack {
     )
     const crossAccountDomainManagerRole = new Role(this, CROSS_ACCOUNT_DOMAIN_MANAGER_ROLE, {
       assumedBy: allowedCompositePrincipals,
-      roleName: MiraConfig.getBaseStackName(CROSS_ACCOUNT_DOMAIN_MANAGER_ROLE),
+      roleName: MiraConfig.calculateSharedResourceName(CROSS_ACCOUNT_DOMAIN_MANAGER_ROLE),
       permissionsBoundary
     })
     crossAccountDomainManagerRole.addToPolicy(new PolicyStatement({

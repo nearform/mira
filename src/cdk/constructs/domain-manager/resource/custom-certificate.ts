@@ -19,7 +19,7 @@ export class CustomCertificate extends Construct {
   constructor (parent: Construct, props: CustomCertificateProps) {
     super(parent, 'CustomCertificateResource')
 
-    const topicName = MiraConfig.getBaseStackName(CERTIFICATE_SUBSCRIPTION_TOPIC)
+    const topicName = MiraConfig.calculateSharedResourceName(CERTIFICATE_SUBSCRIPTION_TOPIC)
     const accountConfig = MiraConfig.getEnvironment()
     const domainAccountConfig = MiraConfig.getEnvironment('domain')
 
@@ -35,7 +35,7 @@ export class CustomCertificate extends Construct {
       ),
       properties: {
         Domain: props.domain,
-        Route53Role: `arn:aws:iam::${domainAccountConfig.env.account}:role/${MiraConfig.getBaseStackName(CROSS_ACCOUNT_DOMAIN_MANAGER_ROLE)}`
+        Route53Role: `arn:aws:iam::${domainAccountConfig.env.account}:role/${MiraConfig.calculateSharedResourceName(CROSS_ACCOUNT_DOMAIN_MANAGER_ROLE)}`
       },
       resourceType: 'Custom::Certificate'
     })

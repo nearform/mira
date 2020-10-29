@@ -77,11 +77,11 @@ Object {
               Object {
                 "Ref": "AWS::AccountId",
               },
-              ":policy/John-MyGreatApp-Route53ManagerPolicyBoundary",
+              ":policy/John-MyGreatApp-account1-Route53ManagerPolicyBoundary",
             ],
           ],
         },
-        "RoleName": "John-MyGreatApp-CrossAccountDomainManagerRole",
+        "RoleName": "John-MyGreatApp-account1-CrossAccountDomainManagerRole",
       },
       "Type": "AWS::IAM::Role",
     },
@@ -224,7 +224,7 @@ Object {
               Object {
                 "Ref": "AWS::AccountId",
               },
-              ":policy/John-MyGreatApp-Route53ManagerPolicyBoundary",
+              ":policy/John-MyGreatApp-account1-Route53ManagerPolicyBoundary",
             ],
           ],
         },

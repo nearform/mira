@@ -18,7 +18,7 @@ export class Route53ManagerAccessRole extends MiraStack {
     }
     new ManagedPolicy(this, 'permissionBoundaryPolicy',
       {
-        managedPolicyName: MiraConfig.getBaseStackName('Route53ManagerPolicyBoundary'),
+        managedPolicyName: MiraConfig.calculateSharedResourceName('Route53ManagerPolicyBoundary'),
         description: 'Boundary that defines what action can be performed by the Route53Manager stack resources',
         statements: [
           new PolicyStatement({
