@@ -34,10 +34,14 @@ export class MiraServiceStack extends cdk.Stack {
         }
       })
 
-      this.initialized = new Promise((resolve) => {
+      this.initialized = new Promise((resolve, reject) => {
         setTimeout(async () => {
-          await this.initialize()
-          resolve()
+          try {
+            await this.initialize()
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
         }, 1)
       })
     }
@@ -131,10 +135,14 @@ export class MiraStack extends NestedStack implements ExportOutputs {
       this.name = name
       this.props = props || {}
       MiraStack.stackInstances[name].push(this)
-      this.initialized = new Promise((resolve) => {
+      this.initialized = new Promise((resolve, reject) => {
         setTimeout(async () => {
-          await this.initialize()
-          resolve()
+          try {
+            await this.initialize()
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
         }, 1)
       })
     }
@@ -188,7 +196,7 @@ export class MiraStack extends NestedStack implements ExportOutputs {
       const name = nameParts.length === 1 ? nameParts[0] : nameParts[1]
 
       const id = `${baseName}${name}Parameter`
-      const parameterName = `/${MiraApp.getStackName()}/${baseName}/${name}`
+      const parameterName = `/${MiraConfig.calculateSharedResourceName('param')}/${baseName}/${name}`
 
       return { id, parameterName }
     }
