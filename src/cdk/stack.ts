@@ -85,7 +85,7 @@ export class MiraStack extends MiraObject {
       if (costCenter) {
         Tags.of(this.stack).add('CostCenter', costCenter)
       }
-    } catch(e) {
+    } catch (e) {
       console.warn('An error occurred while setting tags.', e)
     }
   }
