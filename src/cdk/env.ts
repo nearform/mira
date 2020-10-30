@@ -38,7 +38,7 @@ export default class MiraEnv {
  */
     parseEnv (): Account {
       if (!args.env && process.env.NODE_ENV) {
-        args.env = 'dev' // process.env.NODE_ENV
+        args.env = process.env.NODE_ENV
       } else if (!args.env) {
         console.warn('Warning: Environment not specified, defauling to dev.')
         args.env = 'dev'

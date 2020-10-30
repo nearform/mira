@@ -74,16 +74,19 @@ export class MiraStack extends MiraObject {
    * Adds tags to the stack.
    */
   async addTags (): Promise<void> {
-    const createdBy = await this.getUser()
-    console.log(createdBy, '#####')
+    try {
+      const createdBy = await this.getUser()
 
-    Tags.of(this.stack).add('StackName', this.getResourceName())
-    Tags.of(this.stack).add('CreatedBy', createdBy)
+      Tags.of(this.stack).add('StackName', this.getResourceName())
+      Tags.of(this.stack).add('CreatedBy', createdBy)
 
-    const costCenter = MiraConfig.getCostCenter()
+      const costCenter = MiraConfig.getCostCenter()
 
-    if (costCenter) {
-      Tags.of(this.stack).add('CostCenter', costCenter)
+      if (costCenter) {
+        Tags.of(this.stack).add('CostCenter', costCenter)
+      }
+    } catch(e) {
+      console.warn('An error occurred while setting tags.', e)
     }
   }
 
