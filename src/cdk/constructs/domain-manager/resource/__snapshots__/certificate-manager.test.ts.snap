@@ -81,7 +81,7 @@ Object {
             Object {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
-              "Resource": "arn:aws:iam::domain:role/John-MyGreatApp-CrossAccountDomainManagerRole",
+              "Resource": "arn:aws:iam::domain:role/John-MyGreatApp-account1-CrossAccountDomainManagerRole",
             },
           ],
           "Version": "2012-10-17",

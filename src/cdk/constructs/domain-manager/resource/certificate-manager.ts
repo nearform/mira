@@ -6,6 +6,7 @@ import { CfnOutput, Construct, Duration } from '@aws-cdk/core'
 import path from 'path'
 import { MiraConfig } from '../../../../config/mira-config'
 import { MiraStack } from '../../../stack'
+import { CROSS_ACCOUNT_DOMAIN_MANAGER_ROLE } from './route53-manager'
 
 export const CERTIFICATE_SUBSCRIPTION_TOPIC = 'CertificateSubscriptionTopic'
 
@@ -38,7 +39,7 @@ export class CertificateManager extends MiraStack {
 
     certificateManagerRole.addToPolicy(new PolicyStatement({
       effect: Effect.ALLOW,
-      resources: [`arn:aws:iam::${domainAccount.env.account}:role/${MiraConfig.getBaseStackName('CrossAccountDomainManagerRole')}`],
+      resources: [`arn:aws:iam::${domainAccount.env.account}:role/${MiraConfig.calculateSharedResourceName(CROSS_ACCOUNT_DOMAIN_MANAGER_ROLE)}`],
       actions: ['sts:AssumeRole']
     }))
 
