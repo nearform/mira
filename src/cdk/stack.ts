@@ -6,7 +6,6 @@ import { IStringParameter, StringParameter } from '@aws-cdk/aws-ssm'
 import { Policies } from './aspects/security/policies'
 import { MiraConfig, Account } from '../config/mira-config'
 import { MiraApp } from './app'
-import { MiraObject } from './object'
 
 interface ParsedName {
   readonly id: string
@@ -28,11 +27,14 @@ interface MiraStackProps {
   [x: string]: unknown
 }
 
-export class MiraStack extends MiraObject {
-  static topLevelStacks: LooseObject
+export class MiraStack {
+  /* eslint-disable-next-line */
+  initialized: Promise<any>
+  name: string
   parent?: Construct
-  stack: cdk.Stack
   props: MiraStackProps
+  stack: cdk.Stack
+  static topLevelStacks: LooseObject
   constructor (parentOrName?: Construct|string, name?: string, existingStack?: cdk.Stack, props?: MiraStackProps) {
     if (typeof parentOrName !== 'string' && !name) {
       name = 'DefaultStack'
@@ -41,7 +43,7 @@ export class MiraStack extends MiraObject {
     } else if (!name && typeof parentOrName === 'string') {
       name = parentOrName
     }
-    super(name as string, 'stack')
+    this.name = name as string
     if (!parentOrName && typeof parentOrName !== 'string') {
       this.parent = MiraApp.instance.cdkApp
     }
@@ -49,6 +51,16 @@ export class MiraStack extends MiraObject {
     if (existingStack) {
       this.stack = existingStack
     }
+    /* eslint-disable-next-line */
+    this.initialized = new Promise(async (resolve) => {
+      try {
+        await this.initialize()
+        resolve()
+      } catch (e) {
+        console.warn(`Initialization of ${this.constructor.name} object failed:`, e)
+        throw new Error(e)
+      }
+    })
   }
 
   /**
@@ -77,7 +89,8 @@ export class MiraStack extends MiraObject {
     try {
       const createdBy = await this.getUser()
 
-      Tags.of(this.stack).add('StackName', this.getResourceName())
+      Tags.of(this.stack).add('StackName',
+        MiraConfig.getResourceName('stack', this.name))
       Tags.of(this.stack).add('CreatedBy', createdBy)
 
       const costCenter = MiraConfig.getCostCenter()
@@ -141,11 +154,13 @@ export class MiraStack extends MiraObject {
   }
 
   async initialize (): Promise<void> {
-    const account: Account = this.getEnv().env
+    const account: Account = MiraConfig.getEnvironment(MiraApp.cliArgs)
     if (!this.stack && this.parent && this.parent instanceof MiraStack) {
-      this.stack = new NestedStack(this.parent.stack, this.getResourceName())
+      this.stack = new NestedStack(this.parent.stack,
+          MiraConfig.getResourceName('nestedstack', this.name))
     } else if (!this.stack) {
-      this.stack = new cdk.Stack(MiraApp.instance.cdkApp, this.getResourceName(), {
+      this.stack = new cdk.Stack(MiraApp.instance.cdkApp,
+        MiraConfig.getResourceName('stack', this.name), {
         env: {
           region: account.env.region,
           account: account.env.account

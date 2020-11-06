@@ -2,7 +2,6 @@ import * as cdk from '@aws-cdk/core'
 import chalk from 'chalk'
 import config from 'config'
 import { MiraStack } from './stack'
-import MiraEnv from './env'
 import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -39,7 +38,7 @@ export class MiraApp {
   constructor() {
     if (!MiraApp.instance) {
       MiraApp.instance = this
-    } else if (MiraEnv.instance.args.env !== 'test') {
+    } else if (args.env !== 'test') {
       console.warn('MiraApp was instantiated twice outside a testing environment' +
         '.  This will likely cause CDK to fail or will cause unknown behavior.')
     }

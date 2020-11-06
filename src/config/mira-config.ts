@@ -196,6 +196,15 @@ class MiraConfigClass {
     return args.file || args.f || this.getCICDConfig().permissionsFile
   }
 
+  /**
+   * Returns a resource name.
+   * @param resource 
+   * @param name 
+   */
+  public getResourceName(resource: string, name: string): string {
+    return `${this.calculateSharedResourceName(resource)}-${name}`
+  }
+
   public getCICDConfig (): CicdConfig {
     const output = this.getFullCiProps(CONFIG_KEYS.CICD)
     const githubValues: { repositoryName?: string, repositoryOwner?: string } = {}
