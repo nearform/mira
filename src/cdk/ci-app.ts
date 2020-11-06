@@ -22,6 +22,9 @@ export class MiraCiApp {
     // eslint-disable-next-line
     constructor () {
       MiraConfig.setDefaultEnvironmentName(args.env)
+      if (!args.env) {
+        args.env = MiraConfig.defaultEnvironmentName
+      }
     }
 
     /**

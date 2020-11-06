@@ -76,7 +76,8 @@ export const getStacks = async (filter?: string): Promise<LooseObject> => {
  * Gets all stacks are associated with this Mira instance.
  */
 export const getInstaceStacks = async (): Promise<LooseObject> => {
-  const stackName = `${getStackName()}-${MiraConfig.getEnvironment().name}`
+  const stackName = (MiraConfig.calculateSharedResourceName('stack'))
+  // const stackName = `${getStackName()}-${MiraConfig.getEnvironment().name}`
   return getStacks(stackName)
 }
 

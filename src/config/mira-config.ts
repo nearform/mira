@@ -12,6 +12,8 @@ const args = minimist(process.argv)
 export interface Config {
   app: App
   dev: Dev
+  /* eslint-disable-next-line */
+  [x: string]: any
   accounts: {
     [x: string]: Account
   }
@@ -85,6 +87,7 @@ enum CONFIG_KEYS {
   CICD = 'cicd',
   ACCOUNTS = 'accounts',
   DEV = 'dev',
+  TEST = 'test',
   STAGES = 'stages',
   TARGET = 'target',
   COST_CENTER = 'costCenter'
@@ -136,6 +139,12 @@ class MiraConfigClass {
   public defaultEnvironmentName: string
 
   public setDefaultEnvironmentName (name: string): void {
+    if (!name && process.env.NODE_ENV) {
+      name = process.env.NODE_ENV
+    } else if (!name) {
+      console.warn('Warning: Environment not specified, defauling to dev.')
+      name = 'dev'
+    }
     this.defaultEnvironmentName = name
   }
 
@@ -194,6 +203,15 @@ class MiraConfigClass {
     return args.file || args.f || this.getCICDConfig().permissionsFile
   }
 
+  /**
+   * Returns a resource name.
+   * @param resource
+   * @param name
+   */
+  public getResourceName (resource: string, name: string): string {
+    return `${this.calculateSharedResourceName(resource)}-${name}`
+  }
+
   public getCICDConfig (): CicdConfig {
     const output = this.getFullCiProps(CONFIG_KEYS.CICD)
     const githubValues: { repositoryName?: string, repositoryOwner?: string } = {}
@@ -245,14 +263,14 @@ class MiraConfigClass {
     return Object.assign({}, configModule.get(name), { account }) as CicdConfig
   }
 
-  private getFullAccountProps (name: string): Account {
+  public getFullAccountProps (name: string): Account {
     const accountsKey = CONFIG_KEYS.ACCOUNTS
     if (!configModule.has(accountsKey)) throw new Error(`Missing ${accountsKey} section in your configuration file`)
     if (!configModule.has(`${accountsKey}.${name}`)) throw new Error(`Missing ${accountsKey}.${name} section in your configuration file`)
     return Object.assign({}, configModule.get(`${accountsKey}.${name}`), { name }) as Account
   }
 
-  private getTargetName (name?: string): string {
+  public getTargetName (name?: string): string {
     const devTargetPath = `${CONFIG_KEYS.DEV}.${CONFIG_KEYS.TARGET}`
     if (!name) {
       if (!configModule.has(devTargetPath)) {

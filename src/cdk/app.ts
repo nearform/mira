@@ -1,7 +1,7 @@
 import * as cdk from '@aws-cdk/core'
 import chalk from 'chalk'
 import config from 'config'
-import { MiraServiceStack, MiraStack } from './stack'
+import { MiraStack } from './stack'
 import { Stack } from '@aws-cdk/core'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -9,34 +9,13 @@ import {
   getBaseStackName,
   getBaseStackNameFromParams
 } from './constructs/config/utils'
-import { MiraConfig } from '../config/mira-config'
+import { Account, MiraConfig } from '../config/mira-config'
 // eslint-disable-next-line
 const minimist = require("minimist");
 
 const args = minimist(process.argv)
 
-interface Prototypable {
-  prototype: Stack
-}
-
-interface StackConstructable {
-  new(app: cdk.App, props: { env: string }): Stack
-}
-
-interface MiraStackConstructable {
-  new(service: MiraServiceStack): MiraStack
-}
-
-interface MiraServiceStackConstructable {
-  new(app: MiraApp): MiraServiceStack
-}
-
-export type MiraValidStack = Stack &
-  Prototypable &
-  MiraStackConstructable &
-  MiraServiceStackConstructable &
-  StackConstructable
-
+export type MiraValidStack = typeof MiraStack | typeof cdk.Stack | typeof Function
 type MiraStackList = Array<MiraValidStack>
 
 /**
@@ -44,9 +23,9 @@ type MiraStackList = Array<MiraValidStack>
  */
 export class MiraApp {
   cdkApp: cdk.App;
-  instance: MiraApp;
+  static instance: MiraApp;
   mainStack: MiraStack;
-  serviceStack: MiraServiceStack;
+  // serviceStack: MiraServiceStack;
   stackName: string;
   stacks: MiraStackList = [];
   static cliArgs = args
@@ -54,6 +33,15 @@ export class MiraApp {
   // eslint-disable-next-line
   constructor() {
     MiraConfig.setDefaultEnvironmentName(args.env)
+    if (!args.env) {
+      args.env = MiraConfig.defaultEnvironmentName
+    }
+    if (!MiraApp.instance) {
+      MiraApp.instance = this
+    } else if (args.env !== 'test') {
+      console.warn('MiraApp was instantiated twice outside a testing environment' +
+        '.  This will likely cause CDK to fail or will cause unknown behavior.')
+    }
   }
 
   /**
@@ -68,6 +56,13 @@ export class MiraApp {
     }
 
     const stackImport = await import(stackFile)
+    if (!stackImport.default || !(stackImport.prototype instanceof cdk.Stack)) {
+      for (const key in stackImport) {
+        if (typeof stackImport[key] === 'function' && stackImport[key].prototype instanceof Stack) {
+          return stackImport[key]
+        }
+      }
+    }
     return stackImport.default as MiraValidStack
   }
 
@@ -118,6 +113,7 @@ export class MiraApp {
       this.initializeApp()
     }
 
+    const account: Account = MiraConfig.getEnvironment()
     const Stacks = await this.getStacks()
 
     if (!Stacks.length) {
@@ -130,23 +126,27 @@ export class MiraApp {
     try {
       const initializationList = []
 
-      if (Stacks[0].prototype instanceof MiraStack) {
-        const serviceStack = new MiraServiceStack(this, args.env)
-        initializationList.push(serviceStack.initialized)
-        for (const Stack of Stacks) {
-          const stack = new Stack(serviceStack)
+      for (const idx in Stacks) {
+        if (Stacks[idx].prototype instanceof MiraStack) {
+          const MiraStackType = (Stacks[idx] as unknown) as typeof MiraStack
+          const stack = new MiraStackType()
           if (!stack.props.disablePolicies) {
-            serviceStack.applyPolicies(stack.props.approvedWildcardActions)
+            stack.applyPolicies(stack.props.approvedWildcardActions)
           }
           initializationList.push(stack.initialized)
+        } else if (Stacks[idx].prototype instanceof cdk.Stack) {
+          const CdkStackType = (Stacks[idx] as unknown) as typeof cdk.Stack
+          const stack = new CdkStackType(this.cdkApp, Stacks[idx].name, {
+            env: {
+              region: account.env.region,
+              account: account.env.account
+            }
+          })
+          initializationList.push(MiraStack.bootstrap(stack))
+        } else if (typeof Stacks[idx] === 'function') {
+          const StackType = (Stacks[idx] as unknown) as typeof Function
+          StackType()
         }
-      } else if (Stacks[0].prototype instanceof MiraServiceStack) {
-        for (const Stack of Stacks) {
-          const stack = new Stack(this)
-          initializationList.push(stack.initialized)
-        }
-      } else {
-        new Stacks[0](this.cdkApp, { env: args.env })
       }
 
       await Promise.all(initializationList)

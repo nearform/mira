@@ -5,9 +5,14 @@ import {
 } from '@aws-cdk/aws-iam'
 
 import { MiraConfig, DomainConfig } from '../../../../config/mira-config'
+import { MiraApp } from '../../../app'
 import { Route53ManagerAccessRoleStack } from '.'
 
 describe('Route53ManagerAccessRoleStack', () => {
+  beforeEach(() => {
+    new MiraApp()
+    MiraApp.instance.initializeApp()
+  })
   it('Throw if hostedZoneId is not in domain config', async () => {
     const stack = new cdk.Stack(
       new cdk.App(),
@@ -18,7 +23,7 @@ describe('Route53ManagerAccessRoleStack', () => {
       accounts: []
     })
 
-    expect(() => new Route53ManagerAccessRoleStack(stack)).toThrowError(
+    expect(() => new Route53ManagerAccessRoleStack()).toThrowError(
       'Cannot find hostedZoneId in config.'
     )
   })
@@ -35,14 +40,15 @@ describe('Route53ManagerAccessRoleStack', () => {
       accounts: []
     })
 
-    MiraConfig.calculateSharedResourceName = (): string => 'value'
+    MiraConfig.calculateSharedResourceName = (): string => 'prefix'
 
-    const res = await new Route53ManagerAccessRoleStack(stack)
+    const stackObj = new Route53ManagerAccessRoleStack()
+    const res = await stackObj.initialized
 
     try {
-      new ManagedPolicy(res, 'permissionBoundaryPolicy')
+      new ManagedPolicy(stackObj.stack, 'permissionBoundaryPolicy')
     } catch (err) {
-      expect(err.message).toBe("There is already a Construct with name 'permissionBoundaryPolicy' in Route53ManagerAccessRoleStack [Route53ManagerAccessRoleStack-1]")
+      expect(err.message).toBe("There is already a Construct with name 'permissionBoundaryPolicy' in Stack [prefix-Route53ManagerAccessRoleStack]")
     }
   })
 })

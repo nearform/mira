@@ -9,7 +9,7 @@ IF EXIST "%dp0%\node.exe" (
   SET PATHEXT=%PATHEXT:;.JS;=;%
 )
 
-"%_prog%"  "%dp0%\..\mira\bin\cli.js" %*
+"%_prog%" --preserve-symlinks "%dp0%\..\mira-bootstrap\cli.js" %*
 ENDLOCAL
 EXIT /b %errorlevel%
 :find_dp0
