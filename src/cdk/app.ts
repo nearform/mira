@@ -9,15 +9,11 @@ import {
   getBaseStackName,
   getBaseStackNameFromParams
 } from './constructs/config/utils'
-import { MiraConfig } from '../config/mira-config'
+import { Account, MiraConfig } from '../config/mira-config'
 // eslint-disable-next-line
 const minimist = require("minimist");
 
 const args = minimist(process.argv)
-
-interface Prototypable {
-  prototype: Stack
-}
 
 export type MiraValidStack = typeof MiraStack | typeof cdk.Stack | typeof Function
 type MiraStackList = Array<MiraValidStack>
@@ -117,6 +113,7 @@ export class MiraApp {
       this.initializeApp()
     }
 
+    const account: Account = MiraConfig.getEnvironment()
     const Stacks = await this.getStacks()
 
     if (!Stacks.length) {
@@ -131,15 +128,20 @@ export class MiraApp {
 
       for (const idx in Stacks) {
         if (Stacks[idx].prototype instanceof MiraStack) {
-          const StackType = (Stacks[idx] as unknown) as typeof MiraStack
-          const stack = new StackType()
+          const MiraStackType = (Stacks[idx] as unknown) as typeof MiraStack
+          const stack = new MiraStackType()
           if (!stack.props.disablePolicies) {
             stack.applyPolicies(stack.props.approvedWildcardActions)
           }
           initializationList.push(stack.initialized)
         } else if (Stacks[idx].prototype instanceof cdk.Stack) {
-          const StackType = (Stacks[idx] as unknown) as typeof cdk.Stack
-          const stack = new StackType(this.cdkApp, Stacks[idx].name)
+          const CdkStackType = (Stacks[idx] as unknown) as typeof cdk.Stack
+          const stack = new CdkStackType(this.cdkApp, Stacks[idx].name, {
+            env: {
+              region: account.env.region,
+              account: account.env.account
+            }
+          })
           initializationList.push(MiraStack.bootstrap(stack))
         } else if (typeof Stacks[idx] === 'function') {
           const StackType = (Stacks[idx] as unknown) as typeof Function

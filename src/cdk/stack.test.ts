@@ -101,48 +101,6 @@ describe('MiraStack', () => {
     expect(miraStackInstance.parent === stack).toBe(true)
     expect(miraStackInstance.name).toBe('Default')
   })
-
-  it('addOutput without shouldExport calls CfnOutput one time', async () => {
-    const miraStackInstance = new MiraStack(stack)
-    expect(
-      await miraStackInstance.addOutput('DefaultStack', 'value', false)
-    ).toEqual(undefined)
-    expect(miraStackInstance.parent).toBe(stack)
-    expect(miraStackInstance.name).toBe('DefaultStack')
-    expect(CfnOutput).toBeCalledTimes(1)
-  })
-
-  it('addOutput with shouldExport calls CfnOutput two times', async () => {
-    const miraStackInstance = new MiraStack(stack)
-    expect(await miraStackInstance.addOutput('DefaultStack', 'value')).toEqual(
-      undefined
-    )
-    expect(CfnOutput).toBeCalledTimes(2)
-  })
-
-  it('creates StringParameter correctly', async () => {
-    const miraStackInstance = new MiraStack(stack)
-    const res = await miraStackInstance.createParameter(
-      'Fullname',
-      'description',
-      'value'
-    )
-    expect(res.toString().split('/')[1]).toBe('DefaultStackFullnameParameter')
-  })
-
-  it('loadParameter with fullName divided by / correctly', async () => {
-    const miraStackInstance = new MiraStack(stack)
-    const res = await miraStackInstance.loadParameter('Full/Name')
-    expect(res.parameterName).toBe(`/${MiraConfig.calculateSharedResourceName('param')}/Full/Name`)
-    expect(res.toString().split('/')[1]).toBe('FullNameParameter')
-  })
-
-  it('loadParameter with environment and fullName', async () => {
-    const miraStackInstance = new MiraStack(stack, 'Default')
-    const res = await miraStackInstance.loadParameter('Fullname')
-    expect(res.parameterName).toBe(`/${MiraConfig.calculateSharedResourceName('param')}/Default/Fullname`)
-    expect(res.toString().split('/')[1]).toBe('DefaultFullnameParameter')
-  })
 })
 
 describe('MiraStack Tags', () => {
