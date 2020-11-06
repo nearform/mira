@@ -157,15 +157,15 @@ export class MiraStack {
     const account: Account = MiraConfig.getEnvironment(MiraApp.cliArgs)
     if (!this.stack && this.parent && this.parent instanceof MiraStack) {
       this.stack = new NestedStack(this.parent.stack,
-          MiraConfig.getResourceName('nestedstack', this.name))
+        MiraConfig.getResourceName('nestedstack', this.name))
     } else if (!this.stack) {
       this.stack = new cdk.Stack(MiraApp.instance.cdkApp,
         MiraConfig.getResourceName('stack', this.name), {
-        env: {
-          region: account.env.region,
-          account: account.env.account
-        }
-      })
+          env: {
+            region: account.env.region,
+            account: account.env.account
+          }
+        })
     }
     await this.addTags()
     // Add more logic here.

@@ -198,10 +198,10 @@ class MiraConfigClass {
 
   /**
    * Returns a resource name.
-   * @param resource 
-   * @param name 
+   * @param resource
+   * @param name
    */
-  public getResourceName(resource: string, name: string): string {
+  public getResourceName (resource: string, name: string): string {
     return `${this.calculateSharedResourceName(resource)}-${name}`
   }
 
