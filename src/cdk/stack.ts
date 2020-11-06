@@ -34,7 +34,7 @@ export class MiraStack {
   parent?: Construct
   props: MiraStackProps
   stack: cdk.Stack
-  static topLevelStacks: LooseObject
+static topLevelStacks: LooseObject
   constructor (parentOrName?: Construct|string, name?: string, existingStack?: cdk.Stack, props?: MiraStackProps) {
     if (typeof parentOrName !== 'string' && !name) {
       name = 'DefaultStack'
@@ -46,6 +46,8 @@ export class MiraStack {
     this.name = name as string
     if (!parentOrName && typeof parentOrName !== 'string') {
       this.parent = MiraApp.instance.cdkApp
+    } else {
+      this.parent = parentOrName as Construct
     }
     this.props = props || {}
     if (existingStack) {
@@ -75,8 +77,8 @@ export class MiraStack {
       value: value
     })
 
-    if (shouldExport && this.parent && this.parent instanceof MiraStack) {
-      new CfnOutput(this.parent.stack, exportName, {
+    if (shouldExport && this.parent && this.parent instanceof cdk.Stack) {
+      new CfnOutput(this.parent, exportName, {
         value: value
       })
     }

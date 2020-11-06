@@ -29,26 +29,26 @@ describe('Route53ManagerAccessRoleStack', () => {
   })
 
   it('Can create a ManagedPolicy with id permissionBoundaryPolicy', async () => {
-    // const stack = new cdk.Stack(
-    //   new cdk.App(),
-    //   MiraConfig.getBaseStackName('DomainManager'),
-    //   {}
-    // )
+    const stack = new cdk.Stack(
+      new cdk.App(),
+      MiraConfig.getBaseStackName('DomainManager'),
+      {}
+    )
 
-    // MiraConfig.getDomainConfig = (): DomainConfig => ({
-    //   hostedZoneId: '123456',
-    //   accounts: []
-    // })
+    MiraConfig.getDomainConfig = (): DomainConfig => ({
+      hostedZoneId: '123456',
+      accounts: []
+    })
 
-    // MiraConfig.calculateSharedResourceName = (): string => 'value'
+    MiraConfig.calculateSharedResourceName = (): string => 'prefix'
 
-    // const stackObj = new Route53ManagerAccessRoleStack(stack)
-    // const res = await stackObj.initialized
+    const stackObj = new Route53ManagerAccessRoleStack()
+    const res = await stackObj.initialized
 
-    // try {
-    //   new ManagedPolicy(res.stack, 'permissionBoundaryPolicy')
-    // } catch (err) {
-    //   expect(err.message).toBe("There is already a Construct with name 'permissionBoundaryPolicy' in Route53ManagerAccessRoleStack [Route53ManagerAccessRoleStack-1]")
-    // }
+    try {
+      new ManagedPolicy(stackObj.stack, 'permissionBoundaryPolicy')
+    } catch (err) {
+      expect(err.message).toBe("There is already a Construct with name 'permissionBoundaryPolicy' in Stack [prefix-Route53ManagerAccessRoleStack]")
+    }
   })
 })

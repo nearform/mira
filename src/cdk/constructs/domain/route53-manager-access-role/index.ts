@@ -8,7 +8,7 @@ import { MiraStack } from '../../../stack'
 
 export class Route53ManagerAccessRoleStack extends MiraStack {
   constructor () {
-    super(Route53ManagerAccessRoleStack.name)
+    super('Route53ManagerAccessRoleStack')
     const { hostedZoneId } = MiraConfig.getDomainConfig()
     if (!hostedZoneId) {
       throw new Error('Cannot find hostedZoneId in config.')

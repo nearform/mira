@@ -55,93 +55,94 @@ describe('MiraServiceStack', () => {
 
   const app = new MiraApp()
 
-  it('Should noop', () => { })
+  it('applyPolicies calls applyAspect', () => {
+    const miraServiceStackInstance = new MiraStack(app.cdkApp, 'env')
+    expect(miraServiceStackInstance.applyPolicies([])).toEqual(undefined)
+    expect(add).toBeCalledTimes(1)
+  })
 
-  // it('applyPolicies calls applyAspect', () => {
-  //   // const miraServiceStackInstance = new MiraServiceStack(app, 'env')
-  //   // expect(miraServiceStackInstance.applyPolicies([])).toEqual(undefined)
-  //   // expect(add).toBeCalledTimes(1)
-  // })
+  it('has app initialized', async () => {
+    const miraServiceStackInstance = new MiraStack(app.cdkApp, 'env')
+    // Because the resolved promise doesn't return anything
+    // this "undefined" test is actually testing if there was no errors
+    expect(await miraServiceStackInstance.initialized).toBe(undefined)
+  })
 
-  // it('has app initialized', async () => {
-  //   // const miraServiceStackInstance = new MiraServiceStack(app, 'env', 'sufix')
-  //   // // Because the resolved promise doesn't return anything
-  //   // // this "undefined" test is actually testing if there was no errors
-  //   // expect(await miraServiceStackInstance.initialize()).toEqual(undefined)
-  //   // expect(await miraServiceStackInstance.initialized).toBe(undefined)
-  // })
-
-  // it('falls back to STS when IAM getUser call fails', async () => {
-  //   getUserFn.mockReset()
-  //   getUserFn.mockImplementation(() => {
-  //     throw new Error('err')
-  //   })
-  //   // const miraServiceStackInstance = new MiraServiceStack(app, 'env', 'sufix')
-  //   // // Because the resolved promise doesn't return anything
-  //   // // this "undefined" test is actually testing if there was no errors
-  //   // expect(await miraServiceStackInstance.initialize()).toEqual(undefined)
-  //   // expect(await miraServiceStackInstance.initialized).toBe(undefined)
-  //   // expect(getCallerIdentityFn).toHaveBeenCalled()
-  // })
+  it('falls back to STS when IAM getUser call fails', async () => {
+    getUserFn.mockReset()
+    getUserFn.mockImplementation(() => {
+      throw new Error('err')
+    })
+    const miraServiceStackInstance = new MiraStack(app.cdkApp, 'env')
+    // // Because the resolved promise doesn't return anything
+    // // this "undefined" test is actually testing if there was no errors
+    expect(await miraServiceStackInstance.initialized).toBe(undefined)
+    expect(getCallerIdentityFn).toHaveBeenCalled()
+  })
 })
 
 describe('MiraStack', () => {
+  beforeEach(() => {
+    getUserFn.mockReset()
+    getUserFn.mockImplementation(() => {
+      return { User: { UserName: 'test-user' } }
+    })
+  })
   afterEach(() => {
     jest.clearAllMocks()
   })
 
-  const stack = new Stack()
+  const app = new MiraApp()
+  const stack = new Stack(app.cdkApp, 'some-random-id')
 
-  it('Should noop', () => { })
-  // it('has app initialized', async () => {
-  //   const miraStackInstance = new MiraStack(stack, 'Default', {})
-  //   expect(await miraStackInstance.initialize()).toEqual(undefined)
-  //   expect(await miraStackInstance.initialized).toBe(undefined)
-  //   expect(miraStackInstance.parent).toBe(stack)
-  //   expect(miraStackInstance.name).toBe('Default')
-  // })
+  it('has app initialized', async () => {
+    const miraStackInstance = new MiraStack(stack, 'Default')
+    expect(await miraStackInstance.initialized).toBe(undefined)
+    expect(miraStackInstance.parent === stack).toBe(true)
+    expect(miraStackInstance.name).toBe('Default')
+  })
 
-  // it('addOutput without shouldExport calls CfnOutput one time', async () => {
-  //   // const miraStackInstance = new MiraStack(stack)
-  //   // expect(
-  //   //   await miraStackInstance.addOutput('DefaultStack', 'value', false)
-  //   // ).toEqual(undefined)
-  //   // expect(miraStackInstance.parent).toBe(stack)
-  //   // expect(miraStackInstance.name).toBe('DefaultStack')
-  //   // expect(CfnOutput).toBeCalledTimes(1)
-  // })
+  it('addOutput without shouldExport calls CfnOutput one time', async () => {
+    const miraStackInstance = new MiraStack(stack)
+    expect(
+      await miraStackInstance.addOutput('DefaultStack', 'value', false)
+    ).toEqual(undefined)
+    expect(miraStackInstance.parent).toBe(stack)
+    expect(miraStackInstance.name).toBe('DefaultStack')
+    expect(CfnOutput).toBeCalledTimes(1)
+  })
 
-  // it('addOutput with shouldExport calls CfnOutput two times', async () => {
-  //   // const miraStackInstance = new MiraStack(stack)
-  //   // expect(await miraStackInstance.addOutput('DefaultStack', 'value')).toEqual(
-  //   //   undefined
-  //   // )
-  //   // expect(CfnOutput).toBeCalledTimes(2)
-  // })
+  it('addOutput with shouldExport calls CfnOutput two times', async () => {
+    const miraStackInstance = new MiraStack(stack)
+    expect(await miraStackInstance.addOutput('DefaultStack', 'value')).toEqual(
+      undefined
+    )
+    expect(CfnOutput).toBeCalledTimes(2)
+  })
 
-  // it('creates StringParameter correctly', async () => {
-  //   const miraStackInstance = new MiraStack(stack)
-  //   const res = await miraStackInstance.createParameter(
-  //     'Fullname',
-  //     'description',
-  //     'value'
-  //   )
-  //   expect(res.toString().split('/')[2]).toBe('DefaultStackFullnameParameter')
-  // })
+  it('creates StringParameter correctly', async () => {
+    const miraStackInstance = new MiraStack(stack)
+    const res = await miraStackInstance.createParameter(
+      'Fullname',
+      'description',
+      'value'
+    )
+    expect(res.toString().split('/')[1]).toBe('DefaultStackFullnameParameter')
+  })
 
-  // it('loadParameter with fullName divided by / correctly', async () => {
-  //   const miraStackInstance = new MiraStack(stack)
-  //   const res = await miraStackInstance.loadParameter('Full/Name')
-  //   expect(res.parameterName).toBe('/default/Full/Name')
-  //   expect(res.toString().split('/')[2]).toBe('FullNameParameter')
-  // })
+  it('loadParameter with fullName divided by / correctly', async () => {
+    const miraStackInstance = new MiraStack(stack)
+    const res = await miraStackInstance.loadParameter('Full/Name')
+    expect(res.parameterName).toBe(`/${MiraConfig.calculateSharedResourceName('param')}/Full/Name`)
+    expect(res.toString().split('/')[1]).toBe('FullNameParameter')
+  })
 
-  // it('loadParameter with environment and fullName', async () => {
-  //   const miraStackInstance = new MiraStack(stack, 'Default')
-  //   const res = await miraStackInstance.loadParameter('Fullname')
-  //   expect(res.parameterName).toBe('/default/Default/Fullname')
-  //   expect(res.toString().split('/')[2]).toBe('DefaultFullnameParameter')
-  // })
+  it('loadParameter with environment and fullName', async () => {
+    const miraStackInstance = new MiraStack(stack, 'Default')
+    const res = await miraStackInstance.loadParameter('Fullname')
+    expect(res.parameterName).toBe(`/${MiraConfig.calculateSharedResourceName('param')}/Default/Fullname`)
+    expect(res.toString().split('/')[1]).toBe('DefaultFullnameParameter')
+  })
 })
 
 describe('MiraStack Tags', () => {
@@ -149,21 +150,22 @@ describe('MiraStack Tags', () => {
     jest.clearAllMocks()
   })
 
-  it('Should noop', () => { })
-  // it('Adds default tags', async () => {
-  //   const app = new MiraApp()
-  //   const miraStackInstance = new MiraServiceStack(app, 'env')
-  //   await miraStackInstance.initialized
+  it('Adds default tags', async () => {
+    const app = new MiraApp()
+    const miraStackInstance = new MiraStack(app.cdkApp, 'env')
+    await miraStackInstance.initialized
 
-  //   expect(add).toHaveBeenCalledTimes(2)
-  // })
+    // It calls Tags.of and then calls Aspects.of
+    expect(add).toHaveBeenCalledTimes(3)
+  })
 
-  // it('Adds default tags and cost center', async () => {
-  //   MiraConfig.getCostCenter = jest.fn().mockReturnValue('123')
-  //   const app = new MiraApp()
-  //   const miraStackInstance = new MiraServiceStack(app, 'env')
-  //   await miraStackInstance.initialized
+  it('Adds default tags and cost center', async () => {
+    MiraConfig.getCostCenter = jest.fn().mockReturnValue('123')
+    const app = new MiraApp()
+    const miraStackInstance = new MiraStack(app.cdkApp, 'env')
+    await miraStackInstance.initialized
 
-  //   expect(add).toHaveBeenCalledTimes(3)
-  // })
+    // It calls Tags.of and then calls Aspects.of
+    expect(add).toHaveBeenCalledTimes(4)
+  })
 })
