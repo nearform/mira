@@ -87,6 +87,7 @@ enum CONFIG_KEYS {
   CICD = 'cicd',
   ACCOUNTS = 'accounts',
   DEV = 'dev',
+  TEST = 'test',
   STAGES = 'stages',
   TARGET = 'target',
   COST_CENTER = 'costCenter'
@@ -138,6 +139,12 @@ class MiraConfigClass {
   public defaultEnvironmentName: string
 
   public setDefaultEnvironmentName (name: string): void {
+    if (!name && process.env.NODE_ENV) {
+      name = process.env.NODE_ENV
+    } else if (!name) {
+      console.warn('Warning: Environment not specified, defauling to dev.')
+      name = 'dev'
+    }
     this.defaultEnvironmentName = name
   }
 

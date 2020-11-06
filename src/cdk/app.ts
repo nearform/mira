@@ -36,13 +36,16 @@ export class MiraApp {
 
   // eslint-disable-next-line
   constructor() {
+    MiraConfig.setDefaultEnvironmentName(args.env)
+    if (!args.env) {
+      args.env = MiraConfig.defaultEnvironmentName
+    }
     if (!MiraApp.instance) {
       MiraApp.instance = this
     } else if (args.env !== 'test') {
       console.warn('MiraApp was instantiated twice outside a testing environment' +
         '.  This will likely cause CDK to fail or will cause unknown behavior.')
     }
-    MiraConfig.setDefaultEnvironmentName(args.env)
   }
 
   /**

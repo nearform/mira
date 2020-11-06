@@ -25,7 +25,7 @@ const config: Record<string, unknown> = {
       account: 'ACCOUNT_NUMER',
       region: 'REGION'
     },
-    profile: 'mira-dev'
+    profile: true
   },
   'accounts.test': {
     env: {

@@ -154,7 +154,7 @@ export class MiraStack {
   }
 
   async initialize (): Promise<void> {
-    const account: Account = MiraConfig.getEnvironment(MiraApp.cliArgs)
+    const account: Account = MiraConfig.getEnvironment(MiraApp.cliArgs.env)
     if (!this.stack && this.parent && this.parent instanceof MiraStack) {
       this.stack = new NestedStack(this.parent.stack,
         MiraConfig.getResourceName('nestedstack', this.name))

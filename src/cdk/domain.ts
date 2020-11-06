@@ -17,6 +17,9 @@ export class MiraDomainApp extends MiraApp {
   constructor () {
     super()
     MiraConfig.setDefaultEnvironmentName(args.env)
+    if (!args.env) {
+      args.env = MiraConfig.defaultEnvironmentName
+    }
   }
 
   /**
