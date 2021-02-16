@@ -7,17 +7,17 @@ Next, install Mira, the AWS CDK and other dependencies. Edit your `package.json`
 
 ```json
  "dependencies": {
-    "@aws-cdk/aws-cloudformation": "1.67.0",
-    "@aws-cdk/aws-lambda-event-sources": "1.67.0",
-    "@aws-cdk/aws-rds": "1.67.0",
-    "@aws-cdk/aws-s3-deployment": "1.67.0",
-    "@aws-cdk/aws-secretsmanager": "1.67.0",
-    "@aws-cdk/core": "1.67.0",
-    "aws-cdk": "1.67.0",
+    "@aws-cdk/aws-cloudformation": "1.89.0",
+    "@aws-cdk/aws-lambda-event-sources": "1.89.0",
+    "@aws-cdk/aws-rds": "1.89.0",
+    "@aws-cdk/aws-s3-deployment": "1.89.0",
+    "@aws-cdk/aws-secretsmanager": "1.89.0",
+    "@aws-cdk/core": "1.89.0",
+    "aws-cdk": "1.89.0",
     "mira": "^1.3.0"
 }
 ```
-Note: Use the same version of the CDK for every additional library you choose. At the time of writing, Mira 1.3.0 supports the 1.67.0 version of the CDK. 
+Note: Use the same version of the CDK for every additional library you choose. At the time of writing, Mira 1.3.0 supports the 1.89.0 version of the CDK. 
 
 Run `npm install`. 
 

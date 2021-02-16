@@ -120,7 +120,7 @@ export class MiraBootstrap {
         ...process.env
       }
     })
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       proc.on('exit', async code => {
         if (code !== 0) {
           console.error('Deploy Stack Failed. Dumping Error message')
@@ -177,7 +177,7 @@ export class MiraBootstrap {
           NODE_ENV: account.name
         }
       })
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         proc.on('exit', err => {
           if (err) {
             console.error(`Deploy CI Permission failed for account '${account.name}'`)
@@ -213,7 +213,7 @@ export class MiraBootstrap {
         ...process.env
       }
     })
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       proc.on('exit', err => {
         if (err) {
           console.error('Deploy CI pipeline failed')
@@ -242,7 +242,7 @@ export class MiraBootstrap {
       }
     })
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       proc.on('exit', err => {
         if (err) {
           reject(err)
@@ -280,7 +280,7 @@ export class MiraBootstrap {
       }
     })
 
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       proc.on('exit', err => {
         if (err) {
           reject(err)
@@ -539,7 +539,7 @@ export class MiraBootstrap {
       .command('clean', 'Removes error log files')
       .command('domain', 'Deploys Domain Manager')
       .help()
-      .demandCommand().argv
+      .demandCommand().argv as unknown as ParsedArgs
   }
 
   /**
