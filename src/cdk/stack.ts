@@ -34,10 +34,14 @@ export class MiraServiceStack extends cdk.Stack {
         }
       })
 
-      this.initialized = new Promise((resolve) => {
+      this.initialized = new Promise((resolve, reject) => {
         setTimeout(async () => {
-          await this.initialize()
-          resolve()
+          try {
+            await this.initialize()
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
         }, 1)
       })
     }
@@ -131,10 +135,14 @@ export class MiraStack extends NestedStack implements ExportOutputs {
       this.name = name
       this.props = props || {}
       MiraStack.stackInstances[name].push(this)
-      this.initialized = new Promise((resolve) => {
+      this.initialized = new Promise((resolve, reject) => {
         setTimeout(async () => {
-          await this.initialize()
-          resolve()
+          try {
+            await this.initialize()
+            resolve()
+          } catch (e) {
+            reject(e)
+          }
         }, 1)
       })
     }

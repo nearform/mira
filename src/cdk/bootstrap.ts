@@ -16,6 +16,7 @@ import CloudFormation, { StackEvent } from 'aws-sdk/clients/cloudformation'
 import ChangeDetector from '../change-detector'
 import ErrorLogger from '../error-logger'
 import { quickDeploy, removeAssetDirectories } from './deploy-buckets'
+import MiraVersion from '../version'
 
 type ValidAwsContruct = CloudFormation;
 
@@ -119,9 +120,10 @@ export class MiraBootstrap {
         ...process.env
       }
     })
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       proc.on('exit', async code => {
         if (code !== 0) {
+          console.error('Deploy Stack Failed. Dumping Error message')
           await this.printExtractedNestedStackErrors()
           reject(code)
           return
@@ -175,18 +177,17 @@ export class MiraBootstrap {
           NODE_ENV: account.name
         }
       })
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         proc.on('exit', err => {
           if (err) {
+            console.error(`Deploy CI Permission failed for account '${account.name}'`)
             reject(err)
             return
           }
+          console.log(chalk.green(`Done deploying CI ${account.name} permissions.`))
           resolve()
         })
       })
-      console.log(
-        chalk.green(`Done deploying CI ${account.name} permissions.`)
-      )
     }
 
     console.log(
@@ -212,40 +213,51 @@ export class MiraBootstrap {
         ...process.env
       }
     })
-    await new Promise(resolve => {
-      proc.on('exit', () => {
+    await new Promise<void>((resolve, reject) => {
+      proc.on('exit', err => {
+        if (err) {
+          console.error('Deploy CI pipeline failed')
+          reject(err)
+          return
+        }
+        console.log(chalk.green('Done deploying CI pipeline.'))
         resolve()
       })
     })
-    console.log(chalk.green('Done deploying CI pipeline.'))
   }
 
   /**
    * Runs docsify web server with the mira docs.
    */
-  runDocs (): void {
+  async runDocs (): Promise<void> {
     const commandOptions = [
       this.docsifyCommand + (process.platform === 'win32' ? '.cmd' : ''),
       'serve',
       path.join(__dirname, '..', '..', '..', 'docs')
     ]
-    try {
-      this.spawn('node', commandOptions, {
-        stdio: 'inherit',
-        env: {
-          ...process.env
+    const proc = this.spawn('node', commandOptions, {
+      stdio: 'inherit',
+      env: {
+        ...process.env
+      }
+    })
+
+    await new Promise<void>((resolve, reject) => {
+      proc.on('exit', err => {
+        if (err) {
+          reject(err)
+          return
         }
+        console.log(chalk.green('Done building docs.'))
+        resolve()
       })
-    } catch (error) {
-      console.error(error.message)
-      process.exit(error.status)
-    }
+    })
   }
 
   /**
    * TODO: check this functionality together with sample app that supports custom domain.
    */
-  deployDomain (): void {
+  async deployDomain (): Promise<void> {
     console.log('deploying domain')
     const envConfig = MiraConfig.getEnvironment(this.env)
     let cmd = 'deploy'
@@ -261,17 +273,23 @@ export class MiraBootstrap {
       `--env=${envConfig.name}`,
       `--profile=${this.getProfile(this.env)}`
     ]
-    try {
-      this.spawn('node', commandOptions, {
-        stdio: 'inherit',
-        env: {
-          ...process.env
+    const proc = this.spawn('node', commandOptions, {
+      stdio: 'inherit',
+      env: {
+        ...process.env
+      }
+    })
+
+    await new Promise<void>((resolve, reject) => {
+      proc.on('exit', err => {
+        if (err) {
+          reject(err)
+          return
         }
+        console.log(chalk.green('Done deploying domain.'))
+        resolve()
       })
-    } catch (error) {
-      console.error(error.message)
-      process.exit(error.status)
-    }
+    })
   }
 
   /**
@@ -368,6 +386,7 @@ export class MiraBootstrap {
    * Function being called when CLI is invoked.
    */
   async initialize (): Promise<void> {
+    MiraVersion.checkApplicationCDKVersion()
     this.args = this.showHelp()
 
     this.env = this.args.env
@@ -382,10 +401,10 @@ export class MiraBootstrap {
     let transpiledStackFile
     switch (cmd) {
       case 'domain':
-        this.deployDomain()
+        await this.deployDomain()
         break
       case 'init':
-        configWizard()
+        await configWizard()
         break
       case 'deploy':
         if (!this.args.file) {
@@ -421,7 +440,7 @@ export class MiraBootstrap {
               chalk.cyan('Deploying Stack:'),
               `(via ${chalk.grey(this.stackFile)})`
             )
-            this.deploy()
+            await this.deploy()
           }
         } else {
           console.info(
@@ -448,12 +467,12 @@ export class MiraBootstrap {
             chalk.cyan('Undeploying Stack:'),
             `(via ${chalk.grey(this.stackFile)})`
           )
-          this.undeploy()
+          await this.undeploy()
         } else {
           console.info(
             'If you want to undeploy a stack not contained' +
-              ' in your local filesystem, please use the AWS console' +
-              '  directly.'
+            ' in your local filesystem, please use the AWS console' +
+            '  directly.'
           )
         }
         break
@@ -463,7 +482,7 @@ export class MiraBootstrap {
           return
         }
 
-        this.deployCi()
+        await this.deployCi()
         break
       case 'docs':
         this.runDocs()
@@ -520,7 +539,7 @@ export class MiraBootstrap {
       .command('clean', 'Removes error log files')
       .command('domain', 'Deploys Domain Manager')
       .help()
-      .demandCommand().argv
+      .demandCommand().argv as unknown as ParsedArgs
   }
 
   /**
