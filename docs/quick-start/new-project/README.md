@@ -14,10 +14,10 @@ Next, install Mira, the AWS CDK and other dependencies. Edit your `package.json`
     "@aws-cdk/aws-secretsmanager": "1.89.0",
     "@aws-cdk/core": "1.89.0",
     "aws-cdk": "1.89.0",
-    "mira": "^1.3.0"
+    "mira": "^1.4.2"
 }
 ```
-Note: Use the same version of the CDK for every additional library you choose. At the time of writing, Mira 1.3.0 supports the 1.89.0 version of the CDK. 
+Note: Use the same version of the CDK for every additional library you choose. At the time of writing, Mira 1.4.2 supports the 1.89.0 version of the CDK. 
 
 Run `npm install`. 
 
