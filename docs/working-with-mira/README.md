@@ -69,27 +69,27 @@ Typical issues includes:
 Keep in mind, AWS CDK requires all the modules to be the same version.
 ```json
 {
-    "aws-cdk": "1.67.0",
-    "@aws-cdk/aws-cloudformation": "1.67.0",
-    "@aws-cdk/aws-codebuild": "1.67.0",
-    "@aws-cdk/aws-codecommit": "1.67.0",
-    "@aws-cdk/aws-codepipeline": "1.67.0",
-    "@aws-cdk/aws-codepipeline-actions": "1.67.0",
-    "@aws-cdk/aws-iam": "1.67.0",
-    "@aws-cdk/aws-lambda-event-sources": "1.67.0",
-    "@aws-cdk/aws-lambda": "1.67.0",
-    "@aws-cdk/aws-s3-assets": "1.67.0",
-    "@aws-cdk/aws-secretsmanager": "1.67.0",
-    "@aws-cdk/custom-resources": "1.67.0",
-    "@aws-cdk/aws-sns": "1.67.0",
-    "@aws-cdk/aws-s3": "1.67.0",
-    "@aws-cdk/aws-sqs": "1.67.0",
-    "@aws-cdk/assets": "1.67.0",
-    "@aws-cdk/aws-kms": "1.67.0",
-    "@aws-cdk/aws-ec2": "1.67.0",
-    "@aws-cdk/aws-rds": "1.67.0",
-    "@aws-cdk/aws-ssm": "1.67.0",
-    "@aws-cdk/core": "1.67.0"
+    "aws-cdk": "1.89.0",
+    "@aws-cdk/aws-cloudformation": "1.89.0",
+    "@aws-cdk/aws-codebuild": "1.89.0",
+    "@aws-cdk/aws-codecommit": "1.89.0",
+    "@aws-cdk/aws-codepipeline": "1.89.0",
+    "@aws-cdk/aws-codepipeline-actions": "1.89.0",
+    "@aws-cdk/aws-iam": "1.89.0",
+    "@aws-cdk/aws-lambda-event-sources": "1.89.0",
+    "@aws-cdk/aws-lambda": "1.89.0",
+    "@aws-cdk/aws-s3-assets": "1.89.0",
+    "@aws-cdk/aws-secretsmanager": "1.89.0",
+    "@aws-cdk/custom-resources": "1.89.0",
+    "@aws-cdk/aws-sns": "1.89.0",
+    "@aws-cdk/aws-s3": "1.89.0",
+    "@aws-cdk/aws-sqs": "1.89.0",
+    "@aws-cdk/assets": "1.89.0",
+    "@aws-cdk/aws-kms": "1.89.0",
+    "@aws-cdk/aws-ec2": "1.89.0",
+    "@aws-cdk/aws-rds": "1.89.0",
+    "@aws-cdk/aws-ssm": "1.89.0",
+    "@aws-cdk/core": "1.89.0"
 }
 ```
 
