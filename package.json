@@ -1,6 +1,6 @@
 {
   "name": "mira",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "NearForm Accelerator for Cloud Native Serverless AWS",
   "repository": {
     "type": "git",
