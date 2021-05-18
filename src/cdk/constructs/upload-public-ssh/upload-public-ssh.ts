@@ -34,7 +34,7 @@ export class UploadPublicSsh extends Resource {
 
     const lambda = new SingletonFunction(this, 'UploadPublicSshHandler', {
       uuid: 'f7c82053-f5e1-47f7-87de-2b304c759d19',
-      runtime: Runtime.NODEJS_10_X,
+      runtime: Runtime.NODEJS_12_X,
       code: Code.fromAsset(path.join(__dirname, '../../custom-resources')),
       handler: 'upload-public-ssh/lambda/index.handler',
       lambdaPurpose: 'UploadPublicSsh',

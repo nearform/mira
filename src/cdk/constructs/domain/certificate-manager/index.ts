@@ -71,7 +71,7 @@ export class CertificateManager extends MiraStack {
     const CertificateManagerLambda = new SingletonFunction(this, 'CertificateManagerLambda', {
       code,
       handler: 'certificate-manager.handler',
-      runtime: Runtime.NODEJS_10_X,
+      runtime: Runtime.NODEJS_12_X,
       timeout: Duration.minutes(15),
       uuid: 'dfb3da1c-591a-4225-a327-d56a74823a5e',
       environment: {
