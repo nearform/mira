@@ -45,7 +45,7 @@
     "@aws-cdk/aws-ssm": "1.89.0",
     "@aws-cdk/core": "1.89.0",
     "@aws-cdk/custom-resources": "1.89.0",
-    "@types/config": "0.0.36",
+    "@types/config": "0.0.38",
     "@types/git-url-parse": "^9.0.0",
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.9.0",
