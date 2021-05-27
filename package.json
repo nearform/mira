@@ -71,7 +71,7 @@
     "jest": "^26.4.2",
     "lint-staged": "^9.5.0",
     "mock-fs": "^5.0.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.3.0",
     "ts-jest": "^26.3.0",
     "typedoc": "^0.20.36",
     "typescript": "^3.6.5"
