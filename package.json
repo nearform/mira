@@ -47,7 +47,7 @@
     "@aws-cdk/custom-resources": "1.89.0",
     "@types/config": "0.0.38",
     "@types/git-url-parse": "^9.0.0",
-    "@types/inquirer": "^6.5.0",
+    "@types/inquirer": "^7.3.1",
     "@types/jest": "^26.0.23",
     "@types/lodash": "^4.14.151",
     "@types/minimist": "^1.2.0",
