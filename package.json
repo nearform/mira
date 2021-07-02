@@ -21,7 +21,8 @@
     "test": "cross-env TAP=true SUPPRESS_NO_CONFIG_WARNING=1 jest",
     "typedoc": "npx typedoc",
     "prepublishOnly": "npm run lint-ci && npm run build && npm run test",
-    "postinstall": "node scripts/postinstall.js"
+    "postinstall": "node scripts/postinstall.js",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.89.0",
@@ -67,7 +68,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-standard": "^5.0.0",
-    "husky": "^4.0.6",
+    "husky": "^7.0.0",
     "jest": "^26.4.2",
     "lint-staged": "^9.5.0",
     "mock-fs": "^5.0.0",
@@ -140,12 +141,6 @@
       "<rootDir>/dist",
       "<rootDir>/node_modules"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged && npm test",
-      "post-commit": "git update-index --again"
-    }
   },
   "lint-staged": {
     "*.ts": "eslint --fix"
