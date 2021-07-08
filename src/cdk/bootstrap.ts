@@ -258,7 +258,6 @@ export class MiraBootstrap {
    * TODO: check this functionality together with sample app that supports custom domain.
    */
   async deployDomain (): Promise<void> {
-    console.log('deploying domain')
     const envConfig = MiraConfig.getEnvironment(this.env)
     let cmd = 'deploy'
     if (Object.prototype.hasOwnProperty.call(this.args, 'dry-run')) {

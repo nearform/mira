@@ -4,5 +4,6 @@
 * [Working with Mira](/working-with-mira/)
 * [Configuration](/config/)
 * [Continuous Integration](/cicd/)
+* [Domain management](/domain-management/)
 * [Guidelines](/guidelines/)
 * [API Documentation](/api/ ':ignore API Documentation')
