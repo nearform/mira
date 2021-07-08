@@ -62,7 +62,7 @@ export class Route53Manager extends MiraStack {
     const Route53ManagerLambda = new SingletonFunction(this, 'Route53ManagerLambda', {
       code,
       handler: 'route53-manager.handler',
-      runtime: Runtime.NODEJS_10_X,
+      runtime: Runtime.NODEJS_12_X,
       timeout: Duration.minutes(5),
       uuid: '934dd096-1586-46c4-92a0-0dd1239e993f',
       environment: {

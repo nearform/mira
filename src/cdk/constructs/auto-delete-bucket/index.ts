@@ -35,7 +35,7 @@ export class AutoDeleteBucket extends Bucket {
 
     const lambda = new SingletonFunction(this, 'AutoDeleteBucketLambda', {
       uuid: 'ae8b2ff4-9aea-4394-aa32-7a4fe1184635',
-      runtime: Runtime.NODEJS_10_X,
+      runtime: Runtime.NODEJS_12_X,
       code: Code.fromAsset(
         path.join(__dirname, '../../custom-resources/auto-delete-bucket')
       ),

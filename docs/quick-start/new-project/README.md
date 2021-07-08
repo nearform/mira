@@ -7,14 +7,30 @@ Next, install Mira, the AWS CDK and other dependencies. Edit your `package.json`
 
 ```json
  "dependencies": {
+    "@aws-cdk/assert": "1.89.0",
+    "@aws-cdk/assets": "1.89.0",
     "@aws-cdk/aws-cloudformation": "1.89.0",
+    "@aws-cdk/aws-codebuild": "1.89.0",
+    "@aws-cdk/aws-codecommit": "1.89.0",
+    "@aws-cdk/aws-codepipeline": "1.89.0",
+    "@aws-cdk/aws-codepipeline-actions": "1.89.0",
+    "@aws-cdk/aws-ec2": "1.89.0",
+    "@aws-cdk/aws-iam": "1.89.0",
+    "@aws-cdk/aws-kms": "1.89.0",
+    "@aws-cdk/aws-lambda": "1.89.0",
     "@aws-cdk/aws-lambda-event-sources": "1.89.0",
     "@aws-cdk/aws-rds": "1.89.0",
+    "@aws-cdk/aws-s3": "1.89.0",
+    "@aws-cdk/aws-s3-assets": "1.89.0",
     "@aws-cdk/aws-s3-deployment": "1.89.0",
     "@aws-cdk/aws-secretsmanager": "1.89.0",
+    "@aws-cdk/aws-sns": "1.89.0",
+    "@aws-cdk/aws-sqs": "1.89.0",
+    "@aws-cdk/aws-ssm": "1.89.0",
     "@aws-cdk/core": "1.89.0",
+    "@aws-cdk/custom-resources": "1.89.0",
     "aws-cdk": "1.89.0",
-    "mira": "^1.5.0"
+    "mira": "1.5.0"
 }
 ```
 Note: Use the same version of the CDK for every additional library you choose. At the time of writing, Mira 1.5.0 supports the 1.89.0 version of the CDK. 
