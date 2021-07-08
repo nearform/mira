@@ -6,10 +6,10 @@ case `uname` in
 esac
 
 if [ -x "$basedir/node" ]; then
-  "$basedir/node"  "$basedir/../mira/bin/cli.js" "$@"
+  "$basedir/node" "--preserve-symlinks" "$basedir/../mira-bootstrap/cli.js" "$@"
   ret=$?
 else 
-  node  "$basedir/../mira/bin/cli.js" "$@"
+  node  "--preserve-symlinks" "$basedir/../mira-bootstrap/cli.js" "$@"
   ret=$?
 fi
 exit $ret

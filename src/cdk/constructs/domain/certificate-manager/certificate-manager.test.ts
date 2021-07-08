@@ -15,6 +15,7 @@ import {
   DomainConfig,
   Account
 } from '../../../../config/mira-config'
+import { MiraApp } from '../../../app'
 
 jest.mock('@aws-cdk/aws-iam', () => ({
   ...jest.requireActual('@aws-cdk/aws-iam'),
@@ -55,9 +56,13 @@ jest.mock('@aws-cdk/aws-sns', () => ({
 }))
 
 describe('CertificateManager', () => {
+  beforeEach(() => {
+    new MiraApp()
+    MiraApp.instance.initializeApp()
+  })
   it('Throw if hostedZoneId is not in domain config', async () => {
     const stack = new Stack(
-      new App(),
+      MiraApp.instance.cdkApp,
       MiraConfig.getBaseStackName('CertificateManager'),
       {}
     )
@@ -74,14 +79,14 @@ describe('CertificateManager', () => {
       env: { account: '12345', region: 'eu-west-1' }
     })
 
-    expect(() => new CertificateManager(stack)).toThrowError(
+    expect(() => new CertificateManager()).toThrowError(
       'Cannot find hostedZoneId in config.'
     )
   })
 
   it('call all functions correctly', async () => {
     const stack = new Stack(
-      new App(),
+      MiraApp.instance.cdkApp,
       MiraConfig.getBaseStackName('CertificateManager'),
       {}
     )
@@ -111,7 +116,7 @@ describe('CertificateManager', () => {
       }
     ]
 
-    expect(() => new CertificateManager(stack)).not.toThrowError()
+    expect(() => new CertificateManager()).not.toThrowError()
 
     expect(AccountPrincipal).toBeCalledTimes(1)
     expect(AssetCode).toBeCalledTimes(1)

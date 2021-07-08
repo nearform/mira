@@ -10,6 +10,7 @@ const config: Record<string, unknown> = {
     codeCommitUserPublicKey: 'ssh-rsa ...',
     provider: 'codecommit'
   },
+  'dev.target': 'cicd',
   'cicd.target': 'cicd',
   'cicd.stages': [
     {
@@ -25,6 +26,20 @@ const config: Record<string, unknown> = {
       region: 'REGION'
     },
     profile: 'mira-dev'
+  },
+  'accounts.test': {
+    env: {
+      account: 'ACCOUNT_NUMER',
+      region: 'REGION'
+    },
+    profile: true
+  },
+  'accounts.dev': {
+    env: {
+      account: 'ACCOUNT_NUMER',
+      region: 'REGION'
+    },
+    profile: true
   },
   'accounts.staging': {
     env: {
@@ -54,6 +69,14 @@ const configMock: IConfig = {
         },
         accounts: {
           default: {
+            name: 'hello',
+            profile: 'mira-dev',
+            env: {
+              account: '101259067028',
+              region: 'eu-west-1'
+            }
+          },
+          test: {
             name: 'hello',
             profile: 'mira-dev',
             env: {

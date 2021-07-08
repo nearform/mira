@@ -26,11 +26,10 @@ export class MiraDomainApp extends MiraApp {
     if (!this.cdkApp) {
       this.initializeApp()
     }
-    const stack = new cdk.Stack(this.cdkApp, MiraConfig.getBaseStackName('DomainManager'), { })
 
-    new CertificateManager(stack)
-    new Route53Manager(stack)
-    new Route53ManagerAccessRoleStack(stack)
+    new CertificateManager()
+    new Route53Manager()
+    new Route53ManagerAccessRoleStack()
     if (!Object.prototype.hasOwnProperty.call(args, 'dry-run')) {
       this.cdkApp.synth()
     }

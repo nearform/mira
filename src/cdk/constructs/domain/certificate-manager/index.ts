@@ -1,4 +1,4 @@
-import { CfnOutput, Construct, Duration } from '@aws-cdk/core'
+import { CfnOutput, Duration } from '@aws-cdk/core'
 import { Topic } from '@aws-cdk/aws-sns'
 import { SingletonFunction, Runtime, AssetCode } from '@aws-cdk/aws-lambda'
 import { FollowMode } from '@aws-cdk/assets'
@@ -14,9 +14,9 @@ import path from 'path'
 
 export class CertificateManager extends MiraStack {
   // constructor (parent: Construct, props: CertificateManagerProps) {
-  constructor (parent: Construct) {
+  constructor () {
     const id = MiraConfig.getBaseStackName('CertificateManager')
-    super(parent, id)
+    super(id)
 
     const account = MiraConfig.getEnvironment()
     const { hostedZoneId } = MiraConfig.getDomainConfig()
@@ -30,7 +30,7 @@ export class CertificateManager extends MiraStack {
       follow: FollowMode.ALWAYS
     })
 
-    const DomainManagerRole = new Role(this, 'Route53ManagerRole', {
+    const DomainManagerRole = new Role(this.stack, 'Route53ManagerRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com')
     })
     DomainManagerRole.addToPolicy(new PolicyStatement({
@@ -56,7 +56,7 @@ export class CertificateManager extends MiraStack {
 
     DomainManagerRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSLambdaBasicExecutionRole'))
 
-    const certificateSubscriptionTopic = new Topic(this, 'CertificateSubscriptionTopic', {
+    const certificateSubscriptionTopic = new Topic(this.stack, 'CertificateSubscriptionTopic', {
       displayName: 'Certificate Subscription Topic',
       topicName: MiraConfig.getBaseStackName('CertificateSubscriptionTopic')
     })
@@ -68,7 +68,7 @@ export class CertificateManager extends MiraStack {
       actions: ['sns:Publish']
     }))
 
-    const CertificateManagerLambda = new SingletonFunction(this, 'CertificateManagerLambda', {
+    const CertificateManagerLambda = new SingletonFunction(this.stack, 'CertificateManagerLambda', {
       code,
       handler: 'certificate-manager.handler',
       runtime: Runtime.NODEJS_10_X,
@@ -82,7 +82,7 @@ export class CertificateManager extends MiraStack {
 
     CertificateManagerLambda.addEventSource(new SnsEventSource(certificateSubscriptionTopic))
 
-    new CfnOutput(this, 'certificateSubscriptionTopicArn', {
+    new CfnOutput(this.stack, 'certificateSubscriptionTopicArn', {
       value: certificateSubscriptionTopic.topicArn
     })
   }
