@@ -129,14 +129,14 @@ describe('MiraStack', () => {
   it('loadParameter with fullName divided by / correctly', async () => {
     const miraStackInstance = new MiraStack(stack)
     const res = await miraStackInstance.loadParameter('Full/Name')
-    expect(res.parameterName).toBe('/John-MyGreatApp-default-param/Full/Name')
+    expect(res.parameterName).toBe('/John-MyGreatApp-default-DefaultStack-ssm-param/Full/Name')
     expect(res.toString().split('/')[2]).toBe('FullNameParameter')
   })
 
   it('loadParameter with environment and fullName', async () => {
     const miraStackInstance = new MiraStack(stack, 'Default')
     const res = await miraStackInstance.loadParameter('Fullname')
-    expect(res.parameterName).toBe('/John-MyGreatApp-default-param/Default/Fullname')
+    expect(res.parameterName).toBe('/John-MyGreatApp-default-Default-ssm-param/Default/Fullname')
     expect(res.toString().split('/')[2]).toBe('DefaultFullnameParameter')
   })
 })

@@ -13,10 +13,8 @@ import { MiraConfig } from '../../../../config/mira-config'
 import path from 'path'
 
 export class CertificateManager extends MiraStack {
-  // constructor (parent: Construct, props: CertificateManagerProps) {
   constructor (parent: Construct) {
-    const id = MiraConfig.getBaseStackName('CertificateManager')
-    super(parent, id)
+    super(parent, CertificateManager.name)
 
     const account = MiraConfig.getEnvironment()
     const { hostedZoneId } = MiraConfig.getDomainConfig()
@@ -50,7 +48,7 @@ export class CertificateManager extends MiraStack {
     }))
     DomainManagerRole.addToPolicy(new PolicyStatement({
       effect: Effect.ALLOW,
-      resources: [`arn:aws:iam::${account.env.account}:role/${MiraConfig.getBaseStackName('DomainManager-Role')}`], // arn:aws:iam::714436996402:role/Piotrzimoch-Mira-DomainManager-Role
+      resources: [`arn:aws:iam::${account.env.account}:role/${MiraConfig.calculateSharedResourceName('Route53Manager', 'role', 'DomainManager')}`],
       actions: ['sts:AssumeRole']
     }))
 
@@ -58,7 +56,7 @@ export class CertificateManager extends MiraStack {
 
     const certificateSubscriptionTopic = new Topic(this, 'CertificateSubscriptionTopic', {
       displayName: 'Certificate Subscription Topic',
-      topicName: MiraConfig.getBaseStackName('CertificateSubscriptionTopic')
+      topicName: MiraConfig.calculateSharedResourceName(this.name, 'sns', 'CertificateSubscriptionTopic')
     })
 
     certificateSubscriptionTopic.addToResourcePolicy(new PolicyStatement({
